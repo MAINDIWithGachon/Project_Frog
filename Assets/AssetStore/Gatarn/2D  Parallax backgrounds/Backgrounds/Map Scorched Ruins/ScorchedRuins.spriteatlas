@@ -1,0 +1,80 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!687078895 &4343727234628468602
+SpriteAtlas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: ScorchedRuins
+  m_EditorData:
+    serializedVersion: 2
+    textureSettings:
+      serializedVersion: 2
+      anisoLevel: 1
+      compressionQuality: 50
+      maxTextureSize: 2048
+      textureCompression: 0
+      filterMode: 1
+      generateMipMaps: 0
+      readable: 0
+      crunchedCompression: 0
+      sRGB: 1
+    platformSettings: []
+    packingSettings:
+      serializedVersion: 2
+      padding: 4
+      blockOffset: 1
+      allowAlphaSplitting: 0
+      enableRotation: 0
+      enableTightPacking: 1
+      enableAlphaDilation: 0
+    secondaryTextureSettings: {}
+    variantMultiplier: 1
+    packables:
+    - {fileID: 2800000, guid: 4c82a5970753645298ff02a746bb2b85, type: 3}
+    - {fileID: 2800000, guid: b4f8177e242bd4f9fb3257058be07386, type: 3}
+    - {fileID: 2800000, guid: 04133f4a794214dde8dbdf259e5ab371, type: 3}
+    - {fileID: 2800000, guid: e85e6667044b0449a985da5e1b0e06fa, type: 3}
+    - {fileID: 2800000, guid: 06fa797ca4c24406b83b26a23dfd991b, type: 3}
+    - {fileID: 2800000, guid: f54642b45d8bd4ab48f692f52ed53105, type: 3}
+    - {fileID: 2800000, guid: c6f9d562f3a1a4aa2b5b0bd29ba50482, type: 3}
+    - {fileID: 2800000, guid: 7141ead32a9a842b08d0f90653762dc2, type: 3}
+    - {fileID: 2800000, guid: 3beb6d493c53b45ccb907385733ee9cf, type: 3}
+    bindAsDefault: 1
+    isAtlasV2: 0
+    cachedData: {fileID: 0}
+    packedSpriteRenderDataKeys:
+    - c6f9d562f3a1a4aa2b5b0bd29ba50482: 21300000
+    - 7141ead32a9a842b08d0f90653762dc2: 21300000
+    - f54642b45d8bd4ab48f692f52ed53105: 21300000
+    - e85e6667044b0449a985da5e1b0e06fa: 21300000
+    - 4c82a5970753645298ff02a746bb2b85: 21300000
+    - 3beb6d493c53b45ccb907385733ee9cf: 21300000
+    - 04133f4a794214dde8dbdf259e5ab371: 21300000
+    - 06fa797ca4c24406b83b26a23dfd991b: 21300000
+    - b4f8177e242bd4f9fb3257058be07386: 21300000
+  m_MasterAtlas: {fileID: 0}
+  m_PackedSprites:
+  - {fileID: 21300000, guid: c6f9d562f3a1a4aa2b5b0bd29ba50482, type: 3}
+  - {fileID: 21300000, guid: 7141ead32a9a842b08d0f90653762dc2, type: 3}
+  - {fileID: 21300000, guid: f54642b45d8bd4ab48f692f52ed53105, type: 3}
+  - {fileID: 21300000, guid: e85e6667044b0449a985da5e1b0e06fa, type: 3}
+  - {fileID: 21300000, guid: 4c82a5970753645298ff02a746bb2b85, type: 3}
+  - {fileID: 21300000, guid: 3beb6d493c53b45ccb907385733ee9cf, type: 3}
+  - {fileID: 21300000, guid: 04133f4a794214dde8dbdf259e5ab371, type: 3}
+  - {fileID: 21300000, guid: 06fa797ca4c24406b83b26a23dfd991b, type: 3}
+  - {fileID: 21300000, guid: b4f8177e242bd4f9fb3257058be07386, type: 3}
+  m_PackedSpriteNamesToIndex:
+  - prob_tree_2
+  - prob_tree_3
+  - prob_tree_1
+  - bg_far
+  - sky_bg
+  - prob_tree_4
+  - bg_mid
+  - prob_bone
+  - ground
+  m_RenderDataMap: {}
+  m_Tag: ScorchedRuins
+  m_IsVariant: 0

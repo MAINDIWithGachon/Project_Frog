@@ -1,0 +1,96 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!687078895 &4343727234628468602
+SpriteAtlas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: PuppvineGlade
+  m_EditorData:
+    serializedVersion: 2
+    textureSettings:
+      serializedVersion: 2
+      anisoLevel: 1
+      compressionQuality: 50
+      maxTextureSize: 2048
+      textureCompression: 0
+      filterMode: 1
+      generateMipMaps: 0
+      readable: 0
+      crunchedCompression: 0
+      sRGB: 1
+    platformSettings:
+    - serializedVersion: 4
+      m_BuildTarget: DefaultTexturePlatform
+      m_MaxTextureSize: 4096
+      m_ResizeAlgorithm: 0
+      m_TextureFormat: -1
+      m_TextureCompression: 2
+      m_CompressionQuality: 98
+      m_CrunchedCompression: 0
+      m_AllowsAlphaSplitting: 0
+      m_Overridden: 0
+      m_IgnorePlatformSupport: 0
+      m_AndroidETC2FallbackOverride: 0
+      m_ForceMaximumCompressionQuality_BC6H_BC7: 0
+    packingSettings:
+      serializedVersion: 2
+      padding: 4
+      blockOffset: 1
+      allowAlphaSplitting: 0
+      enableRotation: 1
+      enableTightPacking: 0
+      enableAlphaDilation: 0
+    secondaryTextureSettings: {}
+    variantMultiplier: 1
+    packables:
+    - {fileID: 2800000, guid: b90f9c034f0be40929b2c367b84d2b67, type: 3}
+    - {fileID: 2800000, guid: 0424e9827fb264966a9564767171a2bf, type: 3}
+    - {fileID: 2800000, guid: ff3454e1b2b91439c88fb12cd58b1600, type: 3}
+    - {fileID: 2800000, guid: dfa251691061745eb9ec770b335fda65, type: 3}
+    - {fileID: 2800000, guid: 4448452b2d2d942c1bd4de0bb03adf4b, type: 3}
+    - {fileID: 2800000, guid: c12a1cf72c11b4107a4c62c1ad88f613, type: 3}
+    - {fileID: 2800000, guid: 9b84c3a7638274a2f9e4f91caaa92c9d, type: 3}
+    - {fileID: 2800000, guid: 6089608d3f7a24794975af53a25aa89a, type: 3}
+    - {fileID: 2800000, guid: dc872395070124748b294f4921310ca2, type: 3}
+    - {fileID: 2800000, guid: f0c392b2b7b354114b004b43d53af23a, type: 3}
+    - {fileID: 2800000, guid: 0afcc098a499e43bea4758758f9ce5d3, type: 3}
+    - {fileID: 2800000, guid: d8b458ade6c7a42858f707808e031fbe, type: 3}
+    bindAsDefault: 1
+    isAtlasV2: 0
+    cachedData: {fileID: 0}
+    packedSpriteRenderDataKeys:
+    - ff3454e1b2b91439c88fb12cd58b1600: 21300000
+    - 0424e9827fb264966a9564767171a2bf: 21300000
+    - b90f9c034f0be40929b2c367b84d2b67: 21300000
+    - dc872395070124748b294f4921310ca2: 21300000
+    - 9b84c3a7638274a2f9e4f91caaa92c9d: 21300000
+    - c12a1cf72c11b4107a4c62c1ad88f613: 21300000
+    - dfa251691061745eb9ec770b335fda65: 21300000
+    - 4448452b2d2d942c1bd4de0bb03adf4b: 21300000
+    - 6089608d3f7a24794975af53a25aa89a: 21300000
+  m_MasterAtlas: {fileID: 0}
+  m_PackedSprites:
+  - {fileID: 21300000, guid: ff3454e1b2b91439c88fb12cd58b1600, type: 3}
+  - {fileID: 21300000, guid: 0424e9827fb264966a9564767171a2bf, type: 3}
+  - {fileID: 21300000, guid: b90f9c034f0be40929b2c367b84d2b67, type: 3}
+  - {fileID: 21300000, guid: dc872395070124748b294f4921310ca2, type: 3}
+  - {fileID: 21300000, guid: 9b84c3a7638274a2f9e4f91caaa92c9d, type: 3}
+  - {fileID: 21300000, guid: c12a1cf72c11b4107a4c62c1ad88f613, type: 3}
+  - {fileID: 21300000, guid: dfa251691061745eb9ec770b335fda65, type: 3}
+  - {fileID: 21300000, guid: 4448452b2d2d942c1bd4de0bb03adf4b, type: 3}
+  - {fileID: 21300000, guid: 6089608d3f7a24794975af53a25aa89a, type: 3}
+  m_PackedSpriteNamesToIndex:
+  - bg_far
+  - ground
+  - sky_bg
+  - bg_0002_rock2
+  - bg_0000s_0000s_0004_Layer-13-Copy
+  - bg_0000s_0000s_0002_Layer-2-copy
+  - bg_0000_rock
+  - bg_0000s_0000s_0001_Layer-9-Copy
+  - bg_0001_bush
+  m_RenderDataMap: {}
+  m_Tag: PuppvineGlade
+  m_IsVariant: 0
