@@ -78,7 +78,8 @@ public class ParallaxBackground : MonoBehaviour
 
         // Optional: start parallax as stopped. 
         // (Change if you want it running immediately.)
-        StopParallax();
+        //StopParallax(); -> Not stopping on Awake, allowing it to run by default
+        SetMovementState(BackgroundMovementState.Moving);
     }
 
     private void Start()
