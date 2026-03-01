@@ -1,0 +1,101 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!687078895 &4343727234628468602
+SpriteAtlas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: BlossomIsles
+  m_EditorData:
+    serializedVersion: 2
+    textureSettings:
+      serializedVersion: 2
+      anisoLevel: 1
+      compressionQuality: 50
+      maxTextureSize: 2048
+      textureCompression: 0
+      filterMode: 1
+      generateMipMaps: 0
+      readable: 0
+      crunchedCompression: 0
+      sRGB: 1
+    platformSettings: []
+    packingSettings:
+      serializedVersion: 2
+      padding: 4
+      blockOffset: 1
+      allowAlphaSplitting: 0
+      enableRotation: 0
+      enableTightPacking: 1
+      enableAlphaDilation: 0
+    secondaryTextureSettings: {}
+    variantMultiplier: 1
+    packables:
+    - {fileID: 2800000, guid: 6f3708dc733a7416d92da39833a0ab0e, type: 3}
+    - {fileID: 2800000, guid: daa3ce3ce1dcb4120a3b2b886755f1c6, type: 3}
+    - {fileID: 2800000, guid: 5fd9f5350ad1a4fe4b402f393b8194bc, type: 3}
+    - {fileID: 21300000, guid: 2a7294373bf0448ca848a2c2ad31aea4, type: 3}
+    - {fileID: 2800000, guid: 2a7294373bf0448ca848a2c2ad31aea4, type: 3}
+    - {fileID: 2800000, guid: 8386980ed015c48fcae05f6c3890bc4e, type: 3}
+    - {fileID: 2800000, guid: a60ca43da6f724b5ea44fc23155bb670, type: 3}
+    - {fileID: 2800000, guid: 282ec51e791164a1ebc71fa15463afac, type: 3}
+    - {fileID: 2800000, guid: 6e5a7cff4d9a64884a9001c00b441c89, type: 3}
+    - {fileID: 2800000, guid: af2f698ed871f432db0ee23e6221ca10, type: 3}
+    - {fileID: 2800000, guid: bd8fca41420e64904825d4d561e31507, type: 3}
+    - {fileID: 2800000, guid: c207fb42483f840afbf64b6c45f78f4f, type: 3}
+    - {fileID: 2800000, guid: 6ee1d4c0f9ee34efab66efc7c62ee018, type: 3}
+    - {fileID: 2800000, guid: 8d2bb79d065794457843a46bbb3d7f79, type: 3}
+    - {fileID: 2800000, guid: ada086d1bbd374bebbc62522f11f93cd, type: 3}
+    bindAsDefault: 1
+    isAtlasV2: 0
+    cachedData: {fileID: 0}
+    packedSpriteRenderDataKeys:
+    - 6ee1d4c0f9ee34efab66efc7c62ee018: 21300000
+    - bd8fca41420e64904825d4d561e31507: 21300000
+    - ada086d1bbd374bebbc62522f11f93cd: 21300000
+    - c207fb42483f840afbf64b6c45f78f4f: 21300000
+    - 5fd9f5350ad1a4fe4b402f393b8194bc: 21300000
+    - 2a7294373bf0448ca848a2c2ad31aea4: 21300000
+    - daa3ce3ce1dcb4120a3b2b886755f1c6: 21300000
+    - 6f3708dc733a7416d92da39833a0ab0e: 21300000
+    - a60ca43da6f724b5ea44fc23155bb670: 21300000
+    - 8d2bb79d065794457843a46bbb3d7f79: 21300000
+    - 8386980ed015c48fcae05f6c3890bc4e: 21300000
+    - 282ec51e791164a1ebc71fa15463afac: 21300000
+    - af2f698ed871f432db0ee23e6221ca10: 21300000
+    - 6e5a7cff4d9a64884a9001c00b441c89: 21300000
+  m_MasterAtlas: {fileID: 0}
+  m_PackedSprites:
+  - {fileID: 21300000, guid: 6ee1d4c0f9ee34efab66efc7c62ee018, type: 3}
+  - {fileID: 21300000, guid: bd8fca41420e64904825d4d561e31507, type: 3}
+  - {fileID: 21300000, guid: ada086d1bbd374bebbc62522f11f93cd, type: 3}
+  - {fileID: 21300000, guid: c207fb42483f840afbf64b6c45f78f4f, type: 3}
+  - {fileID: 21300000, guid: 5fd9f5350ad1a4fe4b402f393b8194bc, type: 3}
+  - {fileID: 21300000, guid: 2a7294373bf0448ca848a2c2ad31aea4, type: 3}
+  - {fileID: 21300000, guid: daa3ce3ce1dcb4120a3b2b886755f1c6, type: 3}
+  - {fileID: 21300000, guid: 6f3708dc733a7416d92da39833a0ab0e, type: 3}
+  - {fileID: 21300000, guid: a60ca43da6f724b5ea44fc23155bb670, type: 3}
+  - {fileID: 21300000, guid: 8d2bb79d065794457843a46bbb3d7f79, type: 3}
+  - {fileID: 21300000, guid: 8386980ed015c48fcae05f6c3890bc4e, type: 3}
+  - {fileID: 21300000, guid: 282ec51e791164a1ebc71fa15463afac, type: 3}
+  - {fileID: 21300000, guid: af2f698ed871f432db0ee23e6221ca10, type: 3}
+  - {fileID: 21300000, guid: 6e5a7cff4d9a64884a9001c00b441c89, type: 3}
+  m_PackedSpriteNamesToIndex:
+  - prob_tree_2
+  - prob_rock
+  - prob_tree_4
+  - prob_tree_1
+  - ground
+  - Map Floating Blossom Isles
+  - bg_mid
+  - bg_far
+  - prob_bush_1
+  - prob_tree_3
+  - sky_bg
+  - prob_bush_2
+  - prob_flower
+  - prob_bush_3
+  m_RenderDataMap: {}
+  m_Tag: BlossomIsles
+  m_IsVariant: 0

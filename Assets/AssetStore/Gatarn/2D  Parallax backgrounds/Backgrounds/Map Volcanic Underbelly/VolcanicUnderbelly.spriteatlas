@@ -1,0 +1,88 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!687078895 &4343727234628468602
+SpriteAtlas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: VolcanicUnderbelly
+  m_EditorData:
+    serializedVersion: 2
+    textureSettings:
+      serializedVersion: 2
+      anisoLevel: 1
+      compressionQuality: 50
+      maxTextureSize: 2048
+      textureCompression: 0
+      filterMode: 1
+      generateMipMaps: 0
+      readable: 0
+      crunchedCompression: 0
+      sRGB: 1
+    platformSettings: []
+    packingSettings:
+      serializedVersion: 2
+      padding: 4
+      blockOffset: 1
+      allowAlphaSplitting: 0
+      enableRotation: 0
+      enableTightPacking: 1
+      enableAlphaDilation: 0
+    secondaryTextureSettings: {}
+    variantMultiplier: 1
+    packables:
+    - {fileID: 2800000, guid: 9c3cef0b2335c487aa450a998c1e5983, type: 3}
+    - {fileID: 2800000, guid: dd4a08eed233047609c05f33a22ef785, type: 3}
+    - {fileID: 2800000, guid: db0abf8f76a8344afba5669d13fce989, type: 3}
+    - {fileID: 2800000, guid: 3d08dc44b7cfe455086c9d2eff090a8d, type: 3}
+    - {fileID: 2800000, guid: 53b7d3e93e82143e8986e0176faf094c, type: 3}
+    - {fileID: 2800000, guid: 8ccb90efe51a94c8e9629350f16b901d, type: 3}
+    - {fileID: 2800000, guid: 886a72fe561934c5aa57f4e233a81644, type: 3}
+    - {fileID: 2800000, guid: ca6cb2c106dcc4db3967b7aa1993ed68, type: 3}
+    - {fileID: 2800000, guid: a505b79d069404c619cd113d4af42734, type: 3}
+    - {fileID: 2800000, guid: 9ba69c24a3c794d939551e0ebbf353c7, type: 3}
+    - {fileID: 2800000, guid: c8eafb221bb524cb4ad60630f17c8049, type: 3}
+    bindAsDefault: 1
+    isAtlasV2: 0
+    cachedData: {fileID: 0}
+    packedSpriteRenderDataKeys:
+    - ca6cb2c106dcc4db3967b7aa1993ed68: 21300000
+    - c8eafb221bb524cb4ad60630f17c8049: 21300000
+    - 9ba69c24a3c794d939551e0ebbf353c7: 21300000
+    - 3d08dc44b7cfe455086c9d2eff090a8d: 21300000
+    - 53b7d3e93e82143e8986e0176faf094c: 21300000
+    - 9c3cef0b2335c487aa450a998c1e5983: 21300000
+    - a505b79d069404c619cd113d4af42734: 21300000
+    - dd4a08eed233047609c05f33a22ef785: 21300000
+    - 886a72fe561934c5aa57f4e233a81644: 21300000
+    - db0abf8f76a8344afba5669d13fce989: 21300000
+    - 8ccb90efe51a94c8e9629350f16b901d: 21300000
+  m_MasterAtlas: {fileID: 0}
+  m_PackedSprites:
+  - {fileID: 21300000, guid: ca6cb2c106dcc4db3967b7aa1993ed68, type: 3}
+  - {fileID: 21300000, guid: c8eafb221bb524cb4ad60630f17c8049, type: 3}
+  - {fileID: 21300000, guid: 9ba69c24a3c794d939551e0ebbf353c7, type: 3}
+  - {fileID: 21300000, guid: 3d08dc44b7cfe455086c9d2eff090a8d, type: 3}
+  - {fileID: 21300000, guid: 53b7d3e93e82143e8986e0176faf094c, type: 3}
+  - {fileID: 21300000, guid: 9c3cef0b2335c487aa450a998c1e5983, type: 3}
+  - {fileID: 21300000, guid: a505b79d069404c619cd113d4af42734, type: 3}
+  - {fileID: 21300000, guid: dd4a08eed233047609c05f33a22ef785, type: 3}
+  - {fileID: 21300000, guid: 886a72fe561934c5aa57f4e233a81644, type: 3}
+  - {fileID: 21300000, guid: db0abf8f76a8344afba5669d13fce989, type: 3}
+  - {fileID: 21300000, guid: 8ccb90efe51a94c8e9629350f16b901d, type: 3}
+  m_PackedSpriteNamesToIndex:
+  - prob_rock_4
+  - prob_rock_7
+  - prob_rock_6
+  - sky_bg
+  - prob_rock_1
+  - bg_far
+  - prob_rock_5
+  - bg_mid
+  - prob_rock_3
+  - ground
+  - prob_rock_2
+  m_RenderDataMap: {}
+  m_Tag: VolcanicUnderbelly
+  m_IsVariant: 0
