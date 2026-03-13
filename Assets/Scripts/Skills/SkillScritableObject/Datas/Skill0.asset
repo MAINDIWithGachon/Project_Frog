@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 68bdcb4fa40f84b50adb036e87b48fad, type: 3}
   m_Name: Skill0
   m_EditorClassIdentifier: 
-  skillID: 0
+  id: 0
   icon: {fileID: 0}
   nameKey: onion
   descriptionKey: ThisisOnion
-  baseDamage: 100
-  damageGrowth: 10
-  baseCooldown: 0
+  baseDamagePercent: 100
+  damagePercentGrowth: 10
+  baseCooldown: 1
   cooldownGrowth: 0
   minCooldown: 0.1
