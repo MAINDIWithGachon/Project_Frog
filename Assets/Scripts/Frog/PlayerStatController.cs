@@ -34,8 +34,22 @@ public class PlayerStatController : MonoBehaviour
         if (runtimeData == null)
             runtimeData = GetComponent<RuntimeData>();
 
+        if (runtimeData == null)
+            runtimeData = FindAnyObjectByType<RuntimeData>();
+
         if (finalStatData == null)
             finalStatData = GetComponent<FinalStatData>();
+
+        if (finalStatData == null)
+            finalStatData = FindAnyObjectByType<FinalStatData>();
+
+        if (baseStatData == null)
+            baseStatData = GetComponent<PlayerBaseStatData>();
+    }
+
+    private void Start()
+    {
+        RecalculateStats();
     }
 
     /// <summary>

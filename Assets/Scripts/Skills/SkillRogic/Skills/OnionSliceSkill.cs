@@ -6,16 +6,22 @@ public class OnionSliceSkill : MonoBehaviour, ISkillExecutable
 
     public void Execute(SkillData skillData, SkillCastResult castResult)
     {
-        Debug.Log("[OnionSliceSkill] Execute 호출됨");
-        Debug.Log($"skillId: {skillData.id}");
-        Debug.Log($"skillLevel: {castResult.skillLevel}");
-        Debug.Log($"damagePercent: {castResult.damagePercent}");
-        Debug.Log($"cooldown: {castResult.cooldown}");
-        Debug.Log($"currentAttack: {castResult.currentAttack}");
-        Debug.Log($"currentCritChance: {castResult.currentCritChance}");
-        Debug.Log($"currentCritDamage: {castResult.currentCritDamage}");
-
         float finalDamage = castResult.currentAttack * (castResult.damagePercent / 100f);
-        Debug.Log($"finalDamage: {finalDamage}");
+
+        GameObject slash = PoolingManager.instance.skillPrefabPooling.Get(SkillId);
+
+        slash.transform.position = castResult.slashPivot.position;
+
+        Vector3 scale = slash.transform.localScale;
+        scale.x = castResult.facingDirection < 0 ? -Mathf.Abs(scale.x) : Mathf.Abs(scale.x);
+        slash.transform.localScale = scale;
+
+        HitBoxModule hitBox = slash.GetComponentInChildren<HitBoxModule>(true);
+        if (hitBox != null)
+        {
+            float critChance = castResult.currentCritChance / 100f;
+            hitBox.Setup(finalDamage, critChance, castResult.currentCritDamage, slash);
+            Debug.Log("파이널데미지" + finalDamage);
+        }
     }
 }

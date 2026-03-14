@@ -28,6 +28,8 @@ public class SkillManager : MonoBehaviour
     [Header("# Reference")]
     [SerializeField] private RuntimeData runtimeData;
     [SerializeField] private FinalStatData finalStatData;
+    [SerializeField] private Transform casterSlashPivot;
+    [SerializeField] private Movement casterMovement;
 
     [Header("# Skill Database")]
     [SerializeField] private SkillData[] skillDatabase;
@@ -112,7 +114,6 @@ public class SkillManager : MonoBehaviour
             Debug.LogError($"[SkillManager] 실행 가능한 스킬을 찾지 못했습니다. skillId: {skillData.id}");
             return false;
         }
-
         executable.Execute(skillData, result);
         return true;
     }
@@ -173,6 +174,8 @@ public class SkillManager : MonoBehaviour
     /// </summary>
     private SkillCastResult BuildCastResult(SkillData skillData, int skillLevel)
     {
+        EnsureCasterReferences();
+
         float damagePercent = skillData.GetDamagePercent(skillLevel);
         float cooldown = skillData.GetCooldown(skillLevel);
 
@@ -188,10 +191,51 @@ public class SkillManager : MonoBehaviour
             // 시전 시점의 플레이어 현재 최종 능력치
             currentAttack = finalStatData.attack,
             currentCritChance = finalStatData.critChance,
-            currentCritDamage = finalStatData.critDamage
+            currentCritDamage = finalStatData.critDamage,
+            slashPivot = casterSlashPivot,
+            facingDirection = casterMovement != null && casterMovement.direction < 0 ? -1 : 1
         };
 
         return result;
+    }
+
+    private void EnsureCasterReferences()
+    {
+        if (casterSlashPivot != null && casterMovement != null)
+            return;
+
+        GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
+
+        if (playerObject != null)
+        {
+            if (casterMovement == null)
+                casterMovement = playerObject.GetComponentInChildren<Movement>(true);
+
+            if (casterSlashPivot == null)
+                casterSlashPivot = FindChildTransformByName(playerObject.transform, "SlashPivot");
+        }
+
+        if (casterMovement == null)
+            casterMovement = FindAnyObjectByType<Movement>();
+
+        if (casterSlashPivot == null && casterMovement != null)
+            casterSlashPivot = FindChildTransformByName(casterMovement.transform.root, "SlashPivot");
+    }
+
+    private static Transform FindChildTransformByName(Transform root, string childName)
+    {
+        if (root == null)
+            return null;
+
+        Transform[] children = root.GetComponentsInChildren<Transform>(true);
+
+        for (int i = 0; i < children.Length; i++)
+        {
+            if (children[i].name == childName)
+                return children[i];
+        }
+
+        return null;
     }
 
     /// <summary>
@@ -446,4 +490,16 @@ public struct SkillCastResult
     /// 시전 시점의 플레이어 최종 치명타 공격력
     /// </summary>
     public float currentCritDamage;
+
+
+    /// <summary>
+    /// 플레이어의 현재 위치에서 스킬 이펙트가 생성될 위치를 지정하는 벡터.
+    /// </summary>
+    public Transform slashPivot;
+
+    /// <summary>
+    /// 시전 시점의 플레이어 바라보는 방향.
+    /// 1은 오른쪽, -1은 왼쪽이다.
+    /// </summary>
+    public int facingDirection;
 }

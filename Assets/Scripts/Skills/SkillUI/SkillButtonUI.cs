@@ -59,5 +59,7 @@ public class SkillButtonUI : MonoBehaviour
         Debug.Log(
             $"[SkillButtonUI] 스킬 사용 실패. skillId: {skillId}, " +
             $"remainingCooldown: {skillManager.GetRemainingCooldown(skillId)}");
+
     }
+    
 }
