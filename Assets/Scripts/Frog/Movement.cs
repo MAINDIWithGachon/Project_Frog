@@ -7,7 +7,7 @@ public class Movement : MonoBehaviour
     
     private float leftLimit; 
     private float rightLimit;
-    private int direction = 1; 
+    public int direction = 1; // 1: 오른쪽, -1: 왼쪽
     public SpriteRenderer spriteRenderer;
 
     void Start()
