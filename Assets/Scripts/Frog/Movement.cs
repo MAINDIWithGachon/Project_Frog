@@ -6,10 +6,17 @@ public class Movement : MonoBehaviour
     public float speed = 2.0f;
     private const float LeftMoveSpeedMultiplier = 1.5f;
 
+    private float originalSpeed;
     private float leftLimit;
     private float rightLimit;
     public int direction = 1; // 1: 오른쪽, -1: 왼쪽
     public SpriteRenderer spriteRenderer;
+    public SpriteRenderer hat_SpriteRenderer;
+
+    void Awake()
+    {
+        originalSpeed = speed;
+    }
 
     void Start()
     {
@@ -61,8 +68,22 @@ public class Movement : MonoBehaviour
 
     public void ChangeDirection()
     {
+        if(GameStateManager.Instance.CurrentState == GameState.PlayerDead)
+        return;
+        
         direction *= -1;
         UpdateFlip();
+    }
+
+    public void StopMovement()
+    {
+        speed = 0f;
+        GameStateManager.Instance?.SetState(GameState.PlayerDead);
+    }
+
+    public void ResumeMovement()
+    {
+        speed = originalSpeed;
     }
 
     private void CheckWallCollision()
@@ -78,5 +99,8 @@ public class Movement : MonoBehaviour
         {
             spriteRenderer.flipX = direction == -1;
         }
+
+        if (hat_SpriteRenderer != null)
+            hat_SpriteRenderer.flipX = direction == -1;
     }
 }

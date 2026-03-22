@@ -3,8 +3,15 @@ using UnityEngine.UI;
 
 public class Health : MonoBehaviour
 {
+    public static Health PlayerInstance { get; private set; }
+
     [Header("Reference")]
     [SerializeField] private FinalStatData finalStatData;
+    [SerializeField] private Movement movement;
+    [SerializeField] private Animator[] deathAnimators;
+
+    [Header("Animation")]
+    [SerializeField] private string deathTriggerName = "Dead";
 
     [Header("Runtime HP")]
     [SerializeField] private float currentHp;
@@ -18,8 +25,29 @@ public class Health : MonoBehaviour
 
     private void Awake()
     {
+        if (PlayerInstance != null && PlayerInstance != this)
+        {
+            Debug.LogWarning("[Health] Multiple player Health instances detected. Keeping the first registered instance.");
+        }
+        else
+        {
+            PlayerInstance = this;
+        }
+
         if (finalStatData == null)
             finalStatData = GetComponentInParent<FinalStatData>();
+
+        if (movement == null)
+            movement = GetComponent<Movement>();
+
+        if (deathAnimators == null || deathAnimators.Length == 0)
+            deathAnimators = GetComponentsInChildren<Animator>(true);
+    }
+
+    private void OnDestroy()
+    {
+        if (PlayerInstance == this)
+            PlayerInstance = null;
     }
 
     private void Start()
@@ -114,7 +142,48 @@ public class Health : MonoBehaviour
         currentHp = 0f;
         RefreshHpBar();
 
-        GameStateManager.Instance?.OnPlayerDead();
+        StopDeathRelatedMotion();
+        TriggerDeathAnimation();
+        LogDeathEvent();
+    }
+
+    private void StopDeathRelatedMotion()
+    {
+        if (movement != null)
+            movement.StopMovement();
+
+        GameStateManager.Instance.SetState(GameState.PlayerDead);
+        StageManager.Instance?.StopStage();
+    }
+
+    private void TriggerDeathAnimation()
+    {
+        if (deathAnimators == null || deathAnimators.Length == 0)
+        {
+            Debug.LogWarning("[Health] Death animation was requested, but no Animator was found.");
+            return;
+        }
+
+        int triggeredCount = 0;
+
+        foreach (Animator animator in deathAnimators)
+        {
+            if (animator == null)
+                continue;
+
+            animator.ResetTrigger(deathTriggerName);
+            animator.SetTrigger(deathTriggerName);
+            triggeredCount++;
+        }
+
+        Debug.Log($"[Health] Death animation triggered on {triggeredCount} animator(s) with trigger '{deathTriggerName}'.");
+    }
+
+    private void LogDeathEvent()
+    {
+        Debug.Log("[Health] Frog HP reached 0. Death event fired.");
+        Debug.Log("[Health] Skipping gameplay-side death result. Animation only mode is active.");
+        Debug.Log("[Health] GameStateManager.OnPlayerDead() was not executed.");
     }
 
     private void RefreshHpBar()

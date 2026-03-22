@@ -6,7 +6,7 @@ public class SpawnTest_Button : MonoBehaviour
     [SerializeField] private GameObject monsterPrefab;
     [SerializeField] private Vector3 spawnPosition = new(10f, -0.7f, 0f);
     [SerializeField] private Transform spawnParent;
-    [SerializeField] private float[] spawnYOptions = { -0.6f, -0.8f, -1f };
+    [SerializeField] private float[] spawnYOptions = { -0.8f, -0.8f, -0.8f };
 
     public void OnClickSpawnMonster()
     {
