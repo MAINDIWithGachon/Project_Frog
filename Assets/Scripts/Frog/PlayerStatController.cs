@@ -18,6 +18,7 @@ public class PlayerStatController : MonoBehaviour
     [Header("# Reference")]
     [SerializeField] private RuntimeData runtimeData;
     [SerializeField] private FinalStatData finalStatData;
+    [SerializeField] private Health health;
 
     [Header("# Base Stat")]
     [SerializeField] private PlayerBaseStatData baseStatData;
@@ -45,6 +46,9 @@ public class PlayerStatController : MonoBehaviour
 
         if (baseStatData == null)
             baseStatData = GetComponent<PlayerBaseStatData>();
+
+        if (health == null)
+            health = GetComponent<Health>();
     }
 
     private void Start()
@@ -83,6 +87,8 @@ public class PlayerStatController : MonoBehaviour
             return;
         }
 
+        float previousMaxHp = finalStatData.maxHp;
+
         // 공격력 계산
         finalStatData.attack = CalculateAttack(root.statLevels.attackLevel);
 
@@ -97,6 +103,11 @@ public class PlayerStatController : MonoBehaviour
 
         // 치명타 공격력 계산
         finalStatData.critDamage = CalculateCritDamage(root.statLevels.critDamageLevel);
+
+        if (health != null)
+        {
+            health.ApplyStatChanged(previousMaxHp);
+        }
     }
 
     private float CalculateAttack(int attackLevel)
