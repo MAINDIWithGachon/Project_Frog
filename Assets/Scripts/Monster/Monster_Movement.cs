@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Monster_Movement : MonoBehaviour
@@ -23,9 +24,12 @@ public class Monster_Movement : MonoBehaviour
     private float facingUpdateTimer;
     private bool isAttacking;
     private int playerContactCount;
+    private readonly HashSet<Collider2D> blockingHitBoxes = new();
 
     private void Awake()
     {
+        EnsureCombatComponents();
+
         if (visualRoot == null)
         {
             visualRoot = transform;
@@ -40,8 +44,19 @@ public class Monster_Movement : MonoBehaviour
         }
     }
 
+    private void EnsureCombatComponents()
+    {
+        if (GetComponent<MonsterHealth>() == null)
+            gameObject.AddComponent<MonsterHealth>();
+
+        if (GetComponent<MonsterHitReceiver>() == null)
+            gameObject.AddComponent<MonsterHitReceiver>();
+    }
+
     private void Start()
     {
+        ResolvePlayerTargetIfNeeded();
+
         if (player == null)
         {
             Debug.LogWarning("Monster_Movement: player에 플레이어의 CenterPivot을 연결하세요.", this);
@@ -60,12 +75,20 @@ public class Monster_Movement : MonoBehaviour
         RefreshTrackingState();
     }
 
+    public void Initialize(Transform playerTarget)
+    {
+        player = playerTarget;
+        RefreshTrackingState();
+    }
+
     private void Update()
     {
         if (player == null || centerPivot == null)
         {
             return;
         }
+
+        CleanupBlockingHitBoxes();
 
         // 플레이어의 월드 좌표를 일정 주기마다 읽어서 방향만 갱신한다.
         facingUpdateTimer += Time.deltaTime;
@@ -81,7 +104,7 @@ public class Monster_Movement : MonoBehaviour
 
     private void MoveToPlayer()
     {
-        if (isAttacking)
+        if (isAttacking || blockingHitBoxes.Count > 0)
         {
             return;
         }
@@ -182,6 +205,11 @@ public class Monster_Movement : MonoBehaviour
 
     private void HandlePlayerContactEnter(Component other)
     {
+        if (TryRegisterBlockingHitBox(other))
+        {
+            return;
+        }
+
         if (!IsPlayerComponent(other))
         {
             return;
@@ -194,6 +222,11 @@ public class Monster_Movement : MonoBehaviour
 
     private void HandlePlayerContactExit(Component other)
     {
+        if (TryUnregisterBlockingHitBox(other))
+        {
+            return;
+        }
+
         if (!IsPlayerComponent(other))
         {
             return;
@@ -219,5 +252,65 @@ public class Monster_Movement : MonoBehaviour
         }
 
         return other.transform.root == player.root;
+    }
+
+    private bool TryRegisterBlockingHitBox(Component other)
+    {
+        if (other is not Collider2D collider)
+            return false;
+
+        if (collider.GetComponent<HitBoxModule>() == null)
+            return false;
+
+        blockingHitBoxes.Add(collider);
+        return true;
+    }
+
+    private bool TryUnregisterBlockingHitBox(Component other)
+    {
+        if (other is not Collider2D collider)
+            return false;
+
+        if (collider.GetComponent<HitBoxModule>() == null)
+            return false;
+
+        blockingHitBoxes.Remove(collider);
+        return true;
+    }
+
+    private void CleanupBlockingHitBoxes()
+    {
+        blockingHitBoxes.RemoveWhere(collider =>
+            collider == null ||
+            !collider.enabled ||
+            !collider.gameObject.activeInHierarchy);
+    }
+
+    private void ResolvePlayerTargetIfNeeded()
+    {
+        if (player != null)
+            return;
+
+        GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
+        if (playerObject == null)
+            return;
+
+        player = FindChildTransformByName(playerObject.transform, "CenterPivot");
+    }
+
+    private static Transform FindChildTransformByName(Transform root, string childName)
+    {
+        if (root == null)
+            return null;
+
+        Transform[] children = root.GetComponentsInChildren<Transform>(true);
+
+        for (int i = 0; i < children.Length; i++)
+        {
+            if (children[i].name == childName)
+                return children[i];
+        }
+
+        return null;
     }
 }
