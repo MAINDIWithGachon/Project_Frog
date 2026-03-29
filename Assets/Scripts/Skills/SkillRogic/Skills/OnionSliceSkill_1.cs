@@ -2,6 +2,9 @@ using UnityEngine;
 
 public class OnionSliceSkill_1 : MonoBehaviour, ISkillExecutable
 {
+    [SerializeField] private float hitActiveDuration = 0.08f;
+    [SerializeField] private float hitStunDuration = 0.1f;
+
     public int SkillId => 1;
 
     public void Execute(SkillData skillData, SkillCastResult castResult)
@@ -19,7 +22,7 @@ public class OnionSliceSkill_1 : MonoBehaviour, ISkillExecutable
         if (hitBox != null)
         {
             float critChance = castResult.currentCritChance / 100f;
-            hitBox.Setup(finalDamage, critChance, castResult.currentCritDamage, slash);
+            hitBox.Setup(finalDamage, critChance, castResult.currentCritDamage, slash, hitStunDuration, hitActiveDuration);
             Debug.Log("파이널데미지" + finalDamage);
         }
     }

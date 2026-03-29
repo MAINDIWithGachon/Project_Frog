@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.PlayerLoop;
 
 /// <summary>
 /// 전역에서 접근 가능한 풀링 매니저 싱글톤.
@@ -9,9 +10,9 @@ using UnityEngine;
 public class PoolingManager : MonoBehaviour
 {
     public static PoolingManager instance;
-
     [Header("# Pool References")]
     public SkillPrefabPooling skillPrefabPooling;
+    public DamageTextPooling damageTextPooling;
 
     private void Awake()
     {

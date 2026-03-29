@@ -3,6 +3,8 @@ using UnityEngine;
 public class OnionSliceSkill : MonoBehaviour, ISkillExecutable
 {
     [SerializeField] private float leftSpawnOffsetMultiplier = 0.1f;
+    [SerializeField] private float hitActiveDuration = 0.08f;
+    [SerializeField] private float hitStunDuration = 0.1f;
 
     public int SkillId => 0;
 
@@ -29,7 +31,7 @@ public class OnionSliceSkill : MonoBehaviour, ISkillExecutable
         if (hitBox != null)
         {
             float critChance = castResult.currentCritChance / 100f;
-            hitBox.Setup(finalDamage, critChance, castResult.currentCritDamage, slash);
+            hitBox.Setup(finalDamage, critChance, castResult.currentCritDamage, slash, hitStunDuration, hitActiveDuration);
             Debug.Log("파이널데미지" + finalDamage);
         }
     }

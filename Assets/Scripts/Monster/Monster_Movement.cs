@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Monster_Movement : MonoBehaviour
@@ -14,6 +13,7 @@ public class Monster_Movement : MonoBehaviour
     public float speed = 2.0f;
     public float stoppingDistance = 0.1f;
     public float facingUpdateInterval = 0.1f;
+    public float defaultHitStunDuration = 0.1f;
     public Animator animator;
 
     [Header("방향")]
@@ -22,9 +22,10 @@ public class Monster_Movement : MonoBehaviour
     private float baseVisualScaleX = 1f;
     private float cachedTargetX;
     private float facingUpdateTimer;
+    private float hitStunTimer;
     private bool isAttacking;
+    private bool isDead;
     private int playerContactCount;
-    private readonly HashSet<Collider2D> blockingHitBoxes = new();
 
     private void Awake()
     {
@@ -83,15 +84,23 @@ public class Monster_Movement : MonoBehaviour
 
     private void Update()
     {
+        if (isDead)
+        {
+            return;
+        }
+
         if (player == null || centerPivot == null)
         {
             return;
         }
 
-        CleanupBlockingHitBoxes();
-
         // 플레이어의 월드 좌표를 일정 주기마다 읽어서 방향만 갱신한다.
         facingUpdateTimer += Time.deltaTime;
+
+        if (hitStunTimer > 0f)
+        {
+            hitStunTimer = Mathf.Max(0f, hitStunTimer - Time.deltaTime);
+        }
 
         if (facingUpdateTimer >= facingUpdateInterval)
         {
@@ -104,7 +113,7 @@ public class Monster_Movement : MonoBehaviour
 
     private void MoveToPlayer()
     {
-        if (isAttacking || blockingHitBoxes.Count > 0)
+        if (isAttacking || hitStunTimer > 0f)
         {
             return;
         }
@@ -183,6 +192,24 @@ public class Monster_Movement : MonoBehaviour
         Debug.Log("몬스터 공격 적중: 플레이어 데미지 처리 예정");
     }
 
+    public void ApplyHitStun(float duration)
+    {
+        if (isDead)
+            return;
+
+        float finalDuration = duration > 0f ? duration : defaultHitStunDuration;
+        hitStunTimer = Mathf.Max(hitStunTimer, finalDuration);
+    }
+
+    public void StopForDeath()
+    {
+        isDead = true;
+        isAttacking = false;
+        playerContactCount = 0;
+        hitStunTimer = 0f;
+        SetAttack(false);
+    }
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
         HandlePlayerContactEnter(collision.collider);
@@ -205,10 +232,8 @@ public class Monster_Movement : MonoBehaviour
 
     private void HandlePlayerContactEnter(Component other)
     {
-        if (TryRegisterBlockingHitBox(other))
-        {
+        if (isDead)
             return;
-        }
 
         if (!IsPlayerComponent(other))
         {
@@ -222,10 +247,8 @@ public class Monster_Movement : MonoBehaviour
 
     private void HandlePlayerContactExit(Component other)
     {
-        if (TryUnregisterBlockingHitBox(other))
-        {
+        if (isDead)
             return;
-        }
 
         if (!IsPlayerComponent(other))
         {
@@ -252,38 +275,6 @@ public class Monster_Movement : MonoBehaviour
         }
 
         return other.transform.root == player.root;
-    }
-
-    private bool TryRegisterBlockingHitBox(Component other)
-    {
-        if (other is not Collider2D collider)
-            return false;
-
-        if (collider.GetComponent<HitBoxModule>() == null)
-            return false;
-
-        blockingHitBoxes.Add(collider);
-        return true;
-    }
-
-    private bool TryUnregisterBlockingHitBox(Component other)
-    {
-        if (other is not Collider2D collider)
-            return false;
-
-        if (collider.GetComponent<HitBoxModule>() == null)
-            return false;
-
-        blockingHitBoxes.Remove(collider);
-        return true;
-    }
-
-    private void CleanupBlockingHitBoxes()
-    {
-        blockingHitBoxes.RemoveWhere(collider =>
-            collider == null ||
-            !collider.enabled ||
-            !collider.gameObject.activeInHierarchy);
     }
 
     private void ResolvePlayerTargetIfNeeded()
