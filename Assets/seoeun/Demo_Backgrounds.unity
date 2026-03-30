@@ -779,6 +779,7 @@ Transform:
   - {fileID: 1494894690}
   - {fileID: 551191260}
   - {fileID: 286149116}
+  - {fileID: 2008691712}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &518214950
@@ -1572,9 +1573,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af50278fac91c490499736a11a1f683e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  monsterPrefab: {fileID: 4231679138214911074, guid: 7c49377bc836d4ac6931462e7bbe40bc, type: 3}
+  monsterPrefabs:
+  - {fileID: 4231679138214911074, guid: 7c49377bc836d4ac6931462e7bbe40bc, type: 3}
+  - {fileID: 4231679138214911074, guid: 605ff22c6c2ba4ef5ac16734a4c07df3, type: 3}
+  monsterIndex: 0
   spawnPosition: {x: 10, y: -0.7, z: 0}
-  spawnParent: {fileID: 0}
+  spawnParent: {fileID: 1657260023}
   spawnYOptions:
   - -0.8
   - -0.8
@@ -3279,6 +3283,7 @@ MonoBehaviour:
   leftSpawnOffsetMultiplier: 3
   hitActiveDuration: 0.08
   hitStunDuration: 0.1
+  knockbackDistance: 0.35
 --- !u!1 &1459911753
 GameObject:
   m_ObjectHideFlags: 0
@@ -4079,6 +4084,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1940922417}
   m_CullTransparentMesh: 1
+--- !u!1 &2008691711
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2008691712}
+  m_Layer: 0
+  m_Name: MonsterDataManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2008691712
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2008691711}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 507777693}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2021551110
 GameObject:
   m_ObjectHideFlags: 0
@@ -10579,6 +10615,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 110339160}
     m_Modifications:
+    - target: {fileID: 578412964483060182, guid: ed20755afa213402fb2c8d83fd73ac6c, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1836439866926311428, guid: ed20755afa213402fb2c8d83fd73ac6c, type: 3}
       propertyPath: m_Name
       value: LevelBg_PupvineGlade
@@ -10587,10 +10627,26 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 4110577271868928978, guid: ed20755afa213402fb2c8d83fd73ac6c, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5078257684870159030, guid: ed20755afa213402fb2c8d83fd73ac6c, type: 3}
       propertyPath: speedMultiplier
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 5745589425489588208, guid: ed20755afa213402fb2c8d83fd73ac6c, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6085426105729589463, guid: ed20755afa213402fb2c8d83fd73ac6c, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7663480054512806691, guid: ed20755afa213402fb2c8d83fd73ac6c, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: -4626631557489920999, guid: 3cf9e5e170a687b42afefe605a3d251c, type: 3}
     - target: {fileID: 8661773143741618542, guid: ed20755afa213402fb2c8d83fd73ac6c, type: 3}
       propertyPath: m_LocalPosition.x
       value: -2

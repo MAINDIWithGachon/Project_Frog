@@ -201,6 +201,14 @@ public class Monster_Movement : MonoBehaviour
         hitStunTimer = Mathf.Max(hitStunTimer, finalDuration);
     }
 
+    public void ApplyKnockback(float distance, float directionX)
+    {
+        if (isDead || Mathf.Approximately(distance, 0f) || Mathf.Approximately(directionX, 0f))
+            return;
+
+        transform.position += new Vector3(distance * Mathf.Sign(directionX), 0f, 0f);
+    }
+
     public void StopForDeath()
     {
         isDead = true;
@@ -208,6 +216,26 @@ public class Monster_Movement : MonoBehaviour
         playerContactCount = 0;
         hitStunTimer = 0f;
         SetAttack(false);
+    }
+
+    private void ResolvePlayerTargetIfNeeded()
+    {
+        if (player != null)
+            return;
+
+        GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
+        if (playerObject == null)
+            return;
+
+        Transform[] children = playerObject.GetComponentsInChildren<Transform>(true);
+        for (int index = 0; index < children.Length; index++)
+        {
+            if (children[index].name == "CenterPivot")
+            {
+                player = children[index];
+                return;
+            }
+        }
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -275,18 +303,6 @@ public class Monster_Movement : MonoBehaviour
         }
 
         return other.transform.root == player.root;
-    }
-
-    private void ResolvePlayerTargetIfNeeded()
-    {
-        if (player != null)
-            return;
-
-        GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
-        if (playerObject == null)
-            return;
-
-        player = FindChildTransformByName(playerObject.transform, "CenterPivot");
     }
 
     private static Transform FindChildTransformByName(Transform root, string childName)

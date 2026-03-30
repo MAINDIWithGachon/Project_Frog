@@ -12,14 +12,9 @@ public class MonsterHitReceiver : MonoBehaviour
 
     private void Awake()
     {
-        monsterHealth = GetComponent<MonsterHealth>();
-        monsterMovement = GetComponent<Monster_Movement>();
-        cachedCollider = GetComponent<Collider2D>();
-    }
-
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        ReceiveHit(other.GetComponent<HitBoxModule>());
+        monsterHealth = ResolveMonsterHealth();
+        monsterMovement = ResolveMonsterMovement();
+        cachedCollider = ResolveCachedCollider();
     }
 
     public void ReceiveHit(HitBoxModule hitBox)
@@ -28,7 +23,10 @@ public class MonsterHitReceiver : MonoBehaviour
             return;
 
         if (monsterHealth == null)
-            monsterHealth = GetComponent<MonsterHealth>();
+            monsterHealth = ResolveMonsterHealth();
+
+        if (monsterMovement == null)
+            monsterMovement = ResolveMonsterMovement();
 
         if (monsterHealth == null || monsterHealth.IsDead)
             return;
@@ -46,7 +44,10 @@ public class MonsterHitReceiver : MonoBehaviour
 
         monsterHealth.TakeDamage(finalDamage);
         if (monsterMovement != null)
+        {
             monsterMovement.ApplyHitStun(hitBox.hitStunDuration);
+            monsterMovement.ApplyKnockback(hitBox.knockbackDistance, hitBox.knockbackDirectionX);
+        }
 
         SpawnDamageText(finalDamage, isCritical);
     }
@@ -100,5 +101,44 @@ public class MonsterHitReceiver : MonoBehaviour
         }
 
         return combinedBounds;
+    }
+
+    private MonsterHealth ResolveMonsterHealth()
+    {
+        MonsterHealth resolvedHealth = GetComponent<MonsterHealth>();
+        if (resolvedHealth != null)
+            return resolvedHealth;
+
+        resolvedHealth = GetComponentInParent<MonsterHealth>();
+        if (resolvedHealth != null)
+            return resolvedHealth;
+
+        return GetComponentInChildren<MonsterHealth>(true);
+    }
+
+    private Monster_Movement ResolveMonsterMovement()
+    {
+        Monster_Movement resolvedMovement = GetComponent<Monster_Movement>();
+        if (resolvedMovement != null)
+            return resolvedMovement;
+
+        resolvedMovement = GetComponentInParent<Monster_Movement>();
+        if (resolvedMovement != null)
+            return resolvedMovement;
+
+        return GetComponentInChildren<Monster_Movement>(true);
+    }
+
+    private Collider2D ResolveCachedCollider()
+    {
+        Collider2D resolvedCollider = GetComponent<Collider2D>();
+        if (resolvedCollider != null)
+            return resolvedCollider;
+
+        resolvedCollider = GetComponentInParent<Collider2D>();
+        if (resolvedCollider != null)
+            return resolvedCollider;
+
+        return GetComponentInChildren<Collider2D>(true);
     }
 }

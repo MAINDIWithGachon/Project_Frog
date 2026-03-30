@@ -15,8 +15,8 @@ public class MonsterHealth : MonoBehaviour
     [SerializeField] private Collider2D[] collidersToDisable;
 
     [Header("HP")]
-    [SerializeField] private float maxHp = 100f;
-    private float currentHp;
+    public float maxHp;
+    public float currentHp;
     [SerializeField] private bool isDead;
 
     [Header("UI")]
