@@ -8,6 +8,7 @@ public class SkillPrefabPooling : MonoBehaviour
 
     private void Awake()
     {
+
         if (prefabs == null || prefabs.Length == 0)
         {
             Debug.LogError("[SkillPrefabPooling] Prefabs array is empty.");

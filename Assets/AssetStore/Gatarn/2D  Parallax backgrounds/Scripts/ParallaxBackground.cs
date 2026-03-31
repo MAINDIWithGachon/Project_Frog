@@ -55,7 +55,7 @@ public class ParallaxBackground : MonoBehaviour
     public Vector2 direction = Vector2.left;
 
     [SerializeField, Tooltip("Global speed multiplier for all layers.")]
-    private float speedMultiplier = 1f;
+    public float speedMultiplier = 1f;
     private float originalSpeedMultiplier;
 
     /// <summary>

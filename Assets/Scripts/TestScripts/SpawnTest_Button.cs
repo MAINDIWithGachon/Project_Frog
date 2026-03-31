@@ -3,22 +3,41 @@ using UnityEngine;
 public class SpawnTest_Button : MonoBehaviour
 {
     [Header("# Spawn")]
-    [SerializeField] private GameObject monsterPrefab;
+    [SerializeField] private GameObject[] monsterPrefabs;
+    [SerializeField] private int monsterIndex;
     [SerializeField] private Vector3 spawnPosition = new(10f, -0.7f, 0f);
     [SerializeField] private Transform spawnParent;
-    [SerializeField] private float[] spawnYOptions = { -0.6f, -0.8f, -1f };
+    [SerializeField] private float[] spawnYOptions = { -0.8f, -0.8f, -0.8f };
 
     public void OnClickSpawnMonster()
     {
-        if (monsterPrefab == null)
+        GameObject selectedMonsterPrefab = GetMonsterPrefab();
+        if (selectedMonsterPrefab == null)
         {
-            Debug.LogError("[SpawnTest_Button] monsterPrefab reference is missing.");
+            Debug.LogError("[SpawnTest_Button] monster prefab reference is missing.");
             return;
         }
 
         Vector3 finalSpawnPosition = GetSpawnPosition();
-        GameObject spawnedMonster = Instantiate(monsterPrefab, finalSpawnPosition, Quaternion.identity, spawnParent);
+        GameObject spawnedMonster = Instantiate(selectedMonsterPrefab, finalSpawnPosition, Quaternion.identity, spawnParent);
         BindPlayerTarget(spawnedMonster);
+    }
+
+    private GameObject GetMonsterPrefab()
+    {
+        if (monsterPrefabs == null || monsterPrefabs.Length == 0)
+        {
+            Debug.LogWarning("[SpawnTest_Button] monsterPrefabs is empty.", this);
+            return null;
+        }
+
+        if (monsterIndex < 0 || monsterIndex >= monsterPrefabs.Length)
+        {
+            Debug.LogWarning($"[SpawnTest_Button] Invalid monsterIndex: {monsterIndex}", this);
+            return null;
+        }
+
+        return monsterPrefabs[monsterIndex];
     }
 
     private Vector3 GetSpawnPosition()
@@ -39,7 +58,7 @@ public class SpawnTest_Button : MonoBehaviour
         if (spawnedMonster == null)
             return;
 
-        Monster_Movement monsterMovement = spawnedMonster.GetComponent<Monster_Movement>();
+        Monster_Movement monsterMovement = spawnedMonster.GetComponentInChildren<Monster_Movement>(true);
         if (monsterMovement == null || monsterMovement.player != null)
             return;
 
