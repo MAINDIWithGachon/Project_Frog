@@ -1,0 +1,85 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: baf231453a2c8da41bcfe9067434ab93, type: 3}
+  m_Name: EquipmentDatabase
+  m_EditorClassIdentifier: 
+  equipmentDefinitions:
+  - equipmentId: weapon_wood_sword
+    displayName: Wood Sword
+    category: 0
+    rarity: 0
+    icon: {fileID: 21300000, guid: c5408ecd9ba73414b9c4bd94482a9df3, type: 3}
+    description: Test wepon 1
+    maxLevel: 10
+    attack: 5
+    hp: 0
+    critChance: 0
+  - equipmentId: wepon_gear_glove
+    displayName: Gear Glove
+    category: 0
+    rarity: 3
+    icon: {fileID: 21300000, guid: c93f345ecc44c18418084e23d72177b3, type: 3}
+    description: Test wepon 2
+    maxLevel: 0
+    attack: 0
+    hp: 0
+    critChance: 0
+  - equipmentId: Gear_Helmet_05_Purple
+    displayName: Test3
+    category: 1
+    rarity: 2
+    icon: {fileID: 21300000, guid: a6e5e2ad59357db4195b6c96b0d964c8, type: 3}
+    description: Test wepon 3
+    maxLevel: 10
+    attack: 5
+    hp: 0
+    critChance: 0
+  - equipmentId: Gear_Ring_01_Silver
+    displayName: Test4
+    category: 2
+    rarity: 0
+    icon: {fileID: 21300000, guid: f1ff39b6c2befe0419e53b4ab38b4821, type: 3}
+    description: Test wepon 4
+    maxLevel: 10
+    attack: 5
+    hp: 0
+    critChance: 0
+  - equipmentId: Gear_Chest_01
+    displayName: Test5
+    category: 3
+    rarity: 1
+    icon: {fileID: 21300000, guid: ebdce3fc780ba014cac52970efa5dbcc, type: 3}
+    description: Test wepon 5
+    maxLevel: 10
+    attack: 5
+    hp: 0
+    critChance: 0
+  - equipmentId: Gear_Belt_03
+    displayName: Test6
+    category: 4
+    rarity: 1
+    icon: {fileID: 21300000, guid: 79a167a623213f9419aac4ea3275fe5e, type: 3}
+    description: Test wepon 6
+    maxLevel: 10
+    attack: 5
+    hp: 0
+    critChance: 0
+  - equipmentId: Gear_Boots_02
+    displayName: Test7
+    category: 5
+    rarity: 4
+    icon: {fileID: 21300000, guid: 43b435044baa1994c9cde45f7a4bd93c, type: 3}
+    description: Test wepon7
+    maxLevel: 10
+    attack: 5
+    hp: 0
+    critChance: 0
