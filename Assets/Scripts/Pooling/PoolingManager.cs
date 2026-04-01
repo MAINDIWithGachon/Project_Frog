@@ -11,6 +11,7 @@ public class PoolingManager : MonoBehaviour
 {
     public static PoolingManager instance;
     [Header("# Pool References")]
+    public MonsterPooling monsterPooling;
     public SkillPrefabPooling skillPrefabPooling;
     public DamageTextPooling damageTextPooling;
 

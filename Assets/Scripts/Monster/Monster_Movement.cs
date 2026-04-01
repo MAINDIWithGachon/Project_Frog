@@ -8,6 +8,7 @@ public class Monster_Movement : MonoBehaviour
     public Transform player;
     public Transform centerPivot;
     public Transform visualRoot;
+    public Transform movementRoot;
 
     [Header("이동 설정")]
     public float speed = 2.0f;
@@ -20,16 +21,27 @@ public class Monster_Movement : MonoBehaviour
     public bool faceRightWhenScalePositive = true;
 
     private float baseVisualScaleX = 1f;
+    private Vector3 baseVisualLocalScale = Vector3.one;
+    private Quaternion baseVisualLocalRotation = Quaternion.identity;
     private float cachedTargetX;
     private float facingUpdateTimer;
     private float hitStunTimer;
     private bool isAttacking;
     private bool isDead;
     private int playerContactCount;
+    private float baseSpeed;
 
     private void Awake()
     {
+        baseSpeed = speed;
+        ApplyStageDifficulty();
+
         EnsureCombatComponents();
+
+        if (movementRoot == null)
+        {
+            movementRoot = transform.root;
+        }
 
         if (visualRoot == null)
         {
@@ -38,11 +50,57 @@ public class Monster_Movement : MonoBehaviour
 
         float visualScaleX = Mathf.Abs(visualRoot.localScale.x);
         baseVisualScaleX = visualScaleX > 0.001f ? visualScaleX : 1f;
+        baseVisualLocalScale = visualRoot.localScale;
+        baseVisualLocalRotation = visualRoot.localRotation;
 
         if (animator == null)
         {
             animator = GetComponentInChildren<Animator>();
         }
+    }
+
+    private void OnEnable()
+    {
+        if (!Application.isPlaying)
+            return;
+
+        ResetForSpawn();
+    }
+
+    private void ApplyStageDifficulty()
+    {
+        StageRuntimeContext runtime = StageManager.Instance != null ? StageManager.Instance.runtime : null;
+        if (runtime == null)
+        {
+            speed = baseSpeed;
+            return;
+        }
+
+        speed = baseSpeed * runtime.finalMonsterSpeedMultiplier;
+    }
+
+    public void ResetForSpawn()
+    {
+        ApplyStageDifficulty();
+
+        isDead = false;
+        isAttacking = false;
+        playerContactCount = 0;
+        hitStunTimer = 0f;
+        facingUpdateTimer = 0f;
+
+        ResetVisualRootTransform();
+        SetAttack(false);
+        RefreshTrackingState();
+    }
+
+    private void ResetVisualRootTransform()
+    {
+        if (visualRoot == null)
+            return;
+
+        visualRoot.localScale = baseVisualLocalScale;
+        visualRoot.localRotation = baseVisualLocalRotation;
     }
 
     private void EnsureCombatComponents()
@@ -132,7 +190,7 @@ public class Monster_Movement : MonoBehaviour
             deltaX = remainingDistanceX;
         }
 
-        transform.position += new Vector3(deltaX, 0f, 0f);
+        movementRoot.position += new Vector3(deltaX, 0f, 0f);
     }
 
     private void RefreshTrackingState()
@@ -206,7 +264,7 @@ public class Monster_Movement : MonoBehaviour
         if (isDead || Mathf.Approximately(distance, 0f) || Mathf.Approximately(directionX, 0f))
             return;
 
-        transform.position += new Vector3(distance * Mathf.Sign(directionX), 0f, 0f);
+        movementRoot.position += new Vector3(distance * Mathf.Sign(directionX), 0f, 0f);
     }
 
     public void StopForDeath()
