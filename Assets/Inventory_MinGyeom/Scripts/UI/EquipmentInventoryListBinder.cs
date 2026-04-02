@@ -8,6 +8,7 @@ using UnityEngine;
 public class EquipmentInventoryListBinder : MonoBehaviour
 {
     [SerializeField] private EquipmentPrototypeState equipmentState;
+    [SerializeField] private RuntimeData runtimeData;
     [SerializeField] private Transform contentRoot;
     [SerializeField] private EquipmentCategory currentCategory = EquipmentCategory.Weapon;
 
@@ -78,7 +79,8 @@ public class EquipmentInventoryListBinder : MonoBehaviour
                     ownedState.currentLevel,
                     ownedState.ownedCount,
                     equipmentState,
-                    equipmentState.EquipmentDatabase);
+                    equipmentState.EquipmentDatabase,
+                    runtimeData);
             }
             else if (i == ownedItemCount && i < visibleSlotCount)
             {
@@ -102,6 +104,11 @@ public class EquipmentInventoryListBinder : MonoBehaviour
         if (equipmentState == null)
         {
             equipmentState = FindFirstObjectByType<EquipmentPrototypeState>(FindObjectsInactive.Include);
+        }
+
+        if (runtimeData == null)
+        {
+            runtimeData = FindFirstObjectByType<RuntimeData>(FindObjectsInactive.Include);
         }
 
         if (contentRoot == null)

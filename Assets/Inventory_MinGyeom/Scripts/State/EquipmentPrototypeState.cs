@@ -7,14 +7,30 @@ using UnityEngine;
 /// </summary>
 public class EquipmentPrototypeState : MonoBehaviour
 {
+    private static readonly EquipmentCategory[] FixedSlotCategories =
+        (EquipmentCategory[])Enum.GetValues(typeof(EquipmentCategory));
+
     /// <summary>
     /// 카테고리별 현재 장착 중인 장비 ID를 저장합니다.
     /// </summary>
     [Serializable]
     private class EquippedSlotState
     {
-        public EquipmentCategory category;
-        public string equippedItemId;
+        [SerializeField, HideInInspector] private EquipmentCategory category;
+        [SerializeField] private string equippedItemId;
+
+        public EquipmentCategory Category => category;
+
+        public string EquippedItemId
+        {
+            get => equippedItemId;
+            set => equippedItemId = value;
+        }
+
+        public void SetCategory(EquipmentCategory value)
+        {
+            category = value;
+        }
     }
 
     // 장비 정의 데이터와 플레이어의 장비 보유/장착 상태를 함께 관리합니다.
@@ -34,6 +50,7 @@ public class EquipmentPrototypeState : MonoBehaviour
     private void OnValidate()
     {
         NormalizeOwnedEquipment();
+        NormalizeEquippedSlots();
         NotifyStateChanged();
     }
 #endif
@@ -42,6 +59,7 @@ public class EquipmentPrototypeState : MonoBehaviour
     {
         // 인스펙터에 잘못된 값이 들어가도 최소 레벨과 수량은 유지되도록 보정합니다.
         NormalizeOwnedEquipment();
+        NormalizeEquippedSlots();
     }
 
     public List<EquipmentDefinitionData> GetOwnedDefinitionsByCategory(EquipmentCategory category)
@@ -150,7 +168,7 @@ public class EquipmentPrototypeState : MonoBehaviour
         for (int i = 0; i < equippedSlots.Count; i++)
         {
             EquippedSlotState slot = equippedSlots[i];
-            if (slot == null || slot.equippedItemId != equipmentId)
+            if (slot == null || slot.EquippedItemId != equipmentId)
             {
                 continue;
             }
@@ -185,7 +203,7 @@ public class EquipmentPrototypeState : MonoBehaviour
     public string GetEquippedItemId(EquipmentCategory category)
     {
         EquippedSlotState slot = GetOrCreateSlot(category);
-        return slot.equippedItemId;
+        return slot.EquippedItemId;
     }
 
     public EquipmentDefinitionData GetEquippedDefinition(EquipmentCategory category)
@@ -463,7 +481,7 @@ public class EquipmentPrototypeState : MonoBehaviour
     private void SetEquippedItemId(EquipmentCategory category, string equipmentId)
     {
         EquippedSlotState slot = GetOrCreateSlot(category);
-        slot.equippedItemId = equipmentId;
+        slot.EquippedItemId = equipmentId;
         NotifyStateChanged();
     }
 
@@ -473,7 +491,7 @@ public class EquipmentPrototypeState : MonoBehaviour
         for (int i = 0; i < equippedSlots.Count; i++)
         {
             EquippedSlotState slot = equippedSlots[i];
-            if (slot == null || slot.category != category)
+            if (slot == null || slot.Category != category)
             {
                 continue;
             }
@@ -483,9 +501,9 @@ public class EquipmentPrototypeState : MonoBehaviour
 
         EquippedSlotState createdSlot = new EquippedSlotState
         {
-            category = category,
-            equippedItemId = string.Empty
+            EquippedItemId = string.Empty
         };
+        createdSlot.SetCategory(category);
 
         equippedSlots.Add(createdSlot);
         return createdSlot;
@@ -510,6 +528,44 @@ public class EquipmentPrototypeState : MonoBehaviour
             ownedState.currentLevel = Mathf.Max(1, ownedState.currentLevel);
             ownedState.ownedCount = Mathf.Max(1, ownedState.ownedCount);
         }
+    }
+
+    private void NormalizeEquippedSlots()
+    {
+        if (equippedSlots == null)
+        {
+            equippedSlots = new List<EquippedSlotState>();
+        }
+
+        Dictionary<EquipmentCategory, string> equippedItemIdsByCategory = new();
+
+        for (int i = 0; i < equippedSlots.Count; i++)
+        {
+            EquippedSlotState slot = equippedSlots[i];
+            if (slot == null)
+            {
+                continue;
+            }
+
+            equippedItemIdsByCategory[slot.Category] = slot.EquippedItemId;
+        }
+
+        List<EquippedSlotState> normalizedSlots = new(FixedSlotCategories.Length);
+        for (int i = 0; i < FixedSlotCategories.Length; i++)
+        {
+            EquipmentCategory category = FixedSlotCategories[i];
+            EquippedSlotState slot = new EquippedSlotState
+            {
+                EquippedItemId = equippedItemIdsByCategory.TryGetValue(category, out string equippedItemId)
+                    ? equippedItemId
+                    : string.Empty
+            };
+
+            slot.SetCategory(category);
+            normalizedSlots.Add(slot);
+        }
+
+        equippedSlots = normalizedSlots;
     }
 
     private int GetRequiredDuplicateCount(EquipmentDefinitionData definition, int currentLevel)

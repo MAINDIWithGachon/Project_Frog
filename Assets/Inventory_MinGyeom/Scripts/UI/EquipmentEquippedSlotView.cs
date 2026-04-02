@@ -23,11 +23,9 @@ public class EquipmentEquippedSlotView : MonoBehaviour
     [SerializeField] private GameObject normalGreenFrame;
     [SerializeField] private GameObject normalPlumFrame;
     [SerializeField] private GameObject normalYellowFrame;
-    [SerializeField] private GameObject normalRedFrame;
     [SerializeField] private GameObject add1Root;
     [SerializeField] private GameObject add2Root;
-    [SerializeField] private GameObject checkRoot;
-    [SerializeField] private GameObject lockRoot;
+    [SerializeField] private GameObject redDotRoot;
     [SerializeField] private GameObject typeAreaRoot;
     [SerializeField] private Image itemIconImage;
     [SerializeField] private Image typeFrameImage;
@@ -97,8 +95,7 @@ public class EquipmentEquippedSlotView : MonoBehaviour
         SetFrameActive(typeAreaRoot, true);
         SetFrameActive(add1Root, false);
         SetFrameActive(add2Root, false);
-        SetFrameActive(checkRoot, false);
-        SetFrameActive(lockRoot, false);
+        SetFrameActive(redDotRoot, false);
     }
 
     public void SetEmpty(EquipmentCategory category)
@@ -124,8 +121,12 @@ public class EquipmentEquippedSlotView : MonoBehaviour
         SetFrameActive(typeAreaRoot, false);
         SetFrameActive(add1Root, false);
         SetFrameActive(add2Root, true);
-        SetFrameActive(checkRoot, false);
-        SetFrameActive(lockRoot, false);
+        SetFrameActive(redDotRoot, false);
+    }
+
+    public void SetRedDotVisible(bool isVisible)
+    {
+        SetFrameActive(redDotRoot, isVisible);
     }
 
     private void ApplyTypeArea(EquipmentRarity rarity, EquipmentCategory category)
@@ -154,7 +155,6 @@ public class EquipmentEquippedSlotView : MonoBehaviour
         SetFrameActive(normalGreenFrame, rarity == EquipmentRarity.Magic);
         SetFrameActive(normalPlumFrame, rarity == EquipmentRarity.Epic);
         SetFrameActive(normalYellowFrame, rarity == EquipmentRarity.Legendary);
-        SetFrameActive(normalRedFrame, false);
     }
 
     private void CacheReferences()
@@ -165,11 +165,8 @@ public class EquipmentEquippedSlotView : MonoBehaviour
         normalGreenFrame ??= FindByPath("ItemFrame_01/NormalArea/ItemFrame_01_Normal_Green");
         normalPlumFrame ??= FindByPath("ItemFrame_01/NormalArea/ItemFrame_01_Normal_Plum");
         normalYellowFrame ??= FindByPath("ItemFrame_01/NormalArea/ItemFrame_01_Normal_Yellow");
-        normalRedFrame ??= FindByPath("ItemFrame_01/NormalArea/ItemFrame_01_Normal_Red");
         add1Root ??= FindByPath("ItemFrame_01/Add_1");
         add2Root ??= FindByPath("ItemFrame_01/Add_2");
-        checkRoot ??= FindByPath("Check");
-        lockRoot ??= FindByPath("ItemFrame_01/Lock");
         typeAreaRoot ??= FindByPath("TypeArea");
         levelText ??= FindComponentByPath<TMP_Text>("Text_Level");
         itemIconImage ??= FindComponentByPath<Image>("ItemFrame_01/Item/Icon");

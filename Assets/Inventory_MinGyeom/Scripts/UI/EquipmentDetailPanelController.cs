@@ -35,6 +35,7 @@ public class EquipmentDetailPanelController : MonoBehaviour
     [SerializeField] private TMP_Text detailLevelText;
     [SerializeField] private TMP_Text detailDescriptionText;
     [SerializeField] private TMP_Text detailStatText;
+    [SerializeField] private Transform detailStatListRoot;
     [SerializeField] private Transform rarityLabelRoot;
     [SerializeField] private Transform detailSlotRoot;
 
@@ -154,6 +155,7 @@ public class EquipmentDetailPanelController : MonoBehaviour
         detailLevelText ??= other.detailLevelText;
         detailDescriptionText ??= other.detailDescriptionText;
         detailStatText ??= other.detailStatText;
+        detailStatListRoot ??= other.detailStatListRoot;
         rarityLabelRoot ??= other.rarityLabelRoot;
         detailSlotRoot ??= other.detailSlotRoot;
         weaponTypeIcon ??= other.weaponTypeIcon;
@@ -203,6 +205,7 @@ public class EquipmentDetailPanelController : MonoBehaviour
         score += controller.detailLevelText != null ? 1 : 0;
         score += controller.detailDescriptionText != null ? 1 : 0;
         score += controller.detailStatText != null ? 1 : 0;
+        score += controller.detailStatListRoot != null ? 1 : 0;
         score += controller.rarityLabelRoot != null ? 1 : 0;
         score += controller.detailSlotRoot != null ? 1 : 0;
         score += controller.closeButtons != null ? controller.closeButtons.Length : 0;
@@ -450,10 +453,7 @@ public class EquipmentDetailPanelController : MonoBehaviour
             detailDescriptionText.text = definition.description;
         }
 
-        if (detailStatText != null)
-        {
-            detailStatText.text = BuildStatText(definition);
-        }
+        ApplyDetailStats(definition);
 
         ApplyRarityLabel(definition.rarity);
         ApplyDetailSlot(definition);
@@ -489,10 +489,7 @@ public class EquipmentDetailPanelController : MonoBehaviour
             detailDescriptionText.text = string.Empty;
         }
 
-        if (detailStatText != null)
-        {
-            detailStatText.text = string.Empty;
-        }
+        ApplyDetailStats(null);
 
         ApplyRarityLabel(EquipmentRarity.Common, false);
 
@@ -535,9 +532,8 @@ public class EquipmentDetailPanelController : MonoBehaviour
         detailNameText ??= FindTextByName(detailRoot, "Text_ItemName");
         detailLevelText ??= FindTextByName(detailRoot, "Text_Level");
         detailStatText ??= FindTextByName(detailRoot, "Text_GearStats");
+        detailStatListRoot ??= FindDescendantByName(detailRoot, "Group_Buff");
         detailRarityText ??= FindTextByName(detailRoot, "Text_Rarity");
-        detailDescriptionText ??= FindTextByName(detailRoot, "Text_Description");
-        detailDescriptionText ??= FindTextByName(detailRoot, "Text_Desc");
         rarityLabelRoot ??= FindDescendantByName(detailRoot, "Rarity_Label");
         detailSlotRoot ??= FindDescendantByName(detailRoot, "Slot");
         equipButton ??= FindButtonByName(detailRoot, "EquipButton");
@@ -570,9 +566,54 @@ public class EquipmentDetailPanelController : MonoBehaviour
         };
     }
 
-    private static string BuildStatText(EquipmentDefinitionData definition)
+    private void ApplyDetailStats(EquipmentDefinitionData definition)
+    {
+        List<string> statLines = BuildStatLines(definition);
+        bool usedStatList = false;
+
+        if (detailStatListRoot != null)
+        {
+            int childCount = detailStatListRoot.childCount;
+            for (int i = 0; i < childCount; i++)
+            {
+                Transform statItemRoot = detailStatListRoot.GetChild(i);
+                if (statItemRoot == null)
+                {
+                    continue;
+                }
+
+                bool shouldShow = i < statLines.Count;
+                statItemRoot.gameObject.SetActive(shouldShow);
+
+                if (!shouldShow)
+                {
+                    continue;
+                }
+
+                TMP_Text statItemText = statItemRoot.GetComponentInChildren<TMP_Text>(true);
+                if (statItemText != null)
+                {
+                    statItemText.text = statLines[i];
+                    usedStatList = true;
+                }
+            }
+        }
+
+        if (detailStatText != null)
+        {
+            detailStatText.gameObject.SetActive(!usedStatList);
+            detailStatText.text = statLines.Count > 0 ? string.Join("\n", statLines) : "No stats";
+        }
+    }
+
+    private static List<string> BuildStatLines(EquipmentDefinitionData definition)
     {
         List<string> lines = new();
+
+        if (definition == null)
+        {
+            return lines;
+        }
 
         if (definition.attack != 0)
         {
@@ -599,12 +640,7 @@ public class EquipmentDetailPanelController : MonoBehaviour
             lines.Add($"Crit DMG +{definition.critDamage}%");
         }
 
-        if (lines.Count == 0)
-        {
-            return "No stats";
-        }
-
-        return string.Join("\n", lines);
+        return lines;
     }
 
     private void ApplyRarityLabel(EquipmentRarity rarity, bool showSelected = true)
@@ -1056,6 +1092,7 @@ public class EquipmentDetailPanelController : MonoBehaviour
 
             if (insufficientGoldTargetText != null)
             {
+                insufficientGoldTargetText.text = string.Empty;
                 insufficientGoldTargetText.color = Color.white;
             }
 
@@ -1078,12 +1115,17 @@ public class EquipmentDetailPanelController : MonoBehaviour
         }
 
         EquipmentUpgradeRequirement requirement = equipmentState != null
-            ? equipmentState.GetUpgradeRequirement(currentDefinition.equipmentId)
+            ? equipmentState.GetUpgradeRequirement(
+                currentDefinition.equipmentId,
+                runtimeData != null ? runtimeData.GetGold() : int.MaxValue,
+                runtimeData != null ? runtimeData.GetUpgradeStone() : int.MaxValue)
             : new EquipmentUpgradeRequirement
             {
                 equipmentId = currentDefinition.equipmentId,
                 ownedCount = 0,
-                requiredDuplicateCount = Mathf.Max(1, currentDefinition.requiredItemCountForNextLevel)
+                requiredDuplicateCount = Mathf.Max(1, currentDefinition.requiredItemCountForNextLevel),
+                requiredGold = 0,
+                hasEnoughGold = true
             };
 
         int ownedCount = Mathf.Max(0, requirement.ownedCount);
@@ -1099,6 +1141,7 @@ public class EquipmentDetailPanelController : MonoBehaviour
 
         if (insufficientGoldTargetText != null)
         {
+            insufficientGoldTargetText.text = requirement.requiredGold.ToString();
             insufficientGoldTargetText.color = requirement.hasEnoughGold
                 ? Color.white
                 : upgradeProgressInsufficientGoldColor;

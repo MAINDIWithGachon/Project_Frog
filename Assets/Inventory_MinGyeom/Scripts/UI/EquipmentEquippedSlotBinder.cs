@@ -28,6 +28,7 @@ public class EquipmentEquippedSlotBinder : MonoBehaviour
     };
 
     [SerializeField] private EquipmentPrototypeState equipmentState;
+    [SerializeField] private RuntimeData runtimeData;
     [SerializeField] private EquipmentCategoryTabController categoryTabController;
     [SerializeField] private EquipmentDetailPanelController detailPanelController;
     [SerializeField] private List<EquippedSlotBinding> slotBindings = new();
@@ -153,6 +154,7 @@ public class EquipmentEquippedSlotBinder : MonoBehaviour
         }
 
         slotView.SetEquipped(definition, level);
+        slotView.SetRedDotVisible(ShouldShowUpgradeReadyRedDot(definition));
     }
 
     private void ApplyEmptySlot(Transform slotRoot, EquipmentCategory category)
@@ -164,6 +166,7 @@ public class EquipmentEquippedSlotBinder : MonoBehaviour
         }
 
         slotView.SetEmpty(category);
+        slotView.SetRedDotVisible(ShouldShowEmptySlotOwnedItemRedDot(category));
     }
 
     private void ResolveState()
@@ -171,6 +174,11 @@ public class EquipmentEquippedSlotBinder : MonoBehaviour
         if (equipmentState == null)
         {
             equipmentState = FindFirstObjectByType<EquipmentPrototypeState>(FindObjectsInactive.Include);
+        }
+
+        if (runtimeData == null)
+        {
+            runtimeData = FindFirstObjectByType<RuntimeData>(FindObjectsInactive.Include);
         }
 
         if (categoryTabController == null)
@@ -233,6 +241,36 @@ public class EquipmentEquippedSlotBinder : MonoBehaviour
             shoesTypeIcon);
 
         return slotView;
+    }
+
+    private bool ShouldShowUpgradeReadyRedDot(EquipmentDefinitionData definition)
+    {
+        if (definition == null || equipmentState == null || runtimeData == null || string.IsNullOrWhiteSpace(definition.equipmentId))
+        {
+            return false;
+        }
+
+        EquipmentUpgradeRequirement requirement = equipmentState.GetUpgradeRequirement(
+            definition.equipmentId,
+            runtimeData.GetGold(),
+            runtimeData.GetUpgradeStone());
+
+        return requirement != null && requirement.CanUpgrade;
+    }
+
+    private bool ShouldShowEmptySlotOwnedItemRedDot(EquipmentCategory category)
+    {
+        if (equipmentState == null)
+        {
+            return false;
+        }
+
+        if (equipmentState.IsCategoryEquipped(category))
+        {
+            return false;
+        }
+
+        return equipmentState.HasOwnedItemInCategory(category);
     }
 
     private void EnsureSlotClickHandler(Transform slotRoot, EquipmentCategory category)

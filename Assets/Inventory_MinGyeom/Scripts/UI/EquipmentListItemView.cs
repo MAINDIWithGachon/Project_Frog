@@ -27,7 +27,6 @@ public class EquipmentListItemView : MonoBehaviour
     [SerializeField] private GameObject normalGreenFrame;
     [SerializeField] private GameObject normalPlumFrame;
     [SerializeField] private GameObject normalYellowFrame;
-    [SerializeField] private GameObject normalRedFrame;
     [SerializeField] private GameObject itemFrameRoot;
     [SerializeField] private GameObject add1Root;
     [SerializeField] private GameObject add2Root;
@@ -40,6 +39,7 @@ public class EquipmentListItemView : MonoBehaviour
     [SerializeField] private Image typeIconImage;
     [SerializeField] private TMP_Text levelText;
     [SerializeField] private Button button;
+    [SerializeField] private GameObject redDotRoot;
 
     [Header("Runtime UI State")]
     [SerializeField] private string activeRarityFrameName;
@@ -56,7 +56,6 @@ public class EquipmentListItemView : MonoBehaviour
     [SerializeField] private Color currentTypeBgColor = Color.white;
     [SerializeField] private Sprite currentTypeIconSprite;
 
-    [Header("Output Bindings")]
     [SerializeField] private TMP_Text equipmentNameText;
     [SerializeField] private TMP_Text rarityText;
     [SerializeField] private TMP_Text descriptionText;
@@ -94,7 +93,8 @@ public class EquipmentListItemView : MonoBehaviour
         int level,
         int ownedCount = 1,
         EquipmentPrototypeState state = null,
-        EquipmentDatabase database = null)
+        EquipmentDatabase database = null,
+        RuntimeData runtimeData = null)
     {
         CacheReferences();
 
@@ -137,6 +137,7 @@ public class EquipmentListItemView : MonoBehaviour
         bool isEquipped = resolvedState != null && resolvedState.IsEquippedInSlot(definition);
         ApplyOwnedDefinition(definition, Mathf.Max(1, level), isEquipped);
         ApplyBoundOutput(definition, Mathf.Max(1, level), currentOwnedCount, isEquipped);
+        ApplyUpgradeReadyRedDot(definition, resolvedState, runtimeData);
     }
 
     public void SetUnownedDefinition(EquipmentDefinitionData definition)
@@ -186,6 +187,7 @@ public class EquipmentListItemView : MonoBehaviour
 
         SetFrameActive(add1Root, false);
         SetFrameActive(add2Root, true);
+        SetFrameActive(redDotRoot, false);
 
         SetButtonInteractable(false);
         ApplyBoundOutput(definition, 0, 0, false, false);
@@ -232,6 +234,7 @@ public class EquipmentListItemView : MonoBehaviour
 
         SetFrameActive(add1Root, false);
         SetFrameActive(add2Root, true);
+        SetFrameActive(redDotRoot, false);
 
         SetButtonInteractable(false);
         ClearBoundOutput();
@@ -287,6 +290,8 @@ public class EquipmentListItemView : MonoBehaviour
             add2Root.SetActive(true);
         }
 
+        SetFrameActive(redDotRoot, false);
+
         SetButtonInteractable(false);
         ClearBoundOutput();
         RefreshRuntimeUiState();
@@ -335,8 +340,36 @@ public class EquipmentListItemView : MonoBehaviour
             add2Root.SetActive(false);
         }
 
+        SetFrameActive(redDotRoot, false);
+
         SetButtonInteractable(true);
         RefreshRuntimeUiState();
+    }
+
+    private void ApplyUpgradeReadyRedDot(
+        EquipmentDefinitionData definition,
+        EquipmentPrototypeState state,
+        RuntimeData runtimeData)
+    {
+        if (redDotRoot == null)
+        {
+            return;
+        }
+
+        bool shouldShow = false;
+        if (definition != null &&
+            state != null &&
+            !isCheckActive &&
+            !string.IsNullOrWhiteSpace(definition.equipmentId))
+        {
+            int availableGold = runtimeData != null ? runtimeData.GetGold() : 0;
+            int availableUpgradeStone = runtimeData != null ? runtimeData.GetUpgradeStone() : 0;
+            EquipmentUpgradeRequirement requirement =
+                state.GetUpgradeRequirement(definition.equipmentId, availableGold, availableUpgradeStone);
+            shouldShow = requirement != null && requirement.CanUpgrade;
+        }
+
+        redDotRoot.SetActive(shouldShow);
     }
 
     private void ApplyTypeArea(EquipmentRarity rarity, EquipmentCategory category)
@@ -367,7 +400,6 @@ public class EquipmentListItemView : MonoBehaviour
         SetFrameActive(normalGreenFrame, rarity == EquipmentRarity.Magic);
         SetFrameActive(normalPlumFrame, rarity == EquipmentRarity.Epic);
         SetFrameActive(normalYellowFrame, rarity == EquipmentRarity.Legendary);
-        SetFrameActive(normalRedFrame, false);
     }
 
     private void CacheReferences()
@@ -379,7 +411,6 @@ public class EquipmentListItemView : MonoBehaviour
         normalGreenFrame ??= FindByPath("ItemFrame_01/NormalArea/ItemFrame_01_Normal_Green");
         normalPlumFrame ??= FindByPath("ItemFrame_01/NormalArea/ItemFrame_01_Normal_Plum");
         normalYellowFrame ??= FindByPath("ItemFrame_01/NormalArea/ItemFrame_01_Normal_Yellow");
-        normalRedFrame ??= FindByPath("ItemFrame_01/NormalArea/ItemFrame_01_Normal_Red");
 
         add1Root ??= FindByPath("ItemFrame_01/Add_1");
         add2Root ??= FindByPath("ItemFrame_01/Add_2");
@@ -544,11 +575,6 @@ public class EquipmentListItemView : MonoBehaviour
         if (normalYellowFrame != null && normalYellowFrame.activeSelf)
         {
             return normalYellowFrame.name;
-        }
-
-        if (normalRedFrame != null && normalRedFrame.activeSelf)
-        {
-            return normalRedFrame.name;
         }
 
         return string.Empty;
