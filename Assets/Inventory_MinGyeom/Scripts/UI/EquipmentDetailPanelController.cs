@@ -18,11 +18,15 @@ public class EquipmentDetailPanelController : MonoBehaviour
     [SerializeField] private Button equipButton;
     [SerializeField] private TMP_Text equipButtonText;
     [SerializeField] private Button upgradeButton;
+    [SerializeField] private GameObject upgradeButtonGreenBackground;
+    [SerializeField] private GameObject upgradeButtonGrayBackground;
     [SerializeField] private GameObject upgradeSliderRoot;
     [SerializeField] private Slider upgradeProgressSlider;
     [SerializeField] private TMP_Text upgradeProgressText;
+    [SerializeField] private TMP_Text insufficientGoldTargetText;
     [SerializeField] private GameObject upgradeReadyObject;
     [SerializeField] private GameObject upgradeLockObject;
+    [SerializeField] private Color upgradeProgressInsufficientGoldColor = Color.red;
 
     [Header("Detail UI")]
     [SerializeField] private Image detailIconImage;
@@ -136,9 +140,12 @@ public class EquipmentDetailPanelController : MonoBehaviour
         equipButton ??= other.equipButton;
         equipButtonText ??= other.equipButtonText;
         upgradeButton ??= other.upgradeButton;
+        upgradeButtonGreenBackground ??= other.upgradeButtonGreenBackground;
+        upgradeButtonGrayBackground ??= other.upgradeButtonGrayBackground;
         upgradeSliderRoot ??= other.upgradeSliderRoot;
         upgradeProgressSlider ??= other.upgradeProgressSlider;
         upgradeProgressText ??= other.upgradeProgressText;
+        insufficientGoldTargetText ??= other.insufficientGoldTargetText;
         upgradeReadyObject ??= other.upgradeReadyObject;
         upgradeLockObject ??= other.upgradeLockObject;
         detailIconImage ??= other.detailIconImage;
@@ -182,9 +189,12 @@ public class EquipmentDetailPanelController : MonoBehaviour
         score += controller.equipButton != null ? 1 : 0;
         score += controller.equipButtonText != null ? 1 : 0;
         score += controller.upgradeButton != null ? 3 : 0;
+        score += controller.upgradeButtonGreenBackground != null ? 1 : 0;
+        score += controller.upgradeButtonGrayBackground != null ? 1 : 0;
         score += controller.upgradeSliderRoot != null ? 3 : 0;
         score += controller.upgradeProgressSlider != null ? 3 : 0;
         score += controller.upgradeProgressText != null ? 3 : 0;
+        score += controller.insufficientGoldTargetText != null ? 1 : 0;
         score += controller.upgradeReadyObject != null ? 1 : 0;
         score += controller.upgradeLockObject != null ? 1 : 0;
         score += controller.detailIconImage != null ? 1 : 0;
@@ -416,8 +426,8 @@ public class EquipmentDetailPanelController : MonoBehaviour
 
         if (detailIconImage != null)
         {
-            detailIconImage.sprite = definition.icon;
-            detailIconImage.enabled = definition.icon != null;
+            detailIconImage.sprite = definition.uiIcon;
+            detailIconImage.enabled = definition.uiIcon != null;
         }
 
         if (detailNameText != null)
@@ -574,9 +584,19 @@ public class EquipmentDetailPanelController : MonoBehaviour
             lines.Add($"HP +{definition.hp}");
         }
 
+        if (!Mathf.Approximately(definition.healPerSec, 0f))
+        {
+            lines.Add($"HPS +{definition.healPerSec}");
+        }
+
         if (!Mathf.Approximately(definition.critChance, 0f))
         {
             lines.Add($"Crit +{definition.critChance}%");
+        }
+
+        if (!Mathf.Approximately(definition.critDamage, 0f))
+        {
+            lines.Add($"Crit DMG +{definition.critDamage}%");
         }
 
         if (lines.Count == 0)
@@ -616,8 +636,8 @@ public class EquipmentDetailPanelController : MonoBehaviour
         slotItemIcon ??= FindImageByName(detailSlotRoot, "Icon");
         if (slotItemIcon != null)
         {
-            slotItemIcon.sprite = definition.icon;
-            slotItemIcon.enabled = definition.icon != null;
+            slotItemIcon.sprite = definition.uiIcon;
+            slotItemIcon.enabled = definition.uiIcon != null;
         }
 
         Image typeFrame = FindImageByPath(detailSlotRoot, "BasicFrame_Diamond_H48_NoBorder_BasePrefab");
@@ -988,15 +1008,27 @@ public class EquipmentDetailPanelController : MonoBehaviour
             return;
         }
 
-        bool canInteract = equipmentState != null &&
-                           currentDefinition != null &&
-                           runtimeData != null &&
-                           equipmentState.CanUpgrade(
-                               currentDefinition.equipmentId,
-                               runtimeData.GetGold(),
-                               runtimeData.GetUpgradeStone());
+        EquipmentUpgradeRequirement requirement = equipmentState != null && currentDefinition != null && runtimeData != null
+            ? equipmentState.GetUpgradeRequirement(
+                currentDefinition.equipmentId,
+                runtimeData.GetGold(),
+                runtimeData.GetUpgradeStone())
+            : null;
+
+        bool canInteract = requirement != null && requirement.CanUpgrade;
 
         upgradeButton.interactable = canInteract;
+
+        if (upgradeButtonGreenBackground != null)
+        {
+            upgradeButtonGreenBackground.SetActive(true);
+        }
+
+        if (upgradeButtonGrayBackground != null)
+        {
+            bool shouldShowGrayBackground = requirement != null && !requirement.hasEnoughDuplicates;
+            upgradeButtonGrayBackground.SetActive(shouldShowGrayBackground);
+        }
     }
 
     private void RefreshUpgradeProgress()
@@ -1020,6 +1052,11 @@ public class EquipmentDetailPanelController : MonoBehaviour
             {
                 upgradeProgressText.gameObject.SetActive(true);
                 upgradeProgressText.text = string.Empty;
+            }
+
+            if (insufficientGoldTargetText != null)
+            {
+                insufficientGoldTargetText.color = Color.white;
             }
 
             if (upgradeProgressSlider != null)
@@ -1058,6 +1095,13 @@ public class EquipmentDetailPanelController : MonoBehaviour
         {
             upgradeProgressText.gameObject.SetActive(true);
             upgradeProgressText.text = $"{ownedCount}/{requiredCount}";
+        }
+
+        if (insufficientGoldTargetText != null)
+        {
+            insufficientGoldTargetText.color = requirement.hasEnoughGold
+                ? Color.white
+                : upgradeProgressInsufficientGoldColor;
         }
 
         if (upgradeProgressSlider != null)

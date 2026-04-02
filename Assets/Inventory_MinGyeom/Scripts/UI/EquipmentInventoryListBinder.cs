@@ -2,8 +2,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Fills the inventory list with all equipment definitions in the selected category.
-/// Owned items show their level and type area, while unowned items stay in Add_1 preview state.
+/// Fills the inventory list so owned equipment is packed from the front,
+/// followed by one add slot, while remaining slots are cleared.
 /// </summary>
 public class EquipmentInventoryListBinder : MonoBehaviour
 {
@@ -49,9 +49,10 @@ public class EquipmentInventoryListBinder : MonoBehaviour
             return;
         }
 
-        List<EquipmentDefinitionData> categoryItems = GetCategoryItems();
+        List<EquipmentDefinitionData> ownedItems = GetOwnedCategoryItems();
         int slotCount = slots.Length;
-        int itemCount = categoryItems.Count;
+        int ownedItemCount = ownedItems.Count;
+        int visibleSlotCount = Mathf.Min(slotCount, ownedItemCount + 1);
 
         for (int i = 0; i < slotCount; i++)
         {
@@ -61,24 +62,27 @@ public class EquipmentInventoryListBinder : MonoBehaviour
                 continue;
             }
 
-            if (i < itemCount && categoryItems[i] != null)
+            if (i < ownedItemCount && ownedItems[i] != null)
             {
-                EquipmentDefinitionData definition = categoryItems[i];
+                EquipmentDefinitionData definition = ownedItems[i];
                 EquipmentOwnedState ownedState = GetOwnedState(definition.equipmentId);
 
-                if (ownedState != null)
+                if (ownedState == null)
                 {
-                    slot.SetItemById(
-                        ownedState.equipmentId,
-                        ownedState.currentLevel,
-                        ownedState.ownedCount,
-                        equipmentState,
-                        equipmentState.EquipmentDatabase);
+                    slot.Clear();
+                    continue;
                 }
-                else
-                {
-                    slot.SetUnownedDefinition(definition);
-                }
+
+                slot.SetItemById(
+                    ownedState.equipmentId,
+                    ownedState.currentLevel,
+                    ownedState.ownedCount,
+                    equipmentState,
+                    equipmentState.EquipmentDatabase);
+            }
+            else if (i == ownedItemCount && i < visibleSlotCount)
+            {
+                slot.SetAddSlot();
             }
             else
             {
@@ -111,7 +115,7 @@ public class EquipmentInventoryListBinder : MonoBehaviour
         }
     }
 
-    private List<EquipmentDefinitionData> GetCategoryItems()
+    private List<EquipmentDefinitionData> GetOwnedCategoryItems()
     {
         List<EquipmentDefinitionData> categoryItems = new();
 
@@ -125,6 +129,12 @@ public class EquipmentInventoryListBinder : MonoBehaviour
         {
             EquipmentDefinitionData definition = definitions[i];
             if (definition == null || definition.category != currentCategory)
+            {
+                continue;
+            }
+
+            EquipmentOwnedState ownedState = GetOwnedState(definition.equipmentId);
+            if (ownedState == null || ownedState.ownedCount <= 0)
             {
                 continue;
             }

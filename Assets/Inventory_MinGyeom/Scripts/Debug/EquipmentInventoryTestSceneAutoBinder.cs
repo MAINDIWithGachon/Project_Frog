@@ -8,6 +8,7 @@ using UnityEngine.UI;
 /// </summary>
 public static class EquipmentInventoryTestSceneAutoBinder
 {
+    private const bool AutoBindEnabled = false;
     private const string TargetSceneName = "EquipmentInventory_TestScene";
     private const string MainPopupObjectName = "Popup_Box_03_BasePrefab";
     private const string DetailPopupObjectName = "Character_Hero_Item_Detail";
@@ -18,6 +19,11 @@ public static class EquipmentInventoryTestSceneAutoBinder
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
     private static void InitializeOnLoad()
     {
+        if (!AutoBindEnabled)
+        {
+            return;
+        }
+
         SceneManager.sceneLoaded -= OnSceneLoaded;
         SceneManager.sceneLoaded += OnSceneLoaded;
 

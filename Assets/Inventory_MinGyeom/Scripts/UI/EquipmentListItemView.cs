@@ -28,6 +28,7 @@ public class EquipmentListItemView : MonoBehaviour
     [SerializeField] private GameObject normalPlumFrame;
     [SerializeField] private GameObject normalYellowFrame;
     [SerializeField] private GameObject normalRedFrame;
+    [SerializeField] private GameObject itemFrameRoot;
     [SerializeField] private GameObject add1Root;
     [SerializeField] private GameObject add2Root;
     [SerializeField] private GameObject checkRoot;
@@ -47,6 +48,7 @@ public class EquipmentListItemView : MonoBehaviour
     [SerializeField] private bool isAdd2Active;
     [SerializeField] private bool isCheckActive;
     [SerializeField] private bool isLockActive;
+    [SerializeField] private bool isItemFrameActive;
     [SerializeField] private bool isTypeAreaActive;
     [SerializeField] private bool isLevelTextActive;
     [SerializeField] private string levelDisplayText;
@@ -100,6 +102,7 @@ public class EquipmentListItemView : MonoBehaviour
         currentEquipmentId = equipmentId;
         currentLevel = level;
         currentOwnedCount = Mathf.Max(0, ownedCount);
+        SetSlotVisualActive(true);
 
         if (string.IsNullOrWhiteSpace(equipmentId))
         {
@@ -150,13 +153,14 @@ public class EquipmentListItemView : MonoBehaviour
         currentEquipmentId = string.Empty;
         currentLevel = 0;
         currentOwnedCount = 0;
+        SetSlotVisualActive(true);
 
         SetRarityFrame(definition.rarity);
 
         if (itemIconImage != null)
         {
-            itemIconImage.sprite = definition.icon;
-            itemIconImage.enabled = definition.icon != null;
+            itemIconImage.sprite = null;
+            itemIconImage.enabled = false;
         }
 
         if (levelText != null)
@@ -180,18 +184,57 @@ public class EquipmentListItemView : MonoBehaviour
             lockRoot.SetActive(false);
         }
 
-        if (add1Root != null)
-        {
-            add1Root.SetActive(true);
-        }
-
-        if (add2Root != null)
-        {
-            add2Root.SetActive(false);
-        }
+        SetFrameActive(add1Root, false);
+        SetFrameActive(add2Root, true);
 
         SetButtonInteractable(false);
         ApplyBoundOutput(definition, 0, 0, false, false);
+        RefreshRuntimeUiState();
+    }
+
+    public void SetAddSlot()
+    {
+        CacheReferences();
+
+        currentEquipmentId = string.Empty;
+        currentLevel = 0;
+        currentOwnedCount = 0;
+        SetSlotVisualActive(true);
+
+        SetRarityFrame(EquipmentRarity.Common);
+
+        if (itemIconImage != null)
+        {
+            itemIconImage.sprite = null;
+            itemIconImage.enabled = false;
+        }
+
+        if (levelText != null)
+        {
+            levelText.text = string.Empty;
+            levelText.gameObject.SetActive(false);
+        }
+
+        if (typeAreaRoot != null)
+        {
+            typeAreaRoot.SetActive(false);
+        }
+
+        if (checkRoot != null)
+        {
+            checkRoot.SetActive(false);
+        }
+
+        if (lockRoot != null)
+        {
+            lockRoot.SetActive(false);
+        }
+
+        SetFrameActive(add1Root, false);
+        SetFrameActive(add2Root, true);
+
+        SetButtonInteractable(false);
+        ClearBoundOutput();
         RefreshRuntimeUiState();
     }
 
@@ -203,6 +246,7 @@ public class EquipmentListItemView : MonoBehaviour
         currentEquipmentId = string.Empty;
         currentLevel = 0;
         currentOwnedCount = 0;
+        SetSlotVisualActive(false);
 
         SetRarityFrame(EquipmentRarity.Common);
 
@@ -235,12 +279,12 @@ public class EquipmentListItemView : MonoBehaviour
 
         if (add1Root != null)
         {
-            add1Root.SetActive(true);
+            add1Root.SetActive(false);
         }
 
         if (add2Root != null)
         {
-            add2Root.SetActive(false);
+            add2Root.SetActive(true);
         }
 
         SetButtonInteractable(false);
@@ -256,8 +300,8 @@ public class EquipmentListItemView : MonoBehaviour
 
         if (itemIconImage != null)
         {
-            itemIconImage.sprite = definition.icon;
-            itemIconImage.enabled = definition.icon != null;
+            itemIconImage.sprite = definition.uiIcon;
+            itemIconImage.enabled = definition.uiIcon != null;
         }
 
         if (levelText != null)
@@ -329,6 +373,7 @@ public class EquipmentListItemView : MonoBehaviour
     private void CacheReferences()
     {
         // 자주 접근하는 자식 오브젝트를 한 번 찾아두고 이후 재사용합니다.
+        itemFrameRoot ??= FindByPath("ItemFrame_01");
         normalBlueFrame ??= FindByPath("ItemFrame_01/NormalArea/ItemFrame_01_Normal_Blue");
         normalBrownFrame ??= FindByPath("ItemFrame_01/NormalArea/ItemFrame_01_Normal_Brown");
         normalGreenFrame ??= FindByPath("ItemFrame_01/NormalArea/ItemFrame_01_Normal_Green");
@@ -378,6 +423,21 @@ public class EquipmentListItemView : MonoBehaviour
         if (target != null)
         {
             target.SetActive(isActive);
+        }
+    }
+
+    private void SetSlotVisualActive(bool isActive)
+    {
+        SetFrameActive(itemFrameRoot, isActive);
+
+        if (!isActive)
+        {
+            SetFrameActive(typeAreaRoot, false);
+
+            if (levelText != null)
+            {
+                levelText.gameObject.SetActive(false);
+            }
         }
     }
 
@@ -449,6 +509,7 @@ public class EquipmentListItemView : MonoBehaviour
         isAdd2Active = add2Root != null && add2Root.activeSelf;
         isCheckActive = checkRoot != null && checkRoot.activeSelf;
         isLockActive = lockRoot != null && lockRoot.activeSelf;
+        isItemFrameActive = itemFrameRoot != null && itemFrameRoot.activeSelf;
         isTypeAreaActive = typeAreaRoot != null && typeAreaRoot.activeSelf;
         isLevelTextActive = levelText != null && levelText.gameObject.activeSelf;
         levelDisplayText = levelText != null ? levelText.text : string.Empty;

@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 /// <summary>
 /// 장비 데이터베이스 안에 저장되는 개별 장비의 고정 정보 묶음입니다.
@@ -16,7 +17,7 @@ public class EquipmentDefinitionData
 
     // 인벤토리 목록과 장착 슬롯 UI에서 보여줄 표시용 데이터입니다.
     [Header("UI")]
-    public Sprite icon;
+    [FormerlySerializedAs("icon")] public Sprite uiIcon;
     [TextArea] public string description;
 
     // 강화/성장 관련 표시에서 사용할 기본 성장 설정입니다.
@@ -28,5 +29,7 @@ public class EquipmentDefinitionData
     [Header("Prototype Stats")]
     public int attack;
     public int hp;
+    public float healPerSec;
     public float critChance;
+    public float critDamage;
 }
