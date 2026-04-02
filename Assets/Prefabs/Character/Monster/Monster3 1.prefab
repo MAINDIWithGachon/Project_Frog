@@ -1703,6 +1703,7 @@ GameObject:
   - component: {fileID: 287197887062336830}
   - component: {fileID: 4509506780854545137}
   - component: {fileID: 4050511571767649021}
+  - component: {fileID: 5097007584413878314}
   m_Layer: 0
   m_Name: Monster3 1
   m_TagString: Monster
@@ -1720,7 +1721,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.6, y: 0.6, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5519129236897474473}
@@ -1757,7 +1758,7 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
@@ -1816,11 +1817,16 @@ MonoBehaviour:
   centerPivot: {fileID: 610150788430453218}
   visualRoot: {fileID: 4657448938491480442}
   movementRoot: {fileID: 4657448938491480442}
-  speed: 1.5
-  stoppingDistance: 0.05
+  speed: 2
+  stoppingDistance: 0.1
   facingUpdateInterval: 0.1
   defaultHitStunDuration: 0.1
   animator: {fileID: 8886984155748894573}
+  moveLeftDuration: 3
+  moveRightDuration: 1
+  idleDuration: 1
+  leftLimitPosition: {x: -10, y: 0, z: 0}
+  rightLimitPosition: {x: 15, y: 0, z: 0}
   faceRightWhenScalePositive: 1
 --- !u!114 &287197887062336830
 MonoBehaviour:
@@ -1871,6 +1877,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   damageTextPoolIndex: 0
   damageTextYOffset: 0.3
+--- !u!114 &5097007584413878314
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9018334432959966154}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d2559a1edce4c4de8a86c7863ae86326, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damage: 30
 --- !u!1 &9083837342214752118
 GameObject:
   m_ObjectHideFlags: 0

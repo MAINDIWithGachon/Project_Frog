@@ -4,6 +4,13 @@ public class Monster_Movement : MonoBehaviour
 {
     private const string AttackParameterName = "Attack";
 
+    private enum RandomMoveType
+    {
+        MoveLeft,
+        MoveRight,
+        Idle
+    }
+
     [Header("추적 대상")]
     public Transform player;
     public Transform centerPivot;
@@ -16,6 +23,15 @@ public class Monster_Movement : MonoBehaviour
     public float facingUpdateInterval = 0.1f;
     public float defaultHitStunDuration = 0.1f;
     public Animator animator;
+
+    [Header("랜덤 이동 패턴")]
+    [SerializeField] private float moveLeftDuration = 2f;
+    [SerializeField] private float moveRightDuration = 1f;
+    [SerializeField] private float idleDuration = 1f;
+
+    [Header("이동 범위 제한")]
+    [SerializeField] private Vector3 leftLimitPosition = new Vector3(-10f, 0f, 0f);
+    [SerializeField] private Vector3 rightLimitPosition = new Vector3(15f, 0f, 0f);
 
     [Header("방향")]
     public bool faceRightWhenScalePositive = true;
@@ -30,6 +46,11 @@ public class Monster_Movement : MonoBehaviour
     private bool isDead;
     private int playerContactCount;
     private float baseSpeed;
+    private float movePatternTimer;
+    private RandomMoveType currentMoveType;
+    private float leftLimit;
+    private float rightLimit;
+    private bool hasStartedRandomPattern;
 
     private void Awake()
     {
@@ -88,10 +109,12 @@ public class Monster_Movement : MonoBehaviour
         playerContactCount = 0;
         hitStunTimer = 0f;
         facingUpdateTimer = 0f;
+        movePatternTimer = 0f;
+        hasStartedRandomPattern = false;
 
         ResetVisualRootTransform();
         SetAttack(false);
-        RefreshTrackingState();
+        SelectNextRandomMove(forceSelection: true);
     }
 
     private void ResetVisualRootTransform()
@@ -114,6 +137,7 @@ public class Monster_Movement : MonoBehaviour
 
     private void Start()
     {
+        UpdateMovementLimits();
         ResolvePlayerTargetIfNeeded();
 
         if (player == null)
@@ -130,14 +154,19 @@ public class Monster_Movement : MonoBehaviour
         {
             Debug.LogWarning("Monster_Movement: animator가 연결되지 않았습니다.", this);
         }
+    }
+    private void CheckWallCollision()
+    {
+        if (movementRoot == null)
+            return;
 
-        RefreshTrackingState();
+        float clampedX = Mathf.Clamp(movementRoot.position.x, leftLimit, rightLimit);
+        movementRoot.position = new Vector3(clampedX, movementRoot.position.y, movementRoot.position.z);
     }
 
     public void Initialize(Transform playerTarget)
     {
         player = playerTarget;
-        RefreshTrackingState();
     }
 
     private void Update()
@@ -147,68 +176,81 @@ public class Monster_Movement : MonoBehaviour
             return;
         }
 
-        if (player == null || centerPivot == null)
-        {
-            return;
-        }
-
-        // 플레이어의 월드 좌표를 일정 주기마다 읽어서 방향만 갱신한다.
-        facingUpdateTimer += Time.deltaTime;
-
         if (hitStunTimer > 0f)
         {
             hitStunTimer = Mathf.Max(0f, hitStunTimer - Time.deltaTime);
         }
 
-        if (facingUpdateTimer >= facingUpdateInterval)
-        {
-            facingUpdateTimer = 0f;
-            RefreshTrackingState();
-        }
-
-        MoveToPlayer();
+        UpdateMovementLimits();
+        UpdateRandomMovement();
+        CheckWallCollision();
     }
 
-    private void MoveToPlayer()
+    private void UpdateRandomMovement()
     {
         if (isAttacking || hitStunTimer > 0f)
         {
             return;
         }
 
-        float remainingDistanceX = cachedTargetX - centerPivot.position.x;
-
-        if (Mathf.Abs(remainingDistanceX) <= stoppingDistance)
+        if (movePatternTimer <= 0f)
         {
-            return;
+            SelectNextRandomMove(forceSelection: false);
         }
 
-        float deltaX = Mathf.Sign(remainingDistanceX) * speed * Time.deltaTime;
+        movePatternTimer = Mathf.Max(0f, movePatternTimer - Time.deltaTime);
 
-        if (Mathf.Abs(deltaX) > Mathf.Abs(remainingDistanceX))
+        switch (currentMoveType)
         {
-            deltaX = remainingDistanceX;
-        }
+            case RandomMoveType.MoveLeft:
+                MoveHorizontally(-1f);
+                break;
 
-        movementRoot.position += new Vector3(deltaX, 0f, 0f);
+            case RandomMoveType.MoveRight:
+                MoveHorizontally(1f);
+                break;
+        }
     }
 
-    private void RefreshTrackingState()
+    private void SelectNextRandomMove(bool forceSelection)
     {
-        if (player == null || centerPivot == null)
-        {
-            isAttacking = false;
-            playerContactCount = 0;
-            SetAttack(false);
+        if (!forceSelection && movePatternTimer > 0f)
             return;
+
+        if (!hasStartedRandomPattern)
+        {
+            currentMoveType = RandomMoveType.MoveLeft;
+            hasStartedRandomPattern = true;
+        }
+        else
+        {
+            currentMoveType = (RandomMoveType)Random.Range(0, 3);
         }
 
-        // 자식 피벗이라도 position은 월드 좌표이므로 기준점으로 그대로 사용한다.
-        float monsterX = centerPivot.position.x;
-        cachedTargetX = player.position.x;
-        float distanceX = cachedTargetX - monsterX;
+        switch (currentMoveType)
+        {
+            case RandomMoveType.MoveLeft:
+                movePatternTimer = moveLeftDuration;
+                UpdateFacing(-1f);
+                break;
 
-        UpdateFacing(distanceX);
+            case RandomMoveType.MoveRight:
+                movePatternTimer = moveRightDuration;
+                UpdateFacing(1f);
+                break;
+
+            default:
+                movePatternTimer = idleDuration;
+                break;
+        }
+    }
+
+    private void MoveHorizontally(float directionX)
+    {
+        if (movementRoot == null || Mathf.Approximately(directionX, 0f))
+            return;
+
+        movementRoot.position += new Vector3(directionX * speed * Time.deltaTime, 0f, 0f);
     }
 
     private void UpdateFacing(float distanceX)
@@ -296,6 +338,42 @@ public class Monster_Movement : MonoBehaviour
         }
     }
 
+    private void UpdateMovementLimits()
+    {
+        if (movementRoot == null)
+            return;
+
+        float monsterHalfWidth = GetMonsterHalfWidth();
+        leftLimit = leftLimitPosition.x + monsterHalfWidth;
+        rightLimit = rightLimitPosition.x - monsterHalfWidth;
+
+        if (leftLimit > rightLimit)
+        {
+            float middleX = (leftLimit + rightLimit) * 0.5f;
+            leftLimit = middleX;
+            rightLimit = middleX;
+        }
+    }
+
+    private float GetMonsterHalfWidth()
+    {
+        Collider2D[] colliders = GetComponentsInChildren<Collider2D>(true);
+        if (colliders == null || colliders.Length == 0)
+            return 0f;
+
+        Bounds combinedBounds = colliders[0].bounds;
+
+        for (int index = 1; index < colliders.Length; index++)
+        {
+            if (colliders[index] == null)
+                continue;
+
+            combinedBounds.Encapsulate(colliders[index].bounds);
+        }
+
+        return combinedBounds.extents.x;
+    }
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
         HandlePlayerContactEnter(collision.collider);
@@ -350,7 +428,15 @@ public class Monster_Movement : MonoBehaviour
 
         isAttacking = false;
         SetAttack(false);
-        RefreshTrackingState();
+
+        if (currentMoveType == RandomMoveType.MoveLeft)
+        {
+            UpdateFacing(-1f);
+        }
+        else if (currentMoveType == RandomMoveType.MoveRight)
+        {
+            UpdateFacing(1f);
+        }
     }
 
     private bool IsPlayerComponent(Component other)
