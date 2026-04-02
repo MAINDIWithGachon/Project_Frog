@@ -144,6 +144,9 @@ public class SkillManager : MonoBehaviour
     /// </summary>
     private bool CanCast(SkillData skillData, int skillLevel)
     {
+        if (GameStateManager.Instance != null && GameStateManager.Instance.IsPlayerDead)
+            return false;
+
         float currentTime = Time.time;
         float nextAvailableTime = GetNextAvailableTime(skillData.id);
 
