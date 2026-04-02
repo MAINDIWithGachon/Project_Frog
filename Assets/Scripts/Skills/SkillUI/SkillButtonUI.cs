@@ -17,6 +17,9 @@ public class SkillButtonUI : MonoBehaviour
             return;
         }
 
+        if (skillId <= 0)
+            return;
+
         skillData = skillManager.GetSkillDataForUI(skillId);
 
         if (skillData == null)
@@ -25,7 +28,7 @@ public class SkillButtonUI : MonoBehaviour
 
     private void Update()
     {
-        if (skillManager == null || coolTimeBG == null || skillData == null)
+        if (skillId <= 0 || skillManager == null || coolTimeBG == null || skillData == null)
             return;
 
         float remain = skillManager.GetRemainingCooldown(skillId);
@@ -47,6 +50,9 @@ public class SkillButtonUI : MonoBehaviour
             Debug.LogError("[SkillButtonUI] SkillManager reference is missing.");
             return;
         }
+
+        if (skillId <= 0)
+            return;
 
         if (skillManager.TryCast(skillId, out SkillCastResult castResult))
         {
