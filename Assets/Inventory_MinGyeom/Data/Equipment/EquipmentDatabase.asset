@@ -17,6 +17,7 @@ MonoBehaviour:
     displayName: Sword of Courage
     category: 0
     rarity: 0
+    isGachaEnabled: 1
     uiIcon: {fileID: 21300000, guid: c5408ecd9ba73414b9c4bd94482a9df3, type: 3}
     description: Prototype wepon 1
     maxLevel: 10
@@ -30,6 +31,7 @@ MonoBehaviour:
     displayName: "Magician\u2019s Hat"
     category: 1
     rarity: 2
+    isGachaEnabled: 1
     uiIcon: {fileID: 21300000, guid: a6e5e2ad59357db4195b6c96b0d964c8, type: 3}
     description: Prototype Hat 1
     maxLevel: 10
@@ -43,6 +45,7 @@ MonoBehaviour:
     displayName: Ring of Vitality
     category: 2
     rarity: 0
+    isGachaEnabled: 1
     uiIcon: {fileID: 21300000, guid: f1ff39b6c2befe0419e53b4ab38b4821, type: 3}
     description: Prototype Ring 1
     maxLevel: 10
@@ -56,6 +59,7 @@ MonoBehaviour:
     displayName: Magic Armor
     category: 3
     rarity: 1
+    isGachaEnabled: 1
     uiIcon: {fileID: 21300000, guid: ebdce3fc780ba014cac52970efa5dbcc, type: 3}
     description: Prototype Armor 1
     maxLevel: 10
@@ -69,6 +73,7 @@ MonoBehaviour:
     displayName: Red Scarf
     category: 4
     rarity: 0
+    isGachaEnabled: 1
     uiIcon: {fileID: 21300000, guid: 65071a02305544ad6af175c1aa14226c, type: 3}
     description: Prototype Necklace 1
     maxLevel: 10
@@ -82,6 +87,7 @@ MonoBehaviour:
     displayName: Swift Boots
     category: 5
     rarity: 3
+    isGachaEnabled: 1
     uiIcon: {fileID: 21300000, guid: 8478b93b4cf0d430f83c2c8e6bb9ba1c, type: 3}
     description: Prototype Shoes 1
     maxLevel: 10
@@ -95,6 +101,7 @@ MonoBehaviour:
     displayName: Gear Bow
     category: 0
     rarity: 0
+    isGachaEnabled: 1
     uiIcon: {fileID: 21300000, guid: 8081395f26f2245b2a2acb9dce97baa1, type: 3}
     description: Prototype wepon 2
     maxLevel: 10
@@ -108,6 +115,7 @@ MonoBehaviour:
     displayName: Gear Helmet
     category: 1
     rarity: 4
+    isGachaEnabled: 1
     uiIcon: {fileID: 21300000, guid: 2d38e1c5673114d42927ed6e9e5b6758, type: 3}
     description: Prototype Hat 2
     maxLevel: 10
@@ -121,6 +129,7 @@ MonoBehaviour:
     displayName: Gear Glove
     category: 0
     rarity: 3
+    isGachaEnabled: 1
     uiIcon: {fileID: 21300000, guid: b55863efbacf34ee296973289de602ff, type: 3}
     description: Prototype wepon 3
     maxLevel: 10
@@ -134,6 +143,7 @@ MonoBehaviour:
     displayName: Ring of Precision
     category: 2
     rarity: 2
+    isGachaEnabled: 1
     uiIcon: {fileID: 21300000, guid: be9b2f7e552b9424893d544e66259abc, type: 3}
     description: Prototype Ring 2
     maxLevel: 10
@@ -147,6 +157,7 @@ MonoBehaviour:
     displayName: Guardian Armor
     category: 3
     rarity: 2
+    isGachaEnabled: 1
     uiIcon: {fileID: 21300000, guid: f2c150d417d5e44e78d175173834e0c9, type: 3}
     description: Prototype Armor 2
     maxLevel: 10
@@ -160,6 +171,7 @@ MonoBehaviour:
     displayName: Mystic Necklace
     category: 4
     rarity: 1
+    isGachaEnabled: 1
     uiIcon: {fileID: 21300000, guid: 38c20a317bc204c159485ff3cab5619c, type: 3}
     description: Prototype Necklace 2
     maxLevel: 10
@@ -173,6 +185,7 @@ MonoBehaviour:
     displayName: Boots of Immortality
     category: 5
     rarity: 4
+    isGachaEnabled: 1
     uiIcon: {fileID: 21300000, guid: 8d70fa0e910a74a50b179a66cf78b08e, type: 3}
     description: Prototype Shoes 2
     maxLevel: 10

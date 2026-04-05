@@ -14,6 +14,7 @@ public class EquipmentDefinitionData
     public string displayName;
     public EquipmentCategory category;
     public EquipmentRarity rarity;
+    public bool isGachaEnabled = true;
 
     // 인벤토리 목록과 장착 슬롯 UI에서 보여줄 표시용 데이터입니다.
     [Header("UI")]

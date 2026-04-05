@@ -119,6 +119,7 @@ public class EquipmentDatabaseEditor : Editor
         SerializedProperty displayNameProperty = elementProperty.FindPropertyRelative("displayName");
         SerializedProperty categoryProperty = elementProperty.FindPropertyRelative("category");
         SerializedProperty rarityProperty = elementProperty.FindPropertyRelative("rarity");
+        SerializedProperty isGachaEnabledProperty = elementProperty.FindPropertyRelative("isGachaEnabled");
         SerializedProperty uiIconProperty = elementProperty.FindPropertyRelative("uiIcon");
         SerializedProperty descriptionProperty = elementProperty.FindPropertyRelative("description");
         SerializedProperty maxLevelProperty = elementProperty.FindPropertyRelative("maxLevel");
@@ -148,6 +149,7 @@ public class EquipmentDatabaseEditor : Editor
         }
 
         EditorGUILayout.PropertyField(rarityProperty);
+        EditorGUILayout.PropertyField(isGachaEnabledProperty, new GUIContent("Gacha Enabled"));
         EditorGUILayout.PropertyField(uiIconProperty, new GUIContent("UI Icon"));
         EditorGUILayout.PropertyField(descriptionProperty, new GUIContent("Description"));
 
@@ -200,6 +202,7 @@ public class EquipmentDatabaseEditor : Editor
         elementProperty.FindPropertyRelative("displayName").stringValue = string.Empty;
         elementProperty.FindPropertyRelative("category").enumValueIndex = (int)category;
         elementProperty.FindPropertyRelative("rarity").enumValueIndex = (int)EquipmentRarity.Common;
+        elementProperty.FindPropertyRelative("isGachaEnabled").boolValue = true;
         elementProperty.FindPropertyRelative("uiIcon").objectReferenceValue = null;
         elementProperty.FindPropertyRelative("description").stringValue = string.Empty;
         elementProperty.FindPropertyRelative("maxLevel").intValue = 10;
