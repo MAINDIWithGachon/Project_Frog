@@ -33,6 +33,7 @@ public class SkillManager : MonoBehaviour
 
     [Header("# Skill Database")]
     [SerializeField] private SkillData[] skillDatabase;
+    [SerializeField] private EquippedSkillDatabase equippedSkillDatabase;
 
     /// <summary>
     /// 각 스킬의 다음 사용 가능 시각(Time.time 기준)을 저장한다.
@@ -42,6 +43,8 @@ public class SkillManager : MonoBehaviour
     /// </summary>
     private readonly Dictionary<int, float> nextAvailableTimeBySkillId = new();
     private readonly Dictionary<int, ISkillExecutable> skillExecutablesById = new();
+    private readonly Dictionary<int, SkillDetailData> uiSkillDetailsById = new();
+    private int[] equippedSkillIds = Array.Empty<int>();
 
     private Transform runtimeSkillExecutorRoot;
 
@@ -59,6 +62,7 @@ public class SkillManager : MonoBehaviour
         if (finalStatData == null)
             finalStatData = FindAnyObjectByType<FinalStatData>();
 
+        InitializeEquippedSkills();
         RegisterSkillExecutables();
     }
 
@@ -266,6 +270,166 @@ public class SkillManager : MonoBehaviour
         return GetSkillData(skillId);
     }
 
+    public SkillDetailData GetSkillDetailDataForUI(int skillId)
+    {
+        SkillData skillData = GetSkillData(skillId);
+        if (skillData == null)
+        {
+            if (uiSkillDetailsById.TryGetValue(skillId, out SkillDetailData registeredDetail))
+            {
+                return new SkillDetailData
+                {
+                    skillId = registeredDetail.skillId,
+                    skillName = registeredDetail.skillName,
+                    description = registeredDetail.description,
+                    icon = registeredDetail.icon,
+                    currentValue = registeredDetail.currentValue,
+                    maxValue = registeredDetail.maxValue
+                };
+            }
+
+            return null;
+        }
+
+        int skillLevel = GetSkillLevelForUI(skillId);
+
+        return new SkillDetailData
+        {
+            skillId = skillData.id,
+            skillName = string.IsNullOrWhiteSpace(skillData.nameKey) ? $"Skill {skillData.id}" : skillData.nameKey,
+            description = string.IsNullOrWhiteSpace(skillData.descriptionKey) ? $"Skill {skillData.id}" : skillData.descriptionKey,
+            icon = skillData.icon,
+            currentValue = skillData.uiCurrentValue > 0 ? skillData.uiCurrentValue : skillLevel,
+            maxValue = skillData.uiMaxValue > 0 ? skillData.uiMaxValue : Mathf.Max(1, skillLevel)
+        };
+    }
+
+    public void RegisterSkillDetailDataForUI(SkillDetailData detailData)
+    {
+        if (detailData == null || detailData.skillId <= 0)
+            return;
+
+        uiSkillDetailsById[detailData.skillId] = new SkillDetailData
+        {
+            skillId = detailData.skillId,
+            skillName = detailData.skillName,
+            description = detailData.description,
+            icon = detailData.icon,
+            currentValue = detailData.currentValue,
+            maxValue = detailData.maxValue
+        };
+    }
+
+    public bool TryResolveSkillIdForUI(Sprite iconSprite, string skillName, out int skillId)
+    {
+        skillId = 0;
+
+        if (skillDatabase == null)
+            return false;
+
+        for (int i = 0; i < skillDatabase.Length; i++)
+        {
+            SkillData candidate = skillDatabase[i];
+            if (candidate == null)
+                continue;
+
+            if (iconSprite != null && candidate.icon == iconSprite)
+            {
+                skillId = candidate.id;
+                return true;
+            }
+
+            if (!string.IsNullOrWhiteSpace(skillName) && string.Equals(candidate.nameKey, skillName, StringComparison.OrdinalIgnoreCase))
+            {
+                skillId = candidate.id;
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public int GetEquippedSlotCount()
+    {
+        return equippedSkillIds != null ? equippedSkillIds.Length : 0;
+    }
+
+    public int GetEquippedSkillIdAtSlot(int slotIndex)
+    {
+        if (equippedSkillIds == null || slotIndex < 0 || slotIndex >= equippedSkillIds.Length)
+            return 0;
+
+        return equippedSkillIds[slotIndex];
+    }
+
+    public bool IsSkillEquipped(int skillId)
+    {
+        return TryFindEquippedSlotIndex(skillId, out _);
+    }
+
+    public bool TryFindEquippedSlotIndex(int skillId, out int slotIndex)
+    {
+        slotIndex = -1;
+
+        if (skillId <= 0 || equippedSkillIds == null)
+            return false;
+
+        for (int i = 0; i < equippedSkillIds.Length; i++)
+        {
+            if (equippedSkillIds[i] != skillId)
+                continue;
+
+            slotIndex = i;
+            return true;
+        }
+
+        return false;
+    }
+
+    public bool TryEquipSkill(int skillId, out int slotIndex)
+    {
+        slotIndex = -1;
+
+        if (skillId <= 0 || equippedSkillIds == null || equippedSkillIds.Length == 0)
+            return false;
+
+        if (TryFindEquippedSlotIndex(skillId, out slotIndex))
+            return true;
+
+        for (int i = 0; i < equippedSkillIds.Length; i++)
+        {
+            if (equippedSkillIds[i] != 0)
+                continue;
+
+            equippedSkillIds[i] = skillId;
+            slotIndex = i;
+            return true;
+        }
+
+        return false;
+    }
+
+    public bool TryUnequipSkill(int skillId, out int slotIndex)
+    {
+        if (!TryFindEquippedSlotIndex(skillId, out slotIndex))
+            return false;
+
+        equippedSkillIds[slotIndex] = 0;
+        return true;
+    }
+
+    public bool TryUnequipSlot(int slotIndex)
+    {
+        if (equippedSkillIds == null || slotIndex < 0 || slotIndex >= equippedSkillIds.Length)
+            return false;
+
+        if (equippedSkillIds[slotIndex] == 0)
+            return false;
+
+        equippedSkillIds[slotIndex] = 0;
+        return true;
+    }
+
     /// <summary>
     /// UI에서 특정 스킬의 현재 레벨을 참조할 때 사용하는 공개 메서드.
     /// </summary>
@@ -439,6 +603,18 @@ public class SkillManager : MonoBehaviour
         {
             return exception.Types;
         }
+    }
+
+    private void InitializeEquippedSkills()
+    {
+        int slotCount = equippedSkillDatabase != null ? Mathf.Max(1, equippedSkillDatabase.slotCount) : 3;
+        equippedSkillIds = new int[slotCount];
+
+        if (equippedSkillDatabase == null || equippedSkillDatabase.defaultEquippedSkillIds == null)
+            return;
+
+        int copyLength = Mathf.Min(equippedSkillIds.Length, equippedSkillDatabase.defaultEquippedSkillIds.Length);
+        Array.Copy(equippedSkillDatabase.defaultEquippedSkillIds, equippedSkillIds, copyLength);
     }
 }
 

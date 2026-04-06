@@ -126,6 +126,10 @@ public class SkillData : ScriptableObject
     /// </summary>
     public float minCooldown = 0.1f;
 
+    [Header("# UI Detail Info")]
+    public int uiCurrentValue;
+    public int uiMaxValue = 100;
+
     /// <summary>
     /// 전달받은 스킬 레벨 기준으로 최종 공격력 계수 퍼센트를 계산한다.
     ///
