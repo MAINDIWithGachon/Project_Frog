@@ -1,69 +1,83 @@
-using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Text;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class GachaManager : MonoBehaviour
 {
-    [Serializable]
-    private class RarityFrameBinding
-    {
-        public EquipmentRarity rarity;
-        public GameObject target;
-    }
-
     [Header("Core References")]
     [SerializeField] private EquipmentGachaService gachaService;
 
+    [Header("Draw Buttons")]
+    [SerializeField] private Button drawOneButton;
+    [SerializeField] private Button drawTenButton;
+
     [Header("Result Popup")]
     [SerializeField] private GameObject gachaResultRoot;
-    [SerializeField] private Image resultItemIconImage;
-    [SerializeField] private TMP_Text resultItemNameText;
-    [SerializeField] private TMP_Text resultRarityText;
-    [SerializeField] private GameObject resultDefaultFrame;
-    [SerializeField] private RarityFrameBinding[] rarityFrames;
+    [SerializeField] private Transform resultContentRoot;
+    [SerializeField] private GameObject resultItemFramePrefab;
+    [SerializeField] private TMP_Text resultCountText;
+    [SerializeField] private float resultRevealInterval = 0.06f;
 
     [Header("Failure Popup")]
     [SerializeField] private GameObject insufficientCurrencyRoot;
 
-    [Header("Optional Buttons")]
-    [SerializeField] private Button drawButton;
+    public IReadOnlyList<EquipmentGachaResult> LastResults => lastResults;
 
-    public EquipmentGachaResult LastResult { get; private set; }
+    private readonly List<GameObject> spawnedResultItems = new();
+    private readonly List<EquipmentGachaResult> lastResults = new();
+    private Coroutine revealRoutine;
 
     private void Awake()
     {
         SetPopupActive(gachaResultRoot, false);
         SetPopupActive(insufficientCurrencyRoot, false);
+        RegisterButtonListeners();
     }
 
-    public void OnClickDraw()
+    private void OnDestroy()
+    {
+        StopRevealRoutine();
+        UnregisterButtonListeners();
+    }
+
+    public void OnClickDrawOne()
+    {
+        Draw(1);
+    }
+
+    public void OnClickDrawTen()
+    {
+        Draw(10);
+    }
+
+    public void Draw(int drawCount)
     {
         SetPopupActive(insufficientCurrencyRoot, false);
-
-        if (drawButton != null)
-        {
-            drawButton.interactable = false;
-        }
+        SetButtonsInteractable(false);
 
         if (gachaService == null)
         {
             Debug.LogWarning("[GachaManager] EquipmentGachaService is not assigned.", this);
-            RestoreDrawButton();
+            SetButtonsInteractable(true);
             return;
         }
 
-        if (!gachaService.TryDraw(out EquipmentGachaResult result))
+        if (!gachaService.TryDraw(drawCount, out List<EquipmentGachaResult> results))
         {
-            LastResult = null;
+            lastResults.Clear();
             SetPopupActive(insufficientCurrencyRoot, true);
-            RestoreDrawButton();
+            SetButtonsInteractable(true);
             return;
         }
 
-        LastResult = result;
-        ShowResult(result);
-        RestoreDrawButton();
+        lastResults.Clear();
+        lastResults.AddRange(results);
+        LogDrawResults(results);
+        ShowResults(results);
+        SetButtonsInteractable(true);
     }
 
     public void CloseResultPopup()
@@ -76,61 +90,176 @@ public class GachaManager : MonoBehaviour
         SetPopupActive(insufficientCurrencyRoot, false);
     }
 
-    private void ShowResult(EquipmentGachaResult result)
+    private void ShowResults(IReadOnlyList<EquipmentGachaResult> results)
     {
-        if (result == null || result.definition == null)
+        if (resultContentRoot == null)
         {
-            Debug.LogWarning("[GachaManager] Cannot show result because the gacha result is empty.", this);
-            SetPopupActive(gachaResultRoot, false);
+            Debug.LogWarning("[GachaManager] Result content root is not assigned.", this);
             return;
         }
 
-        EquipmentDefinitionData definition = result.definition;
-
-        if (resultItemIconImage != null)
+        if (resultItemFramePrefab == null)
         {
-            resultItemIconImage.sprite = definition.uiIcon;
-            resultItemIconImage.enabled = definition.uiIcon != null;
+            Debug.LogWarning("[GachaManager] Result item frame prefab is not assigned.", this);
+            return;
         }
 
-        if (resultItemNameText != null)
+        ClearSpawnedResultItems();
+        StopRevealRoutine();
+
+        if (resultCountText != null)
         {
-            resultItemNameText.text = definition.displayName;
+            resultCountText.text = $"{results.Count} Draw";
         }
 
-        if (resultRarityText != null)
+        for (int i = 0; i < results.Count; i++)
         {
-            resultRarityText.text = definition.rarity.ToString();
+            EquipmentGachaResult result = results[i];
+            GameObject itemObject = Instantiate(resultItemFramePrefab, resultContentRoot);
+            spawnedResultItems.Add(itemObject);
+            BindResultItem(itemObject, result);
+            itemObject.SetActive(false);
         }
 
-        ApplyRarityFrame(definition.rarity);
         SetPopupActive(gachaResultRoot, true);
+        revealRoutine = StartCoroutine(RevealResultItemsSequentially());
     }
 
-    private void ApplyRarityFrame(EquipmentRarity rarity)
+    private void BindResultItem(GameObject itemObject, EquipmentGachaResult result)
     {
-        SetPopupActive(resultDefaultFrame, true);
-
-        if (rarityFrames == null)
+        if (itemObject == null || result == null || result.definition == null)
         {
             return;
         }
 
-        for (int i = 0; i < rarityFrames.Length; i++)
+        GachaResultItemView gachaResultItemView = itemObject.GetComponent<GachaResultItemView>();
+        if (gachaResultItemView != null)
         {
-            RarityFrameBinding binding = rarityFrames[i];
-            if (binding == null || binding.target == null)
+            gachaResultItemView.Bind(result.equipmentId, gachaService.EquipmentDatabase);
+            return;
+        }
+
+        EquipmentListItemView equipmentListItemView = itemObject.GetComponent<EquipmentListItemView>();
+        if (equipmentListItemView != null)
+        {
+            equipmentListItemView.SetItemById(
+                result.equipmentId,
+                Mathf.Max(1, result.currentLevel),
+                Mathf.Max(1, result.currentOwnedCount),
+                gachaService.EquipmentState,
+                gachaService.EquipmentDatabase,
+                gachaService.RuntimeData);
+            return;
+        }
+
+        itemObject.SendMessage("Bind", result, SendMessageOptions.DontRequireReceiver);
+    }
+
+    private void LogDrawResults(IReadOnlyList<EquipmentGachaResult> results)
+    {
+        if (results == null || results.Count == 0)
+        {
+            Debug.Log("[GachaManager] Draw succeeded but no results were returned.", this);
+            return;
+        }
+
+        StringBuilder stringBuilder = new();
+        for (int i = 0; i < results.Count; i++)
+        {
+            EquipmentGachaResult result = results[i];
+            if (result == null)
             {
                 continue;
             }
 
-            bool isMatch = binding.rarity == rarity;
-            binding.target.SetActive(isMatch);
-
-            if (isMatch)
+            if (stringBuilder.Length > 0)
             {
-                SetPopupActive(resultDefaultFrame, false);
+                stringBuilder.Append(", ");
             }
+
+            stringBuilder.Append(result.equipmentId);
+        }
+
+        Debug.Log($"[GachaManager] Draw succeeded ({results.Count}) -> IDs: {stringBuilder}", this);
+    }
+
+    private void ClearSpawnedResultItems()
+    {
+        for (int i = 0; i < spawnedResultItems.Count; i++)
+        {
+            GameObject spawnedItem = spawnedResultItems[i];
+            if (spawnedItem != null)
+            {
+                Destroy(spawnedItem);
+            }
+        }
+
+        spawnedResultItems.Clear();
+    }
+
+    private IEnumerator RevealResultItemsSequentially()
+    {
+        for (int i = 0; i < spawnedResultItems.Count; i++)
+        {
+            GameObject itemObject = spawnedResultItems[i];
+            if (itemObject == null)
+            {
+                continue;
+            }
+
+            itemObject.SetActive(true);
+
+            GachaResultItemView itemView = itemObject.GetComponent<GachaResultItemView>();
+            if (itemView != null)
+            {
+                itemView.PlayRevealAnimation();
+            }
+
+            if (i < spawnedResultItems.Count - 1)
+            {
+                yield return new WaitForSecondsRealtime(resultRevealInterval);
+            }
+        }
+
+        revealRoutine = null;
+    }
+
+    private void StopRevealRoutine()
+    {
+        if (revealRoutine == null)
+        {
+            return;
+        }
+
+        StopCoroutine(revealRoutine);
+        revealRoutine = null;
+    }
+
+    private void RegisterButtonListeners()
+    {
+        if (drawOneButton != null)
+        {
+            drawOneButton.onClick.RemoveListener(OnClickDrawOne);
+            drawOneButton.onClick.AddListener(OnClickDrawOne);
+        }
+
+        if (drawTenButton != null)
+        {
+            drawTenButton.onClick.RemoveListener(OnClickDrawTen);
+            drawTenButton.onClick.AddListener(OnClickDrawTen);
+        }
+    }
+
+    private void UnregisterButtonListeners()
+    {
+        if (drawOneButton != null)
+        {
+            drawOneButton.onClick.RemoveListener(OnClickDrawOne);
+        }
+
+        if (drawTenButton != null)
+        {
+            drawTenButton.onClick.RemoveListener(OnClickDrawTen);
         }
     }
 
@@ -142,11 +271,16 @@ public class GachaManager : MonoBehaviour
         }
     }
 
-    private void RestoreDrawButton()
+    private void SetButtonsInteractable(bool isInteractable)
     {
-        if (drawButton != null)
+        if (drawOneButton != null)
         {
-            drawButton.interactable = true;
+            drawOneButton.interactable = isInteractable;
+        }
+
+        if (drawTenButton != null)
+        {
+            drawTenButton.interactable = isInteractable;
         }
     }
 }
