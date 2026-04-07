@@ -130,6 +130,10 @@ public class SkillData : ScriptableObject
     public int uiCurrentValue;
     public int uiMaxValue = 100;
 
+    [Header("# Combat Power Info")]
+    public float combatPowerBaseContribution;
+    public float combatPowerPerLevelContribution = 5f;
+
     /// <summary>
     /// 전달받은 스킬 레벨 기준으로 최종 공격력 계수 퍼센트를 계산한다.
     ///
@@ -161,5 +165,21 @@ public class SkillData : ScriptableObject
     {
         float cooldown = baseCooldown + (cooldownGrowth * level);
         return Mathf.Max(minCooldown, cooldown);
+    }
+
+    public float GetCombatPowerContribution(
+        int level,
+        float defaultBaseContribution,
+        float defaultPerLevelContribution)
+    {
+        float baseContribution = combatPowerBaseContribution != 0f
+            ? combatPowerBaseContribution
+            : defaultBaseContribution;
+
+        float perLevelContribution = combatPowerPerLevelContribution != 0f
+            ? combatPowerPerLevelContribution
+            : defaultPerLevelContribution;
+
+        return baseContribution + (perLevelContribution * level);
     }
 }

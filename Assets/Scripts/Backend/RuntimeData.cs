@@ -20,6 +20,8 @@ using UnityEngine;
 /// </summary>
 public class RuntimeData : MonoBehaviour
 {
+    public event Action OnDataChanged;
+
     /// <summary>
     /// 테스트용 가짜 서버 데이터(JSON).
     /// 
@@ -255,6 +257,7 @@ public class RuntimeData : MonoBehaviour
             if (root.skillLevels[i].skillId == skillId)
             {
                 root.skillLevels[i].level = newLevel;
+                RaiseDataChanged();
                 return;
             }
         }
@@ -286,6 +289,7 @@ public class RuntimeData : MonoBehaviour
     {
         LoadFromJsonIfNeeded();
         root.Currency.Gold += amount;
+        RaiseDataChanged();
     }
 
     /// <summary>
@@ -327,7 +331,26 @@ public class RuntimeData : MonoBehaviour
 
         // 충분하면 차감 후 성공 반환
         root.Currency.Gold -= amount;
+        RaiseDataChanged();
         return true;
+    }
+
+    /// <summary>
+    /// 외부에서 root를 직접 수정한 뒤 구독자들에게 변경 사실을 알려준다.
+    /// 
+    /// 장기적으로는 모든 수정 경로를 RuntimeData 메서드로 통일하는 편이 더 좋지만,
+    /// 현재 단계에서는 이 브리지 메서드만으로도 UI/계산 갱신 흐름을 안정적으로 연결할 수 있다.
+    /// </summary>
+    public void NotifyDataChanged()
+    {
+        LoadFromJsonIfNeeded();
+        EnsureValid();
+        RaiseDataChanged();
+    }
+
+    private void RaiseDataChanged()
+    {
+        OnDataChanged?.Invoke();
     }
 
     /// <summary>
