@@ -292,6 +292,27 @@ public class RuntimeData : MonoBehaviour
         RaiseDataChanged();
     }
 
+    public int GetGold()
+    {
+        // 장비 강화/상점 구매처럼 현재 보유 골드를 바로 확인해야 할 때 사용합니다.
+        LoadFromJsonIfNeeded();
+        return root.Currency.Gold;
+    }
+
+    public int GetUpgradeStone()
+    {
+        // 장비 강화 UI에서 강화석 보유량을 확인할 때 사용합니다.
+        LoadFromJsonIfNeeded();
+        return root.Currency.UpgradeStone;
+    }
+
+    public void AddUpgradeStone(int amount)
+    {
+        // 보상 지급이나 디버그 지급처럼 강화석을 증가시킬 때 사용합니다.
+        LoadFromJsonIfNeeded();
+        root.Currency.UpgradeStone += amount;
+    }
+
     /// <summary>
     /// 골드를 지정한 양만큼 차감하려고 시도한다.
     /// 
@@ -332,6 +353,19 @@ public class RuntimeData : MonoBehaviour
         // 충분하면 차감 후 성공 반환
         root.Currency.Gold -= amount;
         RaiseDataChanged();
+        return true;
+    }
+
+    public bool SpendUpgradeStone(int amount)
+    {
+        // 장비 강화에 필요한 강화석을 차감합니다.
+        // 보유량이 부족하면 아무것도 차감하지 않고 false를 반환합니다.
+        LoadFromJsonIfNeeded();
+
+        if (root.Currency.UpgradeStone < amount)
+            return false;
+
+        root.Currency.UpgradeStone -= amount;
         return true;
     }
 

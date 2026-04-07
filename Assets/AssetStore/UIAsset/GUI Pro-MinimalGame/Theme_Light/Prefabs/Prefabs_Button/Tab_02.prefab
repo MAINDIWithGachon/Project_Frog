@@ -5,6 +5,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 3
     m_TransformParent: {fileID: 2998069830696803749}
     m_Modifications:
     - target: {fileID: 4106902132402067042, guid: 341bd0387f7054b36b8415821994beb6, type: 3}
@@ -100,12 +101,21 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 341bd0387f7054b36b8415821994beb6, type: 3}
+--- !u!224 &1934492331035189596 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 4106902132402067042, guid: 341bd0387f7054b36b8415821994beb6, type: 3}
+  m_PrefabInstance: {fileID: 2460679794968196926}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &5469523135265265901
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 181573414079133753, guid: cb9f22105bfd643b0ac90b0a4279c98d, type: 3}
@@ -187,6 +197,14 @@ PrefabInstance:
     - target: {fileID: 2998448054618631957, guid: cb9f22105bfd643b0ac90b0a4279c98d, type: 3}
       propertyPath: m_fontColor32.rgba
       value: 4290830059
+      objectReference: {fileID: 0}
+    - target: {fileID: 2998448054618631957, guid: cb9f22105bfd643b0ac90b0a4279c98d, type: 3}
+      propertyPath: 'm_ActiveFontFeatures.Array.data[0]'
+      value: 1801810542
+      objectReference: {fileID: 0}
+    - target: {fileID: 6548821346712177537, guid: cb9f22105bfd643b0ac90b0a4279c98d, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6819036644630757948, guid: cb9f22105bfd643b0ac90b0a4279c98d, type: 3}
       propertyPath: m_Color.b
@@ -333,6 +351,12 @@ PrefabInstance:
       value: 0.4666667
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 7096809829372249416, guid: cb9f22105bfd643b0ac90b0a4279c98d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1934492331035189596}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cb9f22105bfd643b0ac90b0a4279c98d, type: 3}
 --- !u!224 &2998069830696803749 stripped
 RectTransform:
