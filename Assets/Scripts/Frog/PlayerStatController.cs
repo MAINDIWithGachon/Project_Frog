@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 /// <summary>
@@ -15,13 +16,20 @@ using UnityEngine;
 /// </summary>
 public class PlayerStatController : MonoBehaviour
 {
+    public event Action OnStatsRecalculated;
+
     [Header("# Reference")]
     [SerializeField] private RuntimeData runtimeData;
     [SerializeField] private FinalStatData finalStatData;
+    [SerializeField] private CombatPowerData combatPowerData;
     [SerializeField] private Health health;
 
     [Header("# Base Stat")]
     [SerializeField] private PlayerBaseStatData baseStatData;
+
+    [Header("# Combat Power")]
+    [SerializeField] private CombatPowerTuningData combatPowerTuningData;
+    [SerializeField] private SkillData[] skillDatabase;
 
     [Header("# Stat Growth Per Level")]
     [SerializeField] private float attackPerLevel = 5f;
@@ -32,23 +40,21 @@ public class PlayerStatController : MonoBehaviour
 
     private void Awake()
     {
-        if (runtimeData == null)
-            runtimeData = GetComponent<RuntimeData>();
+        ResolveReferences();
+    }
 
-        if (runtimeData == null)
-            runtimeData = FindAnyObjectByType<RuntimeData>();
+    private void OnEnable()
+    {
+        ResolveReferences();
 
-        if (finalStatData == null)
-            finalStatData = GetComponent<FinalStatData>();
+        if (runtimeData != null)
+            runtimeData.OnDataChanged += RecalculateStats;
+    }
 
-        if (finalStatData == null)
-            finalStatData = FindAnyObjectByType<FinalStatData>();
-
-        if (baseStatData == null)
-            baseStatData = GetComponent<PlayerBaseStatData>();
-
-        if (health == null)
-            health = GetComponent<Health>();
+    private void OnDisable()
+    {
+        if (runtimeData != null)
+            runtimeData.OnDataChanged -= RecalculateStats;
     }
 
     private void Start()
@@ -80,7 +86,13 @@ public class PlayerStatController : MonoBehaviour
             return;
         }
 
-        var root = runtimeData.GetRoot();
+        if (baseStatData == null)
+        {
+            Debug.LogError("[PlayerStatController] PlayerBaseStatData reference is missing.");
+            return;
+        }
+
+        RuntimeData.RootData root = runtimeData.GetRoot();
         if (root == null || root.statLevels == null)
         {
             Debug.LogError("[PlayerStatController] RuntimeData root or statLevels is null.");
@@ -89,28 +101,62 @@ public class PlayerStatController : MonoBehaviour
 
         float previousMaxHp = finalStatData.maxHp;
 
-        // 공격력 계산
-        finalStatData.attack = CalculateAttack(root.statLevels.attackLevel);
+        StatContribution attackContribution = CreateAttackContribution(root.statLevels.attackLevel);
+        StatContribution maxHpContribution = CreateMaxHpContribution(root.statLevels.hpLevel);
+        StatContribution hpRegenContribution = CreateHpRegenContribution(root.statLevels.hpRegenLevel);
+        StatContribution critChanceContribution = CreateCritChanceContribution(root.statLevels.critChanceLevel);
+        StatContribution critDamageContribution = CreateCritDamageContribution(root.statLevels.critDamageLevel);
 
-        // 최대 체력 계산
-        finalStatData.maxHp = CalculateMaxHp(root.statLevels.hpLevel);
+        finalStatData.attack = attackContribution.FinalValue;
+        finalStatData.maxHp = maxHpContribution.FinalValue;
+        finalStatData.hpRegenPerSecond = hpRegenContribution.FinalValue;
+        finalStatData.critChance = Mathf.Clamp(critChanceContribution.FinalValue, 0f, 100f);
+        finalStatData.critDamage = critDamageContribution.FinalValue;
 
-        // 초당 체력 회복 계산
-        finalStatData.hpRegenPerSecond = CalculateHpRegen(root.statLevels.hpRegenLevel);
-
-        // 치명타 확률 계산
-        finalStatData.critChance = CalculateCritChance(root.statLevels.critChanceLevel);
-
-        // 치명타 공격력 계산
-        finalStatData.critDamage = CalculateCritDamage(root.statLevels.critDamageLevel);
+        UpdateCombatPowerData(
+            root,
+            attackContribution,
+            maxHpContribution,
+            hpRegenContribution,
+            critChanceContribution,
+            critDamageContribution);
 
         if (health != null)
         {
             health.ApplyStatChanged(previousMaxHp);
         }
+
+        OnStatsRecalculated?.Invoke();
     }
 
-    private float CalculateAttack(int attackLevel)
+    private void ResolveReferences()
+    {
+        if (runtimeData == null)
+            runtimeData = GetComponent<RuntimeData>();
+
+        if (runtimeData == null)
+            runtimeData = FindAnyObjectByType<RuntimeData>();
+
+        if (finalStatData == null)
+            finalStatData = GetComponent<FinalStatData>();
+
+        if (finalStatData == null)
+            finalStatData = FindAnyObjectByType<FinalStatData>();
+
+        if (combatPowerData == null)
+            combatPowerData = GetComponent<CombatPowerData>();
+
+        if (combatPowerData == null)
+            combatPowerData = FindAnyObjectByType<CombatPowerData>();
+
+        if (baseStatData == null)
+            baseStatData = GetComponent<PlayerBaseStatData>();
+
+        if (health == null)
+            health = GetComponent<Health>();
+    }
+
+    private StatContribution CreateAttackContribution(int attackLevel)
     {
         float baseValue = baseStatData.baseAttack;
         float statValue = attackLevel * attackPerLevel;
@@ -118,10 +164,10 @@ public class PlayerStatController : MonoBehaviour
         float recipeValue = GetRecipeAttack();
         float buffValue = GetBuffAttack();
 
-        return baseValue + statValue + equipmentValue + recipeValue + buffValue;
+        return new StatContribution(baseValue, statValue, equipmentValue, recipeValue, buffValue);
     }
 
-    private float CalculateMaxHp(int hpLevel)
+    private StatContribution CreateMaxHpContribution(int hpLevel)
     {
         float baseValue = baseStatData.baseMaxHp;
         float statValue = hpLevel * hpPerLevel;
@@ -129,10 +175,10 @@ public class PlayerStatController : MonoBehaviour
         float recipeValue = GetRecipeHp();
         float buffValue = GetBuffHp();
 
-        return baseValue + statValue + equipmentValue + recipeValue + buffValue;
+        return new StatContribution(baseValue, statValue, equipmentValue, recipeValue, buffValue);
     }
 
-    private float CalculateHpRegen(int hpRegenLevel)
+    private StatContribution CreateHpRegenContribution(int hpRegenLevel)
     {
         float baseValue = baseStatData.baseHpRegenPerSecond;
         float statValue = hpRegenLevel * hpRegenPerLevel;
@@ -140,10 +186,10 @@ public class PlayerStatController : MonoBehaviour
         float recipeValue = GetRecipeHpRegen();
         float buffValue = GetBuffHpRegen();
 
-        return baseValue + statValue + equipmentValue + recipeValue + buffValue;
+        return new StatContribution(baseValue, statValue, equipmentValue, recipeValue, buffValue);
     }
 
-    private float CalculateCritChance(int critChanceLevel)
+    private StatContribution CreateCritChanceContribution(int critChanceLevel)
     {
         float baseValue = baseStatData.baseCritChance;
         float statValue = critChanceLevel * critChancePerLevel;
@@ -151,13 +197,10 @@ public class PlayerStatController : MonoBehaviour
         float recipeValue = GetRecipeCritChance();
         float buffValue = GetBuffCritChance();
 
-        float finalValue = baseValue + statValue + equipmentValue + recipeValue + buffValue;
-
-        // 치명타 확률은 최대 100% 제한
-        return Mathf.Clamp(finalValue, 0f, 100f);
+        return new StatContribution(baseValue, statValue, equipmentValue, recipeValue, buffValue);
     }
 
-    private float CalculateCritDamage(int critDamageLevel)
+    private StatContribution CreateCritDamageContribution(int critDamageLevel)
     {
         float baseValue = baseStatData.baseCritDamage;
         float statValue = critDamageLevel * critDamagePerLevel;
@@ -165,7 +208,80 @@ public class PlayerStatController : MonoBehaviour
         float recipeValue = GetRecipeCritDamage();
         float buffValue = GetBuffCritDamage();
 
-        return baseValue + statValue + equipmentValue + recipeValue + buffValue;
+        return new StatContribution(baseValue, statValue, equipmentValue, recipeValue, buffValue);
+    }
+
+    private void UpdateCombatPowerData(
+        RuntimeData.RootData root,
+        StatContribution attackContribution,
+        StatContribution maxHpContribution,
+        StatContribution hpRegenContribution,
+        StatContribution critChanceContribution,
+        StatContribution critDamageContribution)
+    {
+        if (combatPowerData == null || combatPowerTuningData == null)
+            return;
+
+        float statCombatPower =
+            (attackContribution.CombatPowerValue * combatPowerTuningData.attackWeight) +
+            (maxHpContribution.CombatPowerValue * combatPowerTuningData.maxHpWeight) +
+            (hpRegenContribution.CombatPowerValue * combatPowerTuningData.hpRegenWeight) +
+            (Mathf.Clamp(critChanceContribution.CombatPowerValue, 0f, 100f) * combatPowerTuningData.critChanceWeight) +
+            (critDamageContribution.CombatPowerValue * combatPowerTuningData.critDamageWeight);
+
+        float skillCombatPower = CalculateSkillCombatPower(root);
+
+        combatPowerData.SetData(
+            attackContribution,
+            maxHpContribution,
+            hpRegenContribution,
+            critChanceContribution,
+            critDamageContribution,
+            statCombatPower,
+            skillCombatPower);
+    }
+
+    private float CalculateSkillCombatPower(RuntimeData.RootData root)
+    {
+        if (root == null || root.skillLevels == null || combatPowerTuningData == null)
+            return 0f;
+
+        float total = 0f;
+
+        for (int i = 0; i < root.skillLevels.Length; i++)
+        {
+            RuntimeData.SkillLevelData skillLevelData = root.skillLevels[i];
+            SkillData skillData = FindSkillData(skillLevelData.skillId);
+
+            if (skillData != null)
+            {
+                total += skillData.GetCombatPowerContribution(
+                    skillLevelData.level,
+                    combatPowerTuningData.defaultSkillBaseContribution,
+                    combatPowerTuningData.defaultSkillPerLevelContribution);
+                continue;
+            }
+
+            total += combatPowerTuningData.defaultSkillBaseContribution +
+                     (combatPowerTuningData.defaultSkillPerLevelContribution * skillLevelData.level);
+        }
+
+        return total;
+    }
+
+    private SkillData FindSkillData(int skillId)
+    {
+        if (skillDatabase == null)
+            return null;
+
+        for (int i = 0; i < skillDatabase.Length; i++)
+        {
+            SkillData skillData = skillDatabase[i];
+            if (skillData != null && skillData.id == skillId)
+                return skillData;
+        }
+
+        return null;
     }
 
     // =========================

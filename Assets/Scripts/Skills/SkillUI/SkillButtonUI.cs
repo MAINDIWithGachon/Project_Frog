@@ -5,7 +5,7 @@ public class SkillButtonUI : MonoBehaviour
 {
     [SerializeField] private SkillManager skillManager;
     [SerializeField] private int skillId;
-    [SerializeField] private Image coolTimeBG;
+    public Image coolTimeBG;
 
     private SkillData skillData;
 
@@ -42,11 +42,15 @@ public class SkillButtonUI : MonoBehaviour
 
     public void OnClickSkillButton()
     {
+        Debug.Log("일단 눌림");
         if (skillManager == null)
         {
             Debug.LogError("[SkillButtonUI] SkillManager reference is missing.");
             return;
         }
+
+       // if (skillId <= 0)
+            //return;
 
         if (skillManager.TryCast(skillId, out SkillCastResult castResult))
         {

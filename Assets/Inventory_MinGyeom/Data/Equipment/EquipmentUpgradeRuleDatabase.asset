@@ -1,0 +1,267 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 68abb89e24aae6c458b7c1034f60300f, type: 3}
+  m_Name: EquipmentUpgradeRuleDatabase
+  m_EditorClassIdentifier: 
+  rules:
+  - rarity: 0
+    currentLevel: 1
+    requiredDuplicateCount: 10
+    requiredGold: 100
+    requiredUpgradeStone: 5
+  - rarity: 0
+    currentLevel: 2
+    requiredDuplicateCount: 10
+    requiredGold: 200
+    requiredUpgradeStone: 10
+  - rarity: 0
+    currentLevel: 3
+    requiredDuplicateCount: 10
+    requiredGold: 300
+    requiredUpgradeStone: 15
+  - rarity: 0
+    currentLevel: 4
+    requiredDuplicateCount: 10
+    requiredGold: 400
+    requiredUpgradeStone: 20
+  - rarity: 0
+    currentLevel: 5
+    requiredDuplicateCount: 10
+    requiredGold: 500
+    requiredUpgradeStone: 25
+  - rarity: 0
+    currentLevel: 6
+    requiredDuplicateCount: 10
+    requiredGold: 600
+    requiredUpgradeStone: 30
+  - rarity: 0
+    currentLevel: 7
+    requiredDuplicateCount: 10
+    requiredGold: 700
+    requiredUpgradeStone: 35
+  - rarity: 0
+    currentLevel: 8
+    requiredDuplicateCount: 10
+    requiredGold: 800
+    requiredUpgradeStone: 40
+  - rarity: 0
+    currentLevel: 9
+    requiredDuplicateCount: 10
+    requiredGold: 900
+    requiredUpgradeStone: 45
+  - rarity: 0
+    currentLevel: 10
+    requiredDuplicateCount: 10
+    requiredGold: 1000
+    requiredUpgradeStone: 50
+  - rarity: 1
+    currentLevel: 1
+    requiredDuplicateCount: 10
+    requiredGold: 200
+    requiredUpgradeStone: 10
+  - rarity: 1
+    currentLevel: 2
+    requiredDuplicateCount: 10
+    requiredGold: 400
+    requiredUpgradeStone: 20
+  - rarity: 1
+    currentLevel: 3
+    requiredDuplicateCount: 10
+    requiredGold: 600
+    requiredUpgradeStone: 30
+  - rarity: 1
+    currentLevel: 4
+    requiredDuplicateCount: 10
+    requiredGold: 800
+    requiredUpgradeStone: 40
+  - rarity: 1
+    currentLevel: 5
+    requiredDuplicateCount: 10
+    requiredGold: 1000
+    requiredUpgradeStone: 50
+  - rarity: 1
+    currentLevel: 6
+    requiredDuplicateCount: 10
+    requiredGold: 1200
+    requiredUpgradeStone: 60
+  - rarity: 1
+    currentLevel: 7
+    requiredDuplicateCount: 10
+    requiredGold: 1400
+    requiredUpgradeStone: 70
+  - rarity: 1
+    currentLevel: 8
+    requiredDuplicateCount: 10
+    requiredGold: 1600
+    requiredUpgradeStone: 80
+  - rarity: 1
+    currentLevel: 9
+    requiredDuplicateCount: 10
+    requiredGold: 1800
+    requiredUpgradeStone: 90
+  - rarity: 1
+    currentLevel: 10
+    requiredDuplicateCount: 10
+    requiredGold: 2000
+    requiredUpgradeStone: 100
+  - rarity: 2
+    currentLevel: 1
+    requiredDuplicateCount: 10
+    requiredGold: 400
+    requiredUpgradeStone: 15
+  - rarity: 2
+    currentLevel: 2
+    requiredDuplicateCount: 10
+    requiredGold: 800
+    requiredUpgradeStone: 30
+  - rarity: 2
+    currentLevel: 3
+    requiredDuplicateCount: 10
+    requiredGold: 1200
+    requiredUpgradeStone: 45
+  - rarity: 2
+    currentLevel: 4
+    requiredDuplicateCount: 10
+    requiredGold: 1600
+    requiredUpgradeStone: 60
+  - rarity: 2
+    currentLevel: 5
+    requiredDuplicateCount: 10
+    requiredGold: 2000
+    requiredUpgradeStone: 75
+  - rarity: 2
+    currentLevel: 6
+    requiredDuplicateCount: 10
+    requiredGold: 2400
+    requiredUpgradeStone: 90
+  - rarity: 2
+    currentLevel: 7
+    requiredDuplicateCount: 10
+    requiredGold: 2800
+    requiredUpgradeStone: 105
+  - rarity: 2
+    currentLevel: 8
+    requiredDuplicateCount: 10
+    requiredGold: 3200
+    requiredUpgradeStone: 120
+  - rarity: 2
+    currentLevel: 9
+    requiredDuplicateCount: 10
+    requiredGold: 3600
+    requiredUpgradeStone: 135
+  - rarity: 2
+    currentLevel: 10
+    requiredDuplicateCount: 10
+    requiredGold: 4000
+    requiredUpgradeStone: 150
+  - rarity: 3
+    currentLevel: 1
+    requiredDuplicateCount: 10
+    requiredGold: 700
+    requiredUpgradeStone: 25
+  - rarity: 3
+    currentLevel: 2
+    requiredDuplicateCount: 10
+    requiredGold: 1400
+    requiredUpgradeStone: 50
+  - rarity: 3
+    currentLevel: 3
+    requiredDuplicateCount: 10
+    requiredGold: 2100
+    requiredUpgradeStone: 75
+  - rarity: 3
+    currentLevel: 4
+    requiredDuplicateCount: 10
+    requiredGold: 2800
+    requiredUpgradeStone: 100
+  - rarity: 3
+    currentLevel: 5
+    requiredDuplicateCount: 10
+    requiredGold: 3500
+    requiredUpgradeStone: 125
+  - rarity: 3
+    currentLevel: 6
+    requiredDuplicateCount: 10
+    requiredGold: 4200
+    requiredUpgradeStone: 150
+  - rarity: 3
+    currentLevel: 7
+    requiredDuplicateCount: 10
+    requiredGold: 4900
+    requiredUpgradeStone: 175
+  - rarity: 3
+    currentLevel: 8
+    requiredDuplicateCount: 10
+    requiredGold: 5600
+    requiredUpgradeStone: 200
+  - rarity: 3
+    currentLevel: 9
+    requiredDuplicateCount: 10
+    requiredGold: 6300
+    requiredUpgradeStone: 225
+  - rarity: 3
+    currentLevel: 10
+    requiredDuplicateCount: 10
+    requiredGold: 7000
+    requiredUpgradeStone: 250
+  - rarity: 4
+    currentLevel: 1
+    requiredDuplicateCount: 10
+    requiredGold: 1100
+    requiredUpgradeStone: 40
+  - rarity: 4
+    currentLevel: 2
+    requiredDuplicateCount: 10
+    requiredGold: 2200
+    requiredUpgradeStone: 80
+  - rarity: 4
+    currentLevel: 3
+    requiredDuplicateCount: 10
+    requiredGold: 3300
+    requiredUpgradeStone: 120
+  - rarity: 4
+    currentLevel: 4
+    requiredDuplicateCount: 10
+    requiredGold: 4400
+    requiredUpgradeStone: 160
+  - rarity: 4
+    currentLevel: 5
+    requiredDuplicateCount: 10
+    requiredGold: 5500
+    requiredUpgradeStone: 200
+  - rarity: 4
+    currentLevel: 6
+    requiredDuplicateCount: 10
+    requiredGold: 6600
+    requiredUpgradeStone: 240
+  - rarity: 4
+    currentLevel: 7
+    requiredDuplicateCount: 10
+    requiredGold: 7700
+    requiredUpgradeStone: 280
+  - rarity: 4
+    currentLevel: 8
+    requiredDuplicateCount: 10
+    requiredGold: 8800
+    requiredUpgradeStone: 320
+  - rarity: 4
+    currentLevel: 9
+    requiredDuplicateCount: 10
+    requiredGold: 9900
+    requiredUpgradeStone: 360
+  - rarity: 4
+    currentLevel: 10
+    requiredDuplicateCount: 10
+    requiredGold: 11000
+    requiredUpgradeStone: 400
+  defaultMaxLevel: 10
+  defaultDuplicateCount: 10

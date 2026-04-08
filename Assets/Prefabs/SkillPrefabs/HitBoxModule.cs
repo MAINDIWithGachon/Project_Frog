@@ -19,6 +19,7 @@ public class HitBoxModule : MonoBehaviour
     private Collider2D[] hitColliders;
     private float hitActiveTimer;
     private bool isHitBoxActive;
+    private bool keepHitBoxActiveUntilDisabled;
 
     private void Awake()
     {
@@ -28,6 +29,9 @@ public class HitBoxModule : MonoBehaviour
     private void Update()
     {
         if (!isHitBoxActive)
+            return;
+
+        if (keepHitBoxActiveUntilDisabled)
             return;
 
         hitActiveTimer -= Time.deltaTime;
@@ -50,7 +54,8 @@ public class HitBoxModule : MonoBehaviour
         float hitStunDuration = -1f,
         float hitActiveDuration = -1f,
         float knockbackDistance = 0f,
-        float knockbackDirectionX = 0f)
+        float knockbackDirectionX = 0f,
+        bool keepActiveUntilDisabled = false)
     {
         this.damage = damage;
         this.critChance = critChance;
@@ -60,6 +65,7 @@ public class HitBoxModule : MonoBehaviour
         this.hitStunDuration = hitStunDuration >= 0f ? hitStunDuration : defaultHitStunDuration;
         this.knockbackDistance = Mathf.Max(0f, knockbackDistance);
         this.knockbackDirectionX = Mathf.Sign(knockbackDirectionX);
+        keepHitBoxActiveUntilDisabled = keepActiveUntilDisabled;
         hitTargetIds.Clear();
 
         hitActiveTimer = this.hitActiveDuration;
@@ -126,6 +132,7 @@ public class HitBoxModule : MonoBehaviour
     {
         isHitBoxActive = false;
         hitActiveTimer = 0f;
+        keepHitBoxActiveUntilDisabled = false;
         SetHitCollidersEnabled(false);
     }
 }
