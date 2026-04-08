@@ -5,8 +5,7 @@ using UnityEngine.UI;
 public class SkillOnOffTogle : MonoBehaviour
 {
     [SerializeField] private bool isAuto;
-    [SerializeField] private Image checkMark;
-    [SerializeField] private TMP_Text onoffText;
+    [SerializeField] private GameObject[] onOff;//0은 on, 1은 off
     [SerializeField] private SkillManager skillManager;
     [SerializeField] private int skillId;
 
@@ -32,12 +31,16 @@ public class SkillOnOffTogle : MonoBehaviour
         RefreshUI();
     }
 
-    private void RefreshUI()
+        private void RefreshUI()
     {
-        if (checkMark != null)
-            checkMark.enabled = isAuto;
+        if (onOff == null || onOff.Length < 2)
+            return;
 
-        if (onoffText != null)
-            onoffText.text = isAuto ? "AUTO ON" : "AUTO OFF";
+        if (onOff[0] != null)
+            onOff[0].SetActive(isAuto);
+
+        if (onOff[1] != null)
+            onOff[1].SetActive(!isAuto);
     }
+
 }
