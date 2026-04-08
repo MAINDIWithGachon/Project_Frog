@@ -33,7 +33,7 @@ public class SkillManager : MonoBehaviour
 
     [Header("# Skill Database")]
     [SerializeField] private SkillData[] skillDatabase;
-    [SerializeField] private EquippedSkillDatabase equippedSkillDatabase;
+    [SerializeField] private List<int> equippedSkillIds = new() { 0, 1, -1, -1 };
 
     /// <summary>
     /// 각 스킬의 다음 사용 가능 시각(Time.time 기준)을 저장한다.
@@ -44,7 +44,6 @@ public class SkillManager : MonoBehaviour
     private readonly Dictionary<int, float> nextAvailableTimeBySkillId = new();
     private readonly Dictionary<int, ISkillExecutable> skillExecutablesById = new();
     private readonly Dictionary<int, SkillDetailData> uiSkillDetailsById = new();
-    private int[] equippedSkillIds = Array.Empty<int>();
 
     private Transform runtimeSkillExecutorRoot;
 
@@ -351,12 +350,12 @@ public class SkillManager : MonoBehaviour
 
     public int GetEquippedSlotCount()
     {
-        return equippedSkillIds != null ? equippedSkillIds.Length : 0;
+        return equippedSkillIds != null ? equippedSkillIds.Count : 0;
     }
 
     public int GetEquippedSkillIdAtSlot(int slotIndex)
     {
-        if (equippedSkillIds == null || slotIndex < 0 || slotIndex >= equippedSkillIds.Length)
+        if (equippedSkillIds == null || slotIndex < 0 || slotIndex >= equippedSkillIds.Count)
             return 0;
 
         return equippedSkillIds[slotIndex];
@@ -371,10 +370,10 @@ public class SkillManager : MonoBehaviour
     {
         slotIndex = -1;
 
-        if (skillId <= 0 || equippedSkillIds == null)
+        if (skillId < 0 || equippedSkillIds == null)
             return false;
 
-        for (int i = 0; i < equippedSkillIds.Length; i++)
+        for (int i = 0; i < equippedSkillIds.Count; i++)
         {
             if (equippedSkillIds[i] != skillId)
                 continue;
@@ -390,15 +389,15 @@ public class SkillManager : MonoBehaviour
     {
         slotIndex = -1;
 
-        if (skillId <= 0 || equippedSkillIds == null || equippedSkillIds.Length == 0)
+        if (skillId < 0 || equippedSkillIds == null || equippedSkillIds.Count == 0)
             return false;
 
         if (TryFindEquippedSlotIndex(skillId, out slotIndex))
             return true;
 
-        for (int i = 0; i < equippedSkillIds.Length; i++)
+        for (int i = 0; i < equippedSkillIds.Count; i++)
         {
-            if (equippedSkillIds[i] != 0)
+            if (equippedSkillIds[i] != -1)
                 continue;
 
             equippedSkillIds[i] = skillId;
@@ -414,19 +413,19 @@ public class SkillManager : MonoBehaviour
         if (!TryFindEquippedSlotIndex(skillId, out slotIndex))
             return false;
 
-        equippedSkillIds[slotIndex] = 0;
+        equippedSkillIds[slotIndex] = -1;
         return true;
     }
 
     public bool TryUnequipSlot(int slotIndex)
     {
-        if (equippedSkillIds == null || slotIndex < 0 || slotIndex >= equippedSkillIds.Length)
+        if (equippedSkillIds == null || slotIndex < 0 || slotIndex >= equippedSkillIds.Count)
             return false;
 
-        if (equippedSkillIds[slotIndex] == 0)
+        if (equippedSkillIds[slotIndex] < 0)
             return false;
 
-        equippedSkillIds[slotIndex] = 0;
+        equippedSkillIds[slotIndex] = -1;
         return true;
     }
 
@@ -607,14 +606,14 @@ public class SkillManager : MonoBehaviour
 
     private void InitializeEquippedSkills()
     {
-        int slotCount = equippedSkillDatabase != null ? Mathf.Max(1, equippedSkillDatabase.slotCount) : 3;
-        equippedSkillIds = new int[slotCount];
-
-        if (equippedSkillDatabase == null || equippedSkillDatabase.defaultEquippedSkillIds == null)
+        if (equippedSkillIds == null)
+        {
+            equippedSkillIds = new List<int> { 0, 1, -1, -1 };
             return;
+        }
 
-        int copyLength = Mathf.Min(equippedSkillIds.Length, equippedSkillDatabase.defaultEquippedSkillIds.Length);
-        Array.Copy(equippedSkillDatabase.defaultEquippedSkillIds, equippedSkillIds, copyLength);
+        if (equippedSkillIds.Count == 0)
+            equippedSkillIds.AddRange(new[] { 0, 1, -1, -1 });
     }
 }
 

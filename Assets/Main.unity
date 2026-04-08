@@ -5982,7 +5982,7 @@ MonoBehaviour:
   skillDatabase:
   - {fileID: 11400000, guid: 3b951dfbf8d4944f891414846589b755, type: 2}
   - {fileID: 11400000, guid: 3397bf83362d54aa58350d3626170c8f, type: 2}
-  equippedSkillDatabase: {fileID: 0}
+  equippedSkillIds: 
 --- !u!114 &1425040967
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8861,7 +8861,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 0.990566, g: 0.990566, b: 0.990566, a: 0}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -16332,7 +16332,6 @@ MonoBehaviour:
   - {fileID: 9160976496431033220}
   - {fileID: 2232909062789479278}
   skillManager: {fileID: 1425040966}
-  skillId: 0
 --- !u!224 &8991161476661962769
 RectTransform:
   m_ObjectHideFlags: 0

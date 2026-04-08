@@ -1,13 +1,10 @@
-using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class SkillOnOffTogle : MonoBehaviour
 {
     [SerializeField] private bool isAuto;
     [SerializeField] private GameObject[] onOff;//0은 on, 1은 off
     [SerializeField] private SkillManager skillManager;
-    [SerializeField] private int skillId;
 
     private void Start()
     {
@@ -19,10 +16,18 @@ public class SkillOnOffTogle : MonoBehaviour
         if (!isAuto || skillManager == null)
             return;
 
-        if (!skillManager.CanCast(skillId))
-            return;
+        int equippedSlotCount = skillManager.GetEquippedSlotCount();
+        for (int slotIndex = 0; slotIndex < equippedSlotCount; slotIndex++)
+        {
+            int equippedSkillId = skillManager.GetEquippedSkillIdAtSlot(slotIndex);
+            if (equippedSkillId < 0)
+                continue;
 
-        skillManager.TryCast(skillId, out _);
+            if (!skillManager.CanCast(equippedSkillId))
+                continue;
+
+            skillManager.TryCast(equippedSkillId, out _);
+        }
     }
 
     public void SkillTogleOnOff()
@@ -31,7 +36,7 @@ public class SkillOnOffTogle : MonoBehaviour
         RefreshUI();
     }
 
-        private void RefreshUI()
+    private void RefreshUI()
     {
         if (onOff == null || onOff.Length < 2)
             return;
