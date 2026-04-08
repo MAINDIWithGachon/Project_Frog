@@ -94,24 +94,51 @@ public class SocialChatController : MonoBehaviour
 
     public void SendCurrentMessage()
     {
-        if (inputField == null || outgoingMessagePrefab == null || contentRoot == null)
-        {
-            Debug.LogWarning("SocialChatController references are missing.");
-            return;
-        }
-
-        var message = inputField.text;
-        if (string.IsNullOrWhiteSpace(message))
-        {
-            return;
-        }
-
-        CreateOutgoingMessage(message.Trim());
-
+        if (inputField == null || string.IsNullOrWhiteSpace(inputField.text)) return;
+    
+        string message = inputField.text.Trim();
+        CreateOutgoingMessage(message);
+    
         inputField.text = string.Empty;
-        inputField.ActivateInputField();
-        inputField.Select();
+        if (sendButton != null) sendButton.interactable = false;
+
+        AIManager.Instance.AskAI(message, 
+            (replySoFar) => 
+            {
+                UpdateLastAIMessage(replySoFar); 
+            }, 
+            () => 
+            {
+                if (sendButton != null) sendButton.interactable = true;
+                Debug.Log("AI 답변 완료");
+            });
     }
+
+    private void UpdateLastAIMessage(string text)
+    {
+        if (contentRoot.childCount > 0)
+        {
+            Transform lastChild = contentRoot.GetChild(contentRoot.childCount - 1);
+            if (lastChild.name == aiObjectName)
+            {
+                var messageText = FindMessageText(lastChild);
+                if (messageText != null)
+                {
+                    messageText.text = text;
+                    RefreshLayout();
+                }
+            }
+            else
+            {
+                AddAIMessage(text);
+            }
+        }
+        else
+        {
+            AddAIMessage(text);
+        }
+    }
+    
 
     private void CreateOutgoingMessage(string message)
     {
