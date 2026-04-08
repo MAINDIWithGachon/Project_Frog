@@ -1,8 +1,11 @@
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class StageManager : MonoBehaviour
 {
-    private const int RequiredNormalKillCount = 100;
+    private const int RequiredNormalKillCount = 30;
+    private const string DefaultStageAreaName = "시작의 숲";
 
     public static StageManager Instance { get; private set; }
 
@@ -27,6 +30,9 @@ public class StageManager : MonoBehaviour
 
     [Header("UI")]
     public SpriteRenderer StageFog;
+    public Slider stageSlider;
+    public TMP_Text stageText;//시작의 숲 1-1, 1-2 ...
+    public TMP_Text stageCount; // 0 / 30 처럼 현재 진행률 텍스트로 표현
 
 
     private void Awake()
@@ -45,6 +51,7 @@ public class StageManager : MonoBehaviour
         if (Instance == this)
             Instance = null;
     }
+
     [ContextMenu("Start Stage")]
     public void StartStage()
     {
@@ -166,6 +173,7 @@ public class StageManager : MonoBehaviour
             currentStageState = StageState.Ready;
             currentNormalKillCount = 0;
             currentRemainingBossTime = 0f;
+            RefreshStageUi();
             return;
         }
 
@@ -173,6 +181,35 @@ public class StageManager : MonoBehaviour
         currentStageState = runtime.currentState;
         currentNormalKillCount = runtime.normalKillCount;
         currentRemainingBossTime = runtime.remainingBossTime;
+        RefreshStageUi();
+    }
+
+    private void RefreshStageUi()
+    {
+        if (stageText != null)
+        {
+            stageText.text = runtime == null ? string.Empty : GetStageDisplayName(runtime.stageIndex);
+        }
+
+        if (stageSlider != null)
+        {
+            stageSlider.minValue = 0f;
+            stageSlider.maxValue = RequiredNormalKillCount;
+            stageSlider.value = runtime == null
+                ? 0f
+                : Mathf.Clamp(runtime.normalKillCount, 0, RequiredNormalKillCount);
+        }
+
+        if (stageCount != null)
+        {
+            int currentKillCount = runtime == null ? 0 : Mathf.Clamp(runtime.normalKillCount, 0, RequiredNormalKillCount);
+            stageCount.text = $"{currentKillCount} / {RequiredNormalKillCount}";
+        }
+    }
+
+    private string GetStageDisplayName(int stageIndex)
+    {
+        return $"{DefaultStageAreaName} 1-{Mathf.Max(1, stageIndex)}";
     }
 
     private void ResetRuntimeMultipliers()

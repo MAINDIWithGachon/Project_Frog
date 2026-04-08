@@ -80,14 +80,6 @@ public class Monster_Movement : MonoBehaviour
         }
     }
 
-    private void OnEnable()
-    {
-        if (!Application.isPlaying)
-            return;
-
-        ResetForSpawn();
-    }
-
     private void ApplyStageDifficulty()
     {
         StageRuntimeContext runtime = StageManager.Instance != null ? StageManager.Instance.runtime : null;
@@ -98,32 +90,6 @@ public class Monster_Movement : MonoBehaviour
         }
 
         speed = baseSpeed * runtime.finalMonsterSpeedMultiplier;
-    }
-
-    public void ResetForSpawn()
-    {
-        ApplyStageDifficulty();
-
-        isDead = false;
-        isAttacking = false;
-        playerContactCount = 0;
-        hitStunTimer = 0f;
-        facingUpdateTimer = 0f;
-        movePatternTimer = 0f;
-        hasStartedRandomPattern = false;
-
-        ResetVisualRootTransform();
-        SetAttack(false);
-        SelectNextRandomMove(forceSelection: true);
-    }
-
-    private void ResetVisualRootTransform()
-    {
-        if (visualRoot == null)
-            return;
-
-        visualRoot.localScale = baseVisualLocalScale;
-        visualRoot.localRotation = baseVisualLocalRotation;
     }
 
     private void EnsureCombatComponents()

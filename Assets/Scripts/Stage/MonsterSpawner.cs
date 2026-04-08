@@ -99,8 +99,7 @@ public class MonsterSpawner : MonoBehaviour
                 spawnPosition,
                 Quaternion.identity,
                 spawnParent);
-
-            ResetSpawnedMonster(spawnedMonster);
+                
             aliveMonsters.Add(spawnedMonster);
             BindPlayerTarget(spawnedMonster);
         }
@@ -150,23 +149,6 @@ public class MonsterSpawner : MonoBehaviour
         monsterMovement.Initialize(playerCenterPivot);
     }
 
-    private void ResetSpawnedMonster(GameObject spawnedMonster)
-    {
-        if (spawnedMonster == null)
-            return;
-
-        MonsterHealth monsterHealth = spawnedMonster.GetComponentInChildren<MonsterHealth>(true);
-        if (monsterHealth != null)
-        {
-            monsterHealth.ResetForSpawn();
-        }
-
-        Monster_Movement monsterMovement = spawnedMonster.GetComponentInChildren<Monster_Movement>(true);
-        if (monsterMovement != null)
-        {
-            monsterMovement.ResetForSpawn();
-        }
-    }
 
     private void CleanupDeadMonsters()
     {
