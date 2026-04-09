@@ -6,7 +6,6 @@ public class ScaleByScreenHeightUI : MonoBehaviour
     [Header("Scale Settings")]
     [SerializeField] private float referenceWidth = 1080f;
     [SerializeField] private Vector3 baseScale = Vector3.one;
-    [SerializeField] private bool cacheInitialScaleOnAwake = true;
     [SerializeField] private bool useCanvasWidthWhenAvailable = true;
 
     private RectTransform rectTransform;
@@ -17,11 +16,6 @@ public class ScaleByScreenHeightUI : MonoBehaviour
     {
         rectTransform = GetComponent<RectTransform>();
         rootCanvas = GetComponentInParent<Canvas>()?.rootCanvas;
-
-        if (cacheInitialScaleOnAwake)
-        {
-            baseScale = transform.localScale;
-        }
 
         ApplyScale(force: true);
     }
@@ -60,13 +54,28 @@ public class ScaleByScreenHeightUI : MonoBehaviour
             return;
 
         float scaleRatio = currentWidth / referenceWidth;
-        transform.localScale = baseScale * scaleRatio;
+        transform.localScale = new Vector3(
+            baseScale.x * scaleRatio,
+            baseScale.y * scaleRatio,
+            baseScale.z);
         lastMeasuredWidth = currentWidth;
     }
 
     public void CaptureCurrentScaleAsBase()
     {
-        baseScale = transform.localScale;
+        float currentWidth = GetCurrentWidth();
+        if (referenceWidth <= 0f || currentWidth <= 0f)
+            return;
+
+        float scaleRatio = currentWidth / referenceWidth;
+        if (Mathf.Approximately(scaleRatio, 0f))
+            return;
+
+        Vector3 currentScale = transform.localScale;
+        baseScale = new Vector3(
+            currentScale.x / scaleRatio,
+            currentScale.y / scaleRatio,
+            currentScale.z);
         ApplyScale(force: true);
     }
 
