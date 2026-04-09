@@ -1315,6 +1315,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 2096839457}
+        m_TargetAssemblyTypeName: StatContent, Assembly-CSharp
+        m_MethodName: PushAnim
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &340162908
 GameObject:
   m_ObjectHideFlags: 0
@@ -3091,6 +3103,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 216687624}
+        m_TargetAssemblyTypeName: StatContent, Assembly-CSharp
+        m_MethodName: PushAnim
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &753223554
 GameObject:
   m_ObjectHideFlags: 0
@@ -3315,6 +3339,18 @@ MonoBehaviour:
       - m_Target: {fileID: 247379828}
         m_TargetAssemblyTypeName: StatUI, Assembly-CSharp
         m_MethodName: OnClickUpgradeHpRegen
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 62589260}
+        m_TargetAssemblyTypeName: StatContent, Assembly-CSharp
+        m_MethodName: PushAnim
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -5747,6 +5783,18 @@ MonoBehaviour:
       - m_Target: {fileID: 247379828}
         m_TargetAssemblyTypeName: StatUI, Assembly-CSharp
         m_MethodName: OnClickUpgradeHp
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 52410961}
+        m_TargetAssemblyTypeName: StatContent, Assembly-CSharp
+        m_MethodName: PushAnim
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -15716,6 +15764,18 @@ MonoBehaviour:
       - m_Target: {fileID: 247379828}
         m_TargetAssemblyTypeName: StatUI, Assembly-CSharp
         m_MethodName: OnClickUpgradeAttack
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 7910877790410988147}
+        m_TargetAssemblyTypeName: StatContent, Assembly-CSharp
+        m_MethodName: PushAnim
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
