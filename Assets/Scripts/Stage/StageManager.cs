@@ -33,6 +33,7 @@ public class StageManager : MonoBehaviour
     public Slider stageSlider;
     public TMP_Text stageText;//시작의 숲 1-1, 1-2 ...
     public TMP_Text stageCount; // 0 / 30 처럼 현재 진행률 텍스트로 표현
+    public GameObject gameReult_Lose;//패배 시 나오는 화면
 
 
     private void Awake()
@@ -65,6 +66,7 @@ public class StageManager : MonoBehaviour
         ResetRuntimeMultipliers();
         ApplyStageDifficulty();
         SyncRuntimeToInspector();
+        PrepareStageRestart();
 
         EnterNormalMode();
     }
@@ -109,6 +111,7 @@ public class StageManager : MonoBehaviour
 
         runtime.currentState = StageState.Clear;
         SyncRuntimeToInspector();
+        ClearRemainingMonsters();
         Debug.Log($"[StageManager] Stage {runtime.stageIndex} cleared.");
         AdvanceToNextStage();
     }
@@ -163,6 +166,52 @@ public class StageManager : MonoBehaviour
 
         Debug.Log($"[StageManager] Moving to stage {runtime.stageIndex}.");
         EnterNormalMode();
+    }
+    public void RestartCurrentStage()
+    {
+        if (runtime == null)
+        {
+            StartStage();
+            return;
+        }
+
+        int restartStageIndex = runtime.stageIndex;
+
+        runtime = new StageRuntimeContext();
+        runtime.stageIndex = restartStageIndex;
+        runtime.currentState = StageState.Ready;
+        runtime.normalKillCount = 0;
+        runtime.remainingBossTime = 0f;
+       
+
+        ResetRuntimeMultipliers();
+        ApplyStageDifficulty();
+        SyncRuntimeToInspector();
+        PrepareStageRestart();
+        EnterNormalMode();
+
+    }
+
+    private void PrepareStageRestart()
+    {
+        ClearRemainingMonsters();
+        Health.PlayerInstance?.ResetForRespawn();
+        MoveStage();
+        GameStateManager.Instance?.SetState(GameState.Playing);
+
+    }
+
+
+    private void ClearRemainingMonsters()
+    {
+        MonsterSpawner[] spawners = FindObjectsByType<MonsterSpawner>(FindObjectsSortMode.None);
+        for (int index = 0; index < spawners.Length; index++)
+        {
+            if (spawners[index] == null)
+                continue;
+
+            spawners[index].ClearAliveMonsters();
+        }
     }
 
     private void SyncRuntimeToInspector()
@@ -265,6 +314,23 @@ public class StageManager : MonoBehaviour
                 continue;
 
             parallaxBackgrounds[index].speedMultiplier = 0f;
+        }
+    }
+      public void MoveStage()
+    {
+        //스테이지의 이동을 0.5으로 함. 재시작시 사용
+        if (parallaxBackgrounds == null || parallaxBackgrounds.Length == 0)
+        {
+            Debug.LogWarning("[StageManager] No parallax backgrounds assigned.");
+            return;
+        }
+
+        for (int index = 0; index < parallaxBackgrounds.Length; index++)
+        {
+            if (parallaxBackgrounds[index] == null)
+                continue;
+
+            parallaxBackgrounds[index].speedMultiplier = 0.5f;
         }
     }
 }

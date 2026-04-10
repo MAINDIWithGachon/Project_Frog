@@ -202,4 +202,5 @@ public class HitLogic : MonoBehaviour
             blinkRenderers[index].enabled = isVisible;
         }
     }
+  
 }
