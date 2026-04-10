@@ -49,21 +49,42 @@ public class UIConfettiBackground : MonoBehaviour
     private void Reset()
     {
         CacheComponents();
-        ApplySetup();
+        ApplySetupForCurrentState();
         RefreshEmitterTransform();
     }
 
     private void Awake()
     {
         CacheComponents();
-        ApplySetup();
+        ApplySetupForCurrentState();
         RefreshEmitterTransform();
+    }
+
+    private void OnEnable()
+    {
+        if (particleSystemCache == null)
+            CacheComponents();
+
+        if (particleSystemCache == null)
+            return;
+
+        particleSystemCache.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+        RefreshEmitterTransform();
+        particleSystemCache.Play(true);
+    }
+
+    private void OnDisable()
+    {
+        if (particleSystemCache == null)
+            return;
+
+        particleSystemCache.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
     }
 
     private void LateUpdate()
     {
         if (followBoundsEveryFrame)
-            RefreshEmitterTransform();
+            RefreshEmitterTransform(false);
     }
 
     private void OnRectTransformDimensionsChange()
@@ -71,13 +92,13 @@ public class UIConfettiBackground : MonoBehaviour
         if (!isActiveAndEnabled)
             return;
 
-        RefreshEmitterTransform();
+        RefreshEmitterTransform(!Application.isPlaying);
     }
 
     private void OnValidate()
     {
         CacheComponents();
-        ApplySetup();
+        ApplySetupForCurrentState();
 
         if (!Application.isPlaying)
             RefreshEmitterTransform();
@@ -128,12 +149,27 @@ public class UIConfettiBackground : MonoBehaviour
         ApplyRenderer();
     }
 
+    private void ApplySetupForCurrentState()
+    {
+        if (particleSystemCache == null || particleRenderer == null)
+            return;
+
+        bool wasPlaying = Application.isPlaying && particleSystemCache.isPlaying;
+        if (Application.isPlaying)
+            particleSystemCache.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+
+        ApplySetup();
+
+        if (Application.isPlaying && wasPlaying && isActiveAndEnabled)
+            particleSystemCache.Play(true);
+    }
+
     private void ApplyMainModule()
     {
         ParticleSystem.MainModule main = particleSystemCache.main;
         main.duration = 6f;
         main.loop = true;
-        main.playOnAwake = true;
+        main.playOnAwake = false;
         main.simulationSpace = ParticleSystemSimulationSpace.Local;
         main.scalingMode = ParticleSystemScalingMode.Shape;
         main.maxParticles = 120;
@@ -213,7 +249,7 @@ public class UIConfettiBackground : MonoBehaviour
             particleRenderer.sharedMaterial = targetMaterial;
     }
 
-    private void RefreshEmitterTransform()
+    private void RefreshEmitterTransform(bool updateShapeScale = true)
     {
         if (rectTransform == null || particleSystemCache == null)
             return;
@@ -230,6 +266,9 @@ public class UIConfettiBackground : MonoBehaviour
         rectTransform.localRotation = Quaternion.identity;
         rectTransform.localScale = Vector3.one;
         rectTransform.sizeDelta = new Vector2(emitterWidth, emitterHeight);
+
+        if (!updateShapeScale)
+            return;
 
         ParticleSystem.ShapeModule shape = particleSystemCache.shape;
         shape.scale = new Vector3(emitterWidth, emitterHeight, 1f);
