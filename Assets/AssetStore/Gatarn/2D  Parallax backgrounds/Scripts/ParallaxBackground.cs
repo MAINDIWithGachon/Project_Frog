@@ -54,7 +54,7 @@ public class ParallaxBackground : MonoBehaviour
     [Tooltip("Direction of scrolling (usually left or right).")]
     public Vector2 direction = Vector2.left;
 
-    [SerializeField, Tooltip("Global speed multiplier for all layers.")]
+    [Tooltip("Global speed multiplier for all layers.")]
     public float speedMultiplier = 1f;
     private float originalSpeedMultiplier;
 

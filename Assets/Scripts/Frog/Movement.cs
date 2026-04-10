@@ -7,6 +7,8 @@ public class Movement : MonoBehaviour
     private const float LeftMoveSpeedMultiplier = 1.5f;
 
     private float originalSpeed;
+    private Vector3 startPosition;
+    private int startDirection;
     private float leftLimit;
     private float rightLimit;
     public int direction = 1; // 1: 오른쪽, -1: 왼쪽
@@ -16,6 +18,8 @@ public class Movement : MonoBehaviour
     void Awake()
     {
         originalSpeed = speed;
+        startPosition = transform.position;
+        startDirection = direction;
     }
 
     void Start()
@@ -78,12 +82,19 @@ public class Movement : MonoBehaviour
     public void StopMovement()
     {
         speed = 0f;
-        GameStateManager.Instance?.SetState(GameState.PlayerDead);
     }
 
     public void ResumeMovement()
     {
         speed = originalSpeed;
+    }
+
+    public void ResetForRespawn()
+    {
+        transform.position = startPosition;
+        direction = startDirection;
+        speed = originalSpeed;
+        UpdateFlip();
     }
 
     private void CheckWallCollision()

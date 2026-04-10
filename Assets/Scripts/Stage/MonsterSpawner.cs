@@ -162,6 +162,20 @@ public class MonsterSpawner : MonoBehaviour
         }
     }
 
+    public void ClearAliveMonsters()
+    {
+        for (int index = aliveMonsters.Count - 1; index >= 0; index--)
+        {
+            GameObject monster = aliveMonsters[index];
+            if (monster != null)
+                Destroy(monster);
+
+            aliveMonsters.RemoveAt(index);
+        }
+
+        spawnTimer = 0f;
+    }
+
     private static Transform FindChildTransformByName(Transform root, string childName)
     {
         if (root == null)

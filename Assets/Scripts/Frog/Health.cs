@@ -16,6 +16,7 @@ public class Health : MonoBehaviour
     [Header("Runtime HP")]
     [SerializeField] private float currentHp;
     [SerializeField] private bool isDead;
+    [SerializeField] private bool hasHandledDeathAnimationFinish;
     [Header("HP Slider")]
     public Slider hpSlider;
 
@@ -35,10 +36,19 @@ public class Health : MonoBehaviour
         }
 
         if (finalStatData == null)
+            finalStatData = GetComponent<FinalStatData>();
+
+        if (finalStatData == null)
             finalStatData = GetComponentInParent<FinalStatData>();
 
         if (movement == null)
             movement = GetComponent<Movement>();
+
+        if (movement == null)
+            movement = GetComponentInChildren<Movement>(true);
+
+        if (movement == null)
+            movement = GetComponentInParent<Movement>();
 
         if (deathAnimators == null || deathAnimators.Length == 0)
             deathAnimators = GetComponentsInChildren<Animator>(true);
@@ -112,7 +122,27 @@ public class Health : MonoBehaviour
 
         currentHp = finalStatData.maxHp;
         isDead = false;
+        hasHandledDeathAnimationFinish = false;
         RefreshHpBar();
+    }
+
+    public void ResetForRespawn()
+    {
+        if (finalStatData == null)
+        {
+            Debug.LogError("[Health] FinalStatData reference is missing.");
+            return;
+        }
+
+        currentHp = finalStatData.maxHp;
+        isDead = false;
+        hasHandledDeathAnimationFinish = false;
+        RefreshHpBar();
+
+        if (movement != null)
+            movement.ResetForRespawn();
+
+        ResetDeathAnimation();
     }
 
     public void ApplyStatChanged(float previousMaxHp)
@@ -140,6 +170,7 @@ public class Health : MonoBehaviour
     {
         isDead = true;
         currentHp = 0f;
+        hasHandledDeathAnimationFinish = false;
         RefreshHpBar();
 
         StopDeathRelatedMotion();
@@ -152,7 +183,6 @@ public class Health : MonoBehaviour
         if (movement != null)
             movement.StopMovement();
 
-        GameStateManager.Instance.SetState(GameState.PlayerDead);
         StageManager.Instance?.StopStage();
     }
 
@@ -186,6 +216,23 @@ public class Health : MonoBehaviour
         Debug.Log("[Health] GameStateManager.OnPlayerDead() was not executed.");
     }
 
+    private void ResetDeathAnimation()
+    {
+        if (deathAnimators == null || deathAnimators.Length == 0)
+            return;
+
+        foreach (Animator animator in deathAnimators)
+        {
+            if (animator == null)
+                continue;
+
+            animator.ResetTrigger(deathTriggerName);
+            animator.Rebind();
+            animator.Play("Run", 0, 0f);
+            animator.Update(0f);
+        }
+    }
+
     private void RefreshHpBar()
     {
         if (hpSlider == null || finalStatData == null)
@@ -193,5 +240,23 @@ public class Health : MonoBehaviour
 
         hpSlider.maxValue = finalStatData.maxHp;
         hpSlider.value = currentHp;
+    }
+    public void OnDeathAnimationFinished()
+    {
+        if (hasHandledDeathAnimationFinish)
+            return;
+
+        hasHandledDeathAnimationFinish = true;
+
+        if (StageManager.Instance != null)
+        {
+            StageManager.Instance.FailStage();
+            if (StageManager.Instance.gameReult_Lose != null)
+                StageManager.Instance.gameReult_Lose.gameObject.SetActive(true);
+
+            StageManager.Instance.RestartCurrentStage();
+        }
+
+        GameStateManager.Instance?.SetState(GameState.Playing);
     }
 }
