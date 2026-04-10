@@ -44,12 +44,16 @@ public class StatUI_CombatPower : MonoBehaviour
         if (combatPower_Text == null)
             return;
 
+        combatPower_Text.text = FormatCombatPower(value);
+    }
+
+    public static string FormatCombatPower(float value)
+    {
         value = Mathf.Max(0f, value);
 
         if (value < 1000f)
         {
-            combatPower_Text.text = Mathf.FloorToInt(value).ToString();
-            return;
+            return Mathf.FloorToInt(value).ToString();
         }
 
         int suffixIndex = 0;
@@ -72,10 +76,10 @@ public class StatUI_CombatPower : MonoBehaviour
             displayValue = Mathf.Round(displayValue * 100f) / 100f;
         }
 
-        combatPower_Text.text = $"{displayValue:0.##}{GetAlphabetSuffix(suffixIndex)}";
+        return $"{displayValue:0.##}{GetAlphabetSuffix(suffixIndex)}";
     }
 
-    private string GetAlphabetSuffix(int index)
+    private static string GetAlphabetSuffix(int index)
     {
         index = Mathf.Max(0, index);
 

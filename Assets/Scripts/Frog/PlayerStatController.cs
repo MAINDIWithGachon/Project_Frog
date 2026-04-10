@@ -49,12 +49,14 @@ public class PlayerStatController : MonoBehaviour
 
         if (runtimeData != null)
             runtimeData.OnDataChanged += RecalculateStats;
+
     }
 
     private void OnDisable()
     {
         if (runtimeData != null)
             runtimeData.OnDataChanged -= RecalculateStats;
+
     }
 
     private void Start()
