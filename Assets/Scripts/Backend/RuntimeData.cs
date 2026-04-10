@@ -20,6 +20,8 @@ using UnityEngine;
 /// </summary>
 public class RuntimeData : MonoBehaviour
 {
+    public event Action OnDataChanged;
+
     /// <summary>
     /// 테스트용 가짜 서버 데이터(JSON).
     /// 
@@ -255,6 +257,7 @@ public class RuntimeData : MonoBehaviour
             if (root.skillLevels[i].skillId == skillId)
             {
                 root.skillLevels[i].level = newLevel;
+                RaiseDataChanged();
                 return;
             }
         }
@@ -286,6 +289,28 @@ public class RuntimeData : MonoBehaviour
     {
         LoadFromJsonIfNeeded();
         root.Currency.Gold += amount;
+        RaiseDataChanged();
+    }
+
+    public int GetGold()
+    {
+        // 장비 강화/상점 구매처럼 현재 보유 골드를 바로 확인해야 할 때 사용합니다.
+        LoadFromJsonIfNeeded();
+        return root.Currency.Gold;
+    }
+
+    public int GetUpgradeStone()
+    {
+        // 장비 강화 UI에서 강화석 보유량을 확인할 때 사용합니다.
+        LoadFromJsonIfNeeded();
+        return root.Currency.UpgradeStone;
+    }
+
+    public void AddUpgradeStone(int amount)
+    {
+        // 보상 지급이나 디버그 지급처럼 강화석을 증가시킬 때 사용합니다.
+        LoadFromJsonIfNeeded();
+        root.Currency.UpgradeStone += amount;
     }
 
     /// <summary>
@@ -327,7 +352,39 @@ public class RuntimeData : MonoBehaviour
 
         // 충분하면 차감 후 성공 반환
         root.Currency.Gold -= amount;
+        RaiseDataChanged();
         return true;
+    }
+
+    public bool SpendUpgradeStone(int amount)
+    {
+        // 장비 강화에 필요한 강화석을 차감합니다.
+        // 보유량이 부족하면 아무것도 차감하지 않고 false를 반환합니다.
+        LoadFromJsonIfNeeded();
+
+        if (root.Currency.UpgradeStone < amount)
+            return false;
+
+        root.Currency.UpgradeStone -= amount;
+        return true;
+    }
+
+    /// <summary>
+    /// 외부에서 root를 직접 수정한 뒤 구독자들에게 변경 사실을 알려준다.
+    /// 
+    /// 장기적으로는 모든 수정 경로를 RuntimeData 메서드로 통일하는 편이 더 좋지만,
+    /// 현재 단계에서는 이 브리지 메서드만으로도 UI/계산 갱신 흐름을 안정적으로 연결할 수 있다.
+    /// </summary>
+    public void NotifyDataChanged()
+    {
+        LoadFromJsonIfNeeded();
+        EnsureValid();
+        RaiseDataChanged();
+    }
+
+    private void RaiseDataChanged()
+    {
+        OnDataChanged?.Invoke();
     }
 
     /// <summary>

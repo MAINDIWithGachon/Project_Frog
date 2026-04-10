@@ -1,14 +1,10 @@
-using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class SkillOnOffTogle : MonoBehaviour
 {
     [SerializeField] private bool isAuto;
-    [SerializeField] private Image checkMark;
-    [SerializeField] private TMP_Text onoffText;
+    [SerializeField] private GameObject[] onOff;//0은 on, 1은 off
     [SerializeField] private SkillManager skillManager;
-    [SerializeField] private int skillId;
 
     private void Start()
     {
@@ -20,10 +16,18 @@ public class SkillOnOffTogle : MonoBehaviour
         if (!isAuto || skillManager == null)
             return;
 
-        if (!skillManager.CanCast(skillId))
-            return;
+        int equippedSlotCount = skillManager.GetEquippedSlotCount();
+        for (int slotIndex = 0; slotIndex < equippedSlotCount; slotIndex++)
+        {
+            int equippedSkillId = skillManager.GetEquippedSkillIdAtSlot(slotIndex);
+            if (equippedSkillId < 0)
+                continue;
 
-        skillManager.TryCast(skillId, out _);
+            if (!skillManager.CanCast(equippedSkillId))
+                continue;
+
+            skillManager.TryCast(equippedSkillId, out _);
+        }
     }
 
     public void SkillTogleOnOff()
@@ -34,10 +38,14 @@ public class SkillOnOffTogle : MonoBehaviour
 
     private void RefreshUI()
     {
-        if (checkMark != null)
-            checkMark.enabled = isAuto;
+        if (onOff == null || onOff.Length < 2)
+            return;
 
-        if (onoffText != null)
-            onoffText.text = isAuto ? "AUTO ON" : "AUTO OFF";
+        if (onOff[0] != null)
+            onOff[0].SetActive(isAuto);
+
+        if (onOff[1] != null)
+            onOff[1].SetActive(!isAuto);
     }
+
 }

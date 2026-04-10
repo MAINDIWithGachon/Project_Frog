@@ -18,6 +18,10 @@ MonoBehaviour:
   descriptionKey: ThisisOnion
   baseDamagePercent: 100
   damagePercentGrowth: 10
-  baseCooldown: 1
+  baseCooldown: 0.8
   cooldownGrowth: 0
   minCooldown: 0.1
+  uiCurrentValue: 0
+  uiMaxValue: 100
+  combatPowerBaseContribution: 0
+  combatPowerPerLevelContribution: 5
