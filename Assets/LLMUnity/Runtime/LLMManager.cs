@@ -605,18 +605,35 @@ namespace LLMUnity
         /// <summary>
         /// Saves the model manager to disk for the build
         /// </summary>
-        public static void SaveToDisk()
+        static bool RequiresDownloadFallback(ModelEntry modelEntry, BuildTarget buildTarget)
+        {
+            if (buildTarget != BuildTarget.Android || string.IsNullOrEmpty(modelEntry?.url)) return false;
+            if (!File.Exists(modelEntry.path)) return false;
+            return new FileInfo(modelEntry.path).Length > int.MaxValue;
+        }
+
+        /// <summary>
+        /// Saves the model manager to disk for the build
+        /// </summary>
+        public static void SaveToDisk(BuildTarget buildTarget)
         {
             List<ModelEntry> modelEntriesBuild = new List<ModelEntry>();
+            bool buildDownloadOnStart = downloadOnStart;
             foreach (ModelEntry modelEntry in modelEntries)
             {
                 if (!modelEntry.includeInBuild) continue;
                 modelEntriesBuild.Add(modelEntry.OnlyRequiredFields());
+                if (RequiresDownloadFallback(modelEntry, buildTarget))
+                {
+                    buildDownloadOnStart = true;
+                    Debug.LogWarning(
+                        $"LLMUnity: '{modelEntry.filename}' exceeds Android asset packaging limits and will be downloaded at runtime instead of being bundled in the build.");
+                }
             }
             string json = JsonUtility.ToJson(new LLMManagerStore
             {
                 modelEntries = modelEntriesBuild,
-                downloadOnStart = downloadOnStart,
+                downloadOnStart = buildDownloadOnStart,
                 debugMode = (int)LLMUnitySetup.DebugMode
             }, true);
             File.WriteAllText(LLMUnitySetup.LLMManagerPath, json);
@@ -626,14 +643,15 @@ namespace LLMUnity
         /// Saves the model manager to disk along with models that are not (or can't) be downloaded for the build
         /// </summary>
         /// <param name="copyCallback">copy function</param>
-        public static void Build(Action<string, string> copyCallback)
+        public static void Build(Action<string, string> copyCallback, BuildTarget buildTarget)
         {
-            SaveToDisk();
+            SaveToDisk(buildTarget);
 
             foreach (ModelEntry modelEntry in modelEntries)
             {
                 string target = LLMUnitySetup.GetAssetPath(modelEntry.filename);
                 if (!modelEntry.includeInBuild || File.Exists(target)) continue;
+                if (RequiresDownloadFallback(modelEntry, buildTarget)) continue;
                 if (!downloadOnStart || string.IsNullOrEmpty(modelEntry.url)) copyCallback(modelEntry.path, target);
             }
         }

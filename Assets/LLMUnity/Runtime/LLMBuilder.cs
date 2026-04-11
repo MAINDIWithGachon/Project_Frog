@@ -311,9 +311,9 @@ namespace LLMUnity
         /// <summary>
         /// Bundles the model information
         /// </summary>
-        public static void BuildModels()
+        public static void BuildModels(BuildTarget buildTarget)
         {
-            LLMManager.Build(CopyActionAddMeta);
+            LLMManager.Build(CopyActionAddMeta, buildTarget);
             if (File.Exists(LLMUnitySetup.LLMManagerPath)) AddActionAddMeta(LLMUnitySetup.LLMManagerPath);
         }
 
@@ -325,7 +325,7 @@ namespace LLMUnity
             DeletePath(BuildTempDir);
             Directory.CreateDirectory(BuildTempDir);
             BuildLibraryPlatforms(buildTarget);
-            BuildModels();
+            BuildModels(buildTarget);
         }
 
         /// <summary>
