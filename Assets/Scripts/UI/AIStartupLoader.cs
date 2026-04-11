@@ -146,7 +146,7 @@ public class AIStartupLoader : MonoBehaviour
 
             if (progressText != null)
             {
-                progressText.text = "모델 준비 중...";
+                progressText.text = "모델 준비 중... 잠시만 기다려주세요";
             }
 
             if (llmAgent != null)
