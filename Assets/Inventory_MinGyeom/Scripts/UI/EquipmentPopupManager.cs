@@ -1,4 +1,5 @@
 using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -46,15 +47,37 @@ public class EquipmentPopupManager : MonoBehaviour
     [SerializeField] private ItemButtonBinding[] inventoryItemButtons;
     [SerializeField] private EquippedSlotBinding[] equippedSlotButtons;
 
+    [Header("Combat Power UI")]
+    [SerializeField] private TMP_Text combatPowerText;
+    [SerializeField] private CombatPowerData combatPowerData;
+    [SerializeField] private PlayerStatController playerStatController;
+
     private void Awake()
     {
         ApplyInitialState();
+    }
+
+    private void OnEnable()
+    {
+        ResolveCombatPowerReferences();
+
+        if (playerStatController != null)
+            playerStatController.OnStatsRecalculated += RefreshCombatPowerUI;
+
+        RefreshCombatPowerUI();
+    }
+
+    private void OnDisable()
+    {
+        if (playerStatController != null)
+            playerStatController.OnStatsRecalculated -= RefreshCombatPowerUI;
     }
 
     private void Start()
     {
         ResolveReferences();
         BindAll();
+        RefreshCombatPowerUI();
     }
 
     [ContextMenu("Bind All")]
@@ -86,6 +109,8 @@ public class EquipmentPopupManager : MonoBehaviour
         {
             mainPopup.SetActive(true);
         }
+
+        RefreshCombatPowerUI();
     }
 
     public void CloseMainPopup()
@@ -208,6 +233,18 @@ public class EquipmentPopupManager : MonoBehaviour
         }
     }
 
+    public void RefreshCombatPowerUI()
+    {
+        ResolveCombatPowerReferences();
+
+        if (combatPowerText == null || combatPowerData == null)
+        {
+            return;
+        }
+
+        combatPowerText.text = StatUI_CombatPower.FormatCombatPower(combatPowerData.currentCombatPower);
+    }
+
     private void ApplyInitialState()
     {
         if (hideMainPopupOnStart && mainPopup != null)
@@ -226,6 +263,26 @@ public class EquipmentPopupManager : MonoBehaviour
         detailPanelController ??= GetComponentInChildren<EquipmentDetailPanelController>(true);
         detailPanelController ??= GetComponentInParent<EquipmentDetailPanelController>(true);
         detailPanelController ??= FindFirstObjectByType<EquipmentDetailPanelController>(FindObjectsInactive.Include);
+
+        ResolveCombatPowerReferences();
+    }
+
+    private void ResolveCombatPowerReferences()
+    {
+        if (combatPowerText == null && mainPopup != null)
+        {
+            Transform totalStat = mainPopup.transform.Find("Bottom/Totalstat");
+            if (totalStat != null)
+            {
+                combatPowerText = totalStat.GetComponentInChildren<TMP_Text>(true);
+            }
+        }
+
+        if (combatPowerData == null)
+            combatPowerData = FindAnyObjectByType<CombatPowerData>();
+
+        if (playerStatController == null)
+            playerStatController = FindAnyObjectByType<PlayerStatController>();
     }
 
     private void BindInventoryItemButtons()

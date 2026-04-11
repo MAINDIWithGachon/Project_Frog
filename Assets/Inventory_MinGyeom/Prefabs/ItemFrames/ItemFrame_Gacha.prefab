@@ -281,8 +281,8 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 2461442501139657494}
   - {fileID: 2739541894562107601}
+  - {fileID: 2461442501139657494}
   - {fileID: 8496133849556319844}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -351,22 +351,22 @@ MonoBehaviour:
     enableEffectLight: 0
     enableGlow: 1
     effectLightColor: {r: 1, g: 1, b: 1, a: 1}
-    glowColor: {r: 0.3372549, g: 0.8352941, b: 0.45490196, a: 1}
+    glowColor: {r: 0.34117648, g: 0.83137256, b: 0.65882355, a: 0.3137255}
   - rarity: 2
     enableEffectLight: 1
     enableGlow: 1
-    effectLightColor: {r: 0.21960784, g: 0.6039216, b: 0.7882353, a: 1}
-    glowColor: {r: 0.43137255, g: 0.8156863, b: 0.8352941, a: 0.9}
+    effectLightColor: {r: 0.14117648, g: 0.2784314, b: 0.8980392, a: 0.29411766}
+    glowColor: {r: 0, g: 0.8509804, b: 1, a: 0.7058824}
   - rarity: 3
     enableEffectLight: 1
     enableGlow: 1
-    effectLightColor: {r: 0.79607844, g: 0.3882353, b: 0.98039216, a: 1}
-    glowColor: {r: 0.94509804, g: 0.5921569, b: 1, a: 0.95}
+    effectLightColor: {r: 1, g: 0.3254902, b: 0.9372549, a: 0.3137255}
+    glowColor: {r: 1, g: 0.5411765, b: 0.7254902, a: 0.78431374}
   - rarity: 4
     enableEffectLight: 1
     enableGlow: 1
-    effectLightColor: {r: 1, g: 0.8, b: 0, a: 1}
-    glowColor: {r: 1, g: 0.9372549, b: 0.22745098, a: 1}
+    effectLightColor: {r: 1, g: 0.8980392, b: 0.19607843, a: 1}
+    glowColor: {r: 1, g: 0.99215686, b: 0.9019608, a: 0.9411765}
   useCameraShake: 0
   cameraShakeIntensity: 0
   cameraShakeDuration: 0
