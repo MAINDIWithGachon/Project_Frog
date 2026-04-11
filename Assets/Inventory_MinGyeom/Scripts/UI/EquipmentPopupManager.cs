@@ -37,7 +37,7 @@ public class EquipmentPopupManager : MonoBehaviour
     [Header("Main Popup Buttons")]
     [SerializeField] private Button[] mainOpenButtons;
     [SerializeField] private Button[] mainCloseButtons;
-    [SerializeField] private Graphic[] mainCloseAreas;
+   //[SerializeField] private Graphic[] mainCloseAreas;
 
     [Header("Detail Popup Buttons")]
     [SerializeField] private Button[] detailCloseButtons;
@@ -87,7 +87,7 @@ public class EquipmentPopupManager : MonoBehaviour
 
         BindButtons(mainOpenButtons, OpenMainPopup);
         BindButtons(mainCloseButtons, CloseMainPopup);
-        BindGraphics(mainCloseAreas, CloseMainPopup);
+        //BindGraphics(mainCloseAreas, CloseMainPopup);
 
         BindButtons(detailCloseButtons, CloseDetailPopup);
         BindGraphics(detailCloseAreas, CloseDetailPopup);

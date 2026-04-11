@@ -70,6 +70,7 @@ public class SocialChatController : MonoBehaviour
 
         if (inputField != null)
         {
+            inputField.lineType = TMP_InputField.LineType.MultiLineSubmit;
             inputField.onSubmit.AddListener(HandleSubmit);
         }
     }
@@ -98,8 +99,9 @@ public class SocialChatController : MonoBehaviour
     
         string message = inputField.text.Trim();
         CreateOutgoingMessage(message);
-    
+
         inputField.text = string.Empty;
+        inputField.ActivateInputField();
         if (sendButton != null) sendButton.interactable = false;
 
         AIManager.Instance.AskAI(message, 

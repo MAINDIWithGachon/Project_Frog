@@ -28,6 +28,7 @@ public class Monster_Movement : MonoBehaviour
     [SerializeField] private float moveLeftDuration = 2f;
     [SerializeField] private float moveRightDuration = 1f;
     [SerializeField] private float idleDuration = 1f;
+    [SerializeField] private Vector2 moveDurationRandomMultiplierRange = new Vector2(0.7f, 1.3f);
 
     [Header("이동 범위 제한")]
     [SerializeField] private Vector3 leftLimitPosition = new Vector3(-10f, 0f, 0f);
@@ -196,12 +197,12 @@ public class Monster_Movement : MonoBehaviour
         switch (currentMoveType)
         {
             case RandomMoveType.MoveLeft:
-                movePatternTimer = moveLeftDuration;
+                movePatternTimer = GetRandomizedMoveDuration(moveLeftDuration);
                 UpdateFacing(-1f);
                 break;
 
             case RandomMoveType.MoveRight:
-                movePatternTimer = moveRightDuration;
+                movePatternTimer = GetRandomizedMoveDuration(moveRightDuration);
                 UpdateFacing(1f);
                 break;
 
@@ -209,6 +210,20 @@ public class Monster_Movement : MonoBehaviour
                 movePatternTimer = idleDuration;
                 break;
         }
+    }
+
+    private float GetRandomizedMoveDuration(float baseDuration)
+    {
+        if (baseDuration <= 0f)
+            return 0f;
+
+        float minMultiplier = Mathf.Min(moveDurationRandomMultiplierRange.x, moveDurationRandomMultiplierRange.y);
+        float maxMultiplier = Mathf.Max(moveDurationRandomMultiplierRange.x, moveDurationRandomMultiplierRange.y);
+
+        if (Mathf.Approximately(minMultiplier, maxMultiplier))
+            return baseDuration * minMultiplier;
+
+        return baseDuration * Random.Range(minMultiplier, maxMultiplier);
     }
 
     private void MoveHorizontally(float directionX)
