@@ -43,7 +43,8 @@ public class RuntimeData : MonoBehaviour
     {
         ""Currency"": {
             ""Gold"": 10000,
-            ""UpgradeStone"": 100
+            ""UpgradeStone"": 100,
+            ""Gem"": 10000
         },
         ""skillLevels"": [
             { ""skillId"": 0, ""level"": 1 },
@@ -369,6 +370,38 @@ public class RuntimeData : MonoBehaviour
         return true;
     }
 
+      /// <summary>
+    /// 보석 재화를 지정한 양만큼 차감하려고 시도한다.
+        public int GetGem()
+    {
+        // 상점 구매, 뽑기, UI 표시처럼 현재 보유 젬을 확인할 때 사용합니다.
+        LoadFromJsonIfNeeded();
+        return root.Currency.Gem;
+    }
+
+    public void AddGem(int amount)
+    {
+        // 보상 지급이나 디버그 지급처럼 젬을 증가시킬 때 사용합니다.
+        LoadFromJsonIfNeeded();
+        root.Currency.Gem += amount;
+        RaiseDataChanged();
+    }
+
+    public bool SpendGem(int amount)
+    {
+        // 뽑기, 상점 구매 등에서 젬을 차감합니다.
+        // 보유량이 부족하면 아무것도 차감하지 않고 false를 반환합니다.
+        LoadFromJsonIfNeeded();
+
+        if (root.Currency.Gem < amount)
+            return false;
+
+        root.Currency.Gem -= amount;
+        RaiseDataChanged();
+        return true;
+    }
+
+
     /// <summary>
     /// 외부에서 root를 직접 수정한 뒤 구독자들에게 변경 사실을 알려준다.
     /// 
@@ -486,6 +519,7 @@ public class RuntimeData : MonoBehaviour
     {
         public int Gold;
         public int UpgradeStone;
+        public int Gem;
     }
 
     /// <summary>

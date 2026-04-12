@@ -16,6 +16,9 @@ using UnityEngine;
 /// </summary>
 public class PlayerStatController : MonoBehaviour
 {
+    private static readonly EquipmentCategory[] EquipmentCategories =
+        (EquipmentCategory[])Enum.GetValues(typeof(EquipmentCategory));
+
     public event Action OnStatsRecalculated;
 
     [Header("# Reference")]
@@ -23,6 +26,7 @@ public class PlayerStatController : MonoBehaviour
     [SerializeField] private FinalStatData finalStatData;
     [SerializeField] private CombatPowerData combatPowerData;
     [SerializeField] private Health health;
+    [SerializeField] private EquipmentPrototypeState equipmentState;
 
     [Header("# Base Stat")]
     [SerializeField] private PlayerBaseStatData baseStatData;
@@ -38,6 +42,8 @@ public class PlayerStatController : MonoBehaviour
     [SerializeField] private float critChancePerLevel = 1f;
     [SerializeField] private float critDamagePerLevel = 5f;
 
+    private EquipmentPrototypeState subscribedEquipmentState;
+
     private void Awake()
     {
         ResolveReferences();
@@ -50,6 +56,7 @@ public class PlayerStatController : MonoBehaviour
         if (runtimeData != null)
             runtimeData.OnDataChanged += RecalculateStats;
 
+        SubscribeEquipmentState();
     }
 
     private void OnDisable()
@@ -57,6 +64,7 @@ public class PlayerStatController : MonoBehaviour
         if (runtimeData != null)
             runtimeData.OnDataChanged -= RecalculateStats;
 
+        UnsubscribeEquipmentState();
     }
 
     private void Start()
@@ -156,6 +164,35 @@ public class PlayerStatController : MonoBehaviour
 
         if (health == null)
             health = GetComponent<Health>();
+
+        if (equipmentState == null)
+            equipmentState = GetComponent<EquipmentPrototypeState>();
+
+        if (equipmentState == null)
+            equipmentState = FindAnyObjectByType<EquipmentPrototypeState>();
+    }
+
+    private void SubscribeEquipmentState()
+    {
+        if (subscribedEquipmentState == equipmentState)
+            return;
+
+        UnsubscribeEquipmentState();
+
+        if (equipmentState == null)
+            return;
+
+        equipmentState.StateChanged += RecalculateStats;
+        subscribedEquipmentState = equipmentState;
+    }
+
+    private void UnsubscribeEquipmentState()
+    {
+        if (subscribedEquipmentState == null)
+            return;
+
+        subscribedEquipmentState.StateChanged -= RecalculateStats;
+        subscribedEquipmentState = null;
     }
 
     private StatContribution CreateAttackContribution(int attackLevel)
@@ -292,27 +329,48 @@ public class PlayerStatController : MonoBehaviour
 
     private float GetEquipmentAttack()
     {
-        return 0f;
+        return GetTotalEquippedStat(definition => definition.attack);
     }
 
     private float GetEquipmentHp()
     {
-        return 0f;
+        return GetTotalEquippedStat(definition => definition.hp);
     }
 
     private float GetEquipmentHpRegen()
     {
-        return 0f;
+        return GetTotalEquippedStat(definition => definition.healPerSec);
     }
 
     private float GetEquipmentCritChance()
     {
-        return 0f;
+        return GetTotalEquippedStat(definition => definition.critChance);
     }
 
     private float GetEquipmentCritDamage()
     {
-        return 0f;
+        return GetTotalEquippedStat(definition => definition.critDamage);
+    }
+
+    private float GetTotalEquippedStat(Func<EquipmentDefinitionData, float> selector)
+    {
+        if (selector == null || equipmentState == null)
+            return 0f;
+
+        float total = 0f;
+
+        for (int i = 0; i < EquipmentCategories.Length; i++)
+        {
+            EquipmentCategory category = EquipmentCategories[i];
+            EquipmentDefinitionData definition = equipmentState.GetEquippedDefinition(category);
+            if (definition == null)
+                continue;
+
+            int level = Mathf.Max(1, equipmentState.GetOwnedLevel(definition.equipmentId));
+            total += selector(definition) * level;
+        }
+
+        return total;
     }
 
     // =========================

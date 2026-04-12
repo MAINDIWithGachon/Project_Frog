@@ -24,10 +24,10 @@ public static class EquipmentInventoryTestSceneAutoBinder
             return;
         }
 
-        SceneManager.sceneLoaded -= OnSceneLoaded;
-        SceneManager.sceneLoaded += OnSceneLoaded;
+      //  SceneManager.sceneLoaded -= OnSceneLoaded;
+      //  SceneManager.sceneLoaded += OnSceneLoaded;
 
-        TryBind(SceneManager.GetActiveScene());
+       // TryBind(SceneManager.GetActiveScene());
     }
 
     private static void OnSceneLoaded(Scene scene, LoadSceneMode mode)

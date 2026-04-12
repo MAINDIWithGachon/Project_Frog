@@ -67,8 +67,8 @@ public class GachaResultItemEffectController : MonoBehaviour
 
     [Header("Future Camera Hook")]
     [SerializeField] private bool useCameraShake;
-    [SerializeField] private float cameraShakeIntensity = 0f;
-    [SerializeField] private float cameraShakeDuration = 0f;
+   // [SerializeField] private float cameraShakeIntensity = 0f;
+   // [SerializeField] private float cameraShakeDuration = 0f;
 
     private void Reset()
     {

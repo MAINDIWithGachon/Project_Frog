@@ -40,7 +40,7 @@ public class MainCurrencyUI : MonoBehaviour
             goldText.text = runtimeData.GetGold().ToString();
 
         if (gemText != null)
-            gemText.text = runtimeData.GetUpgradeStone().ToString();
+            gemText.text = runtimeData.GetGem().ToString();
     }
 
     private void ResolveReferences()

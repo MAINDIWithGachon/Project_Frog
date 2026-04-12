@@ -85,7 +85,7 @@ public class EquipmentGachaService : MonoBehaviour
             }
         }
 
-        return runtimeData.GetGold() >= GetTotalCost(drawCount);
+        return runtimeData.GetGem() >= GetTotalCost(drawCount);
     }
 
     public bool TryDraw(int drawCount, out List<EquipmentGachaResult> results)
@@ -98,7 +98,7 @@ public class EquipmentGachaService : MonoBehaviour
         }
 
         int totalCost = GetTotalCost(drawCount);
-        if (!runtimeData.SpendGold(totalCost))
+        if (!runtimeData.SpendGem(totalCost))
         {
             Debug.LogWarning("[EquipmentGachaService] Not enough gold to draw.", this);
             return false;
