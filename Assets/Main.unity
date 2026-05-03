@@ -3205,7 +3205,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   stageManager: {fileID: 286149117}
-  requiredFlags: -1
+  requiredFlags: 7
   autoReadyFlags: 7
   currentReadyFlags: 0
   stageStarted: 0
@@ -3942,7 +3942,7 @@ MonoBehaviour:
   health: {fileID: 0}
   equipmentState: {fileID: 0}
   baseStatData: {fileID: 753223557}
-  combatPowerTuningData: {fileID: 0}
+  combatPowerTuningData: {fileID: 11400000, guid: 19e1e2ba3e50041a19bdcb44e3498bac, type: 2}
   skillDatabase: []
   attackPerLevel: 5
   hpPerLevel: 20
@@ -6214,7 +6214,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   monsterPooling: {fileID: 0}
   skillPrefabPooling: {fileID: 1657260022}
-  damageTextPooling: {fileID: 0}
+  damageTextPooling: {fileID: 1657260024}
 --- !u!1 &1178707386
 GameObject:
   m_ObjectHideFlags: 0

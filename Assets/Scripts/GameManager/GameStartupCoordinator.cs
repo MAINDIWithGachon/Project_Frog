@@ -8,8 +8,7 @@ public enum StartupReadyFlags
     Scene = 1 << 0,
     Player = 1 << 1,
     UI = 1 << 2,
-    AI = 1 << 3,
-    All = Scene | Player | UI | AI,
+    All = Scene | Player | UI,
 }
 
 public class GameStartupCoordinator : MonoBehaviour
@@ -84,11 +83,6 @@ public class GameStartupCoordinator : MonoBehaviour
     public void ReportUiReady()
     {
         ReportReady(StartupReadyFlags.UI);
-    }
-
-    public void ReportAiReady()
-    {
-        ReportReady(StartupReadyFlags.AI);
     }
 
     private void TryStartStage()

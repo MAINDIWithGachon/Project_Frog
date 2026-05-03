@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.PlayerLoop;
 
 /// <summary>
 /// 전역에서 접근 가능한 풀링 매니저 싱글톤.
@@ -26,7 +25,21 @@ public class PoolingManager : MonoBehaviour
 
         instance = this;
 
+        ResolvePoolReferences();
+
         // 씬 전환 후에도 유지하고 싶으면 사용
         // DontDestroyOnLoad(gameObject);
+    }
+
+    private void ResolvePoolReferences()
+    {
+        if (monsterPooling == null)
+            monsterPooling = GetComponentInChildren<MonsterPooling>(true);
+
+        if (skillPrefabPooling == null)
+            skillPrefabPooling = GetComponentInChildren<SkillPrefabPooling>(true);
+
+        if (damageTextPooling == null)
+            damageTextPooling = GetComponentInChildren<DamageTextPooling>(true);
     }
 }
