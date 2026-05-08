@@ -125,6 +125,7 @@ Assets/StreamingAssets/LLMUnity*
 # 네이티브 라이브러리 (100MB 초과 원인)
 *.so
 *.dll
+!Assets/TheBackend/**/*.dll
 *.dylib
 
 # CUDA / GPU 라이브러리 (특히 문제됨)
@@ -150,5 +151,6 @@ Assets/StreamingAssets/LLMUnity*
 # =========================================================
 Assets/StreamingAssets/*
 !Assets/StreamingAssets/.keep
+Assets/TextMesh Pro/Resources/Fonts & Materials/에이투지체-7Bold SDF.asset
 Assets/TextMesh Pro/Resources/Fonts & Materials/에이투지체-7Bold SDF.asset
 Assets/TextMesh Pro/Resources/Fonts & Materials/에이투지체-7Bold SDF.asset
