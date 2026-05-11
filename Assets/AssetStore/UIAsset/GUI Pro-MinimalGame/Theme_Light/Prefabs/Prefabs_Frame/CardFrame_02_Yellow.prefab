@@ -23,6 +23,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: CardFrame_02_Yellow
       objectReference: {fileID: 0}
+    - target: {fileID: 1132977939736810786, guid: 09f0ed6e86b524f959144963a968ada1, type: 3}
+      propertyPath: m_Color.b
+      value: 0.14117648
+      objectReference: {fileID: 0}
+    - target: {fileID: 1132977939736810786, guid: 09f0ed6e86b524f959144963a968ada1, type: 3}
+      propertyPath: m_Color.g
+      value: 0.18823531
+      objectReference: {fileID: 0}
+    - target: {fileID: 1132977939736810786, guid: 09f0ed6e86b524f959144963a968ada1, type: 3}
+      propertyPath: m_Color.r
+      value: 0.30588236
+      objectReference: {fileID: 0}
     - target: {fileID: 3276988101734088594, guid: 09f0ed6e86b524f959144963a968ada1, type: 3}
       propertyPath: m_Color.b
       value: 0
@@ -46,6 +58,10 @@ PrefabInstance:
     - target: {fileID: 4151146467970058088, guid: 09f0ed6e86b524f959144963a968ada1, type: 3}
       propertyPath: m_Color.r
       value: 0.99215686
+      objectReference: {fileID: 0}
+    - target: {fileID: 5562050644382926421, guid: 09f0ed6e86b524f959144963a968ada1, type: 3}
+      propertyPath: m_RootOrder
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 5689559456707517022, guid: 09f0ed6e86b524f959144963a968ada1, type: 3}
       propertyPath: m_Pivot.x

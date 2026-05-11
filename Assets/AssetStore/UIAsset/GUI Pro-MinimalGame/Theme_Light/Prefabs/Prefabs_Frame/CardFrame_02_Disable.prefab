@@ -23,6 +23,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: CardFrame_02_Disable
       objectReference: {fileID: 0}
+    - target: {fileID: 1132977939736810786, guid: 09f0ed6e86b524f959144963a968ada1, type: 3}
+      propertyPath: m_Color.b
+      value: 0.24313727
+      objectReference: {fileID: 0}
+    - target: {fileID: 1132977939736810786, guid: 09f0ed6e86b524f959144963a968ada1, type: 3}
+      propertyPath: m_Color.g
+      value: 0.23529413
+      objectReference: {fileID: 0}
+    - target: {fileID: 1132977939736810786, guid: 09f0ed6e86b524f959144963a968ada1, type: 3}
+      propertyPath: m_Color.r
+      value: 0.24313727
+      objectReference: {fileID: 0}
     - target: {fileID: 3276988101734088594, guid: 09f0ed6e86b524f959144963a968ada1, type: 3}
       propertyPath: m_Color.b
       value: 0.5137255
