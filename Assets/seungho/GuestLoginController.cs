@@ -120,7 +120,7 @@ public class GuestLoginController : MonoBehaviour
         // 로그인 실패 처리
         if (!loginSuccess)
         {
-            SetStatus("게스트 로그인 실패");
+            SetStatus("게스트 로그인 실패\n" + BackndLogin.LastErrorMessage);
             return;
         }
 
