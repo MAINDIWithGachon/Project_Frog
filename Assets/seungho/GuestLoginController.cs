@@ -166,6 +166,12 @@ public class GuestLoginController : MonoBehaviour
         // 상태 출력
         SetStatus("게스트 로그인 완료");
 
+        // 로그인 완료 후 상태 텍스트 숨기기
+        if (statusText != null)
+        {
+            statusText.gameObject.SetActive(false);
+        }
+
         // TODO: 나중에 여기에 데이터 로드 연결
         // 캐릭터 데이터 불러오기
         // 장비 데이터 불러오기
@@ -270,8 +276,14 @@ public class GuestLoginController : MonoBehaviour
         // 콘솔 로그 출력
         Debug.Log(message);
 
-        // 상태 텍스트가 연결되어 있으면 화면에도 출력
+        // StatusText가 연결되어 있다면
         if (statusText != null)
+        {
+            // 텍스트 출력
             statusText.text = message;
+
+            // 상태창 활성화
+            statusText.gameObject.SetActive(true);
+        }   
     }
 }
