@@ -133,6 +133,8 @@ public class GuestLoginController : MonoBehaviour
             SetStatus("유저 정보 불러오기 실패");
             return;
         }
+        // 로그인 성공 후 버튼 숨기기
+        guestLoginButton.gameObject.SetActive(false);
 
         // 유저 정보 로드 후 처리
         AfterUserInfoLoaded();
