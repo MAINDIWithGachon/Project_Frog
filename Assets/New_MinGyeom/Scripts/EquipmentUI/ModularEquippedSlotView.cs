@@ -1,4 +1,5 @@
 using System;
+using NewMinGyeom.Equipment;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -12,10 +13,10 @@ public class ModularEquippedSlotView : MonoBehaviour
     [SerializeField] private GameObject addRoot;
     [SerializeField] private GameObject typeAreaRoot;
 
-    private EquipmentCategory category;
-    private EquipmentDefinitionData currentDefinition;
+    private EquipmentSlotType slotType;
+    private EquipmentDefinition currentDefinition;
     private int currentLevel;
-    private Action<EquipmentCategory, EquipmentDefinitionData, int> clicked;
+    private Action<EquipmentSlotType, EquipmentDefinition, int> clicked;
     private bool bound;
 
     private void Awake()
@@ -31,33 +32,35 @@ public class ModularEquippedSlotView : MonoBehaviour
     }
 
     public void Configure(
-        EquipmentCategory slotCategory,
-        Action<EquipmentCategory, EquipmentDefinitionData, int> onClicked)
+        EquipmentSlotType targetSlotType,
+        Action<EquipmentSlotType, EquipmentDefinition, int> onClicked)
     {
-        category = slotCategory;
+        slotType = targetSlotType;
         clicked = onClicked;
         CacheReferences();
         BindButton();
     }
 
     public void SetSlot(
-        EquipmentCategory slotCategory,
-        EquipmentDefinitionData definition,
+        EquipmentSlotType targetSlotType,
+        EquipmentDefinition definition,
         int level,
-        bool showRedDot)
+        bool showRedDot,
+        EquipmentIconResolver iconResolver)
     {
         CacheReferences();
 
-        category = slotCategory;
+        slotType = targetSlotType;
         currentDefinition = definition;
         currentLevel = Mathf.Max(0, level);
 
-        SetFrame(definition != null ? definition.rarity : EquipmentRarity.Common);
+        SetFrame(definition != null ? definition.grade : EquipmentGrade.Common);
 
+        Sprite icon = definition != null ? iconResolver?.GetIcon(definition.iconKey) : null;
         if (iconImage != null)
         {
-            iconImage.sprite = definition != null ? definition.uiIcon : null;
-            iconImage.enabled = definition != null && definition.uiIcon != null;
+            iconImage.sprite = icon;
+            iconImage.enabled = icon != null;
         }
 
         if (levelText != null)
@@ -74,7 +77,7 @@ public class ModularEquippedSlotView : MonoBehaviour
 
     private void HandleClick()
     {
-        clicked?.Invoke(category, currentDefinition, currentLevel);
+        clicked?.Invoke(slotType, currentDefinition, currentLevel);
     }
 
     private void BindButton()
@@ -100,18 +103,18 @@ public class ModularEquippedSlotView : MonoBehaviour
         typeAreaRoot ??= FindDescendantByName(transform, "TypeArea")?.gameObject;
     }
 
-    private void SetFrame(EquipmentRarity rarity)
+    private void SetFrame(EquipmentGrade grade)
     {
-        SetActiveByNameContains(transform, "Normal_Rare", rarity == EquipmentRarity.Rare);
-        SetActiveByNameContains(transform, "Normal_Blue", rarity == EquipmentRarity.Rare);
-        SetActiveByNameContains(transform, "Normal_Common", rarity == EquipmentRarity.Common);
-        SetActiveByNameContains(transform, "Normal_Brown", rarity == EquipmentRarity.Common);
-        SetActiveByNameContains(transform, "Normal_Magic", rarity == EquipmentRarity.Magic);
-        SetActiveByNameContains(transform, "Normal_Green", rarity == EquipmentRarity.Magic);
-        SetActiveByNameContains(transform, "Normal_Epic", rarity == EquipmentRarity.Epic);
-        SetActiveByNameContains(transform, "Normal_Plum", rarity == EquipmentRarity.Epic);
-        SetActiveByNameContains(transform, "Normal_Legendary", rarity == EquipmentRarity.Legendary);
-        SetActiveByNameContains(transform, "Normal_Yellow", rarity == EquipmentRarity.Legendary);
+        SetActiveByNameContains(transform, "Normal_Rare", grade == EquipmentGrade.Rare);
+        SetActiveByNameContains(transform, "Normal_Blue", grade == EquipmentGrade.Rare);
+        SetActiveByNameContains(transform, "Normal_Common", grade == EquipmentGrade.Common);
+        SetActiveByNameContains(transform, "Normal_Brown", grade == EquipmentGrade.Common);
+        SetActiveByNameContains(transform, "Normal_Magic", grade == EquipmentGrade.Magic);
+        SetActiveByNameContains(transform, "Normal_Green", grade == EquipmentGrade.Magic);
+        SetActiveByNameContains(transform, "Normal_Epic", grade == EquipmentGrade.Epic);
+        SetActiveByNameContains(transform, "Normal_Plum", grade == EquipmentGrade.Epic);
+        SetActiveByNameContains(transform, "Normal_Legendary", grade == EquipmentGrade.Legendary);
+        SetActiveByNameContains(transform, "Normal_Yellow", grade == EquipmentGrade.Legendary);
     }
 
     private static void SetActive(GameObject target, bool active)

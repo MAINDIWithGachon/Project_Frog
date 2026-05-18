@@ -1,18 +1,21 @@
 using System.Collections.Generic;
+using NewMinGyeom.Equipment;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using RuntimeUpgradeRequirement = NewMinGyeom.Equipment.EquipmentUpgradeRequirement;
 
 /// <summary>
 /// Module-local copy of the old equipment detail controller.
-/// It keeps the existing detail popup UI, but exposes definition-based entry points.
+/// It keeps the existing detail popup UI, but uses runtime equipment data.
 /// </summary>
 public class ModularEquipmentDetailPanelController : MonoBehaviour
 {
     [Header("Injected References")]
     [SerializeField] private GameObject detailPanel;
-    [SerializeField] private EquipmentPrototypeState equipmentState;
+    [SerializeField] private EquipmentRuntimeState equipmentState;
     [SerializeField] private RuntimeData runtimeData;
+    [SerializeField] private EquipmentIconResolver iconResolver;
 
     [Header("Auto Bound UI")]
     [SerializeField] private Button equipButton;
@@ -43,9 +46,9 @@ public class ModularEquipmentDetailPanelController : MonoBehaviour
     [Header("Style")]
     [SerializeField] private Color insufficientCurrencyColor = Color.red;
 
-    private EquipmentDefinitionData currentDefinition;
+    private EquipmentDefinition currentDefinition;
     private int currentLevel;
-    private EquipmentPrototypeState subscribedState;
+    private EquipmentRuntimeState subscribedState;
     private bool buttonsBound;
 
     private void Awake()
@@ -67,11 +70,16 @@ public class ModularEquipmentDetailPanelController : MonoBehaviour
         UnsubscribeFromState();
     }
 
-    public void Configure(GameObject panel, EquipmentPrototypeState state, RuntimeData data)
+    public void Configure(
+        GameObject panel,
+        EquipmentRuntimeState state,
+        RuntimeData data,
+        EquipmentIconResolver resolver)
     {
         detailPanel = panel;
         equipmentState = state;
         runtimeData = data;
+        iconResolver = resolver;
 
         ResolveReferences();
         BindButtons();
@@ -79,7 +87,7 @@ public class ModularEquipmentDetailPanelController : MonoBehaviour
         RefreshCurrentDetail();
     }
 
-    public void OpenDetail(EquipmentDefinitionData definition, int level)
+    public void OpenDetail(EquipmentDefinition definition, int level)
     {
         if (definition == null)
         {
@@ -96,14 +104,14 @@ public class ModularEquipmentDetailPanelController : MonoBehaviour
         }
     }
 
-    public void OpenDetail(EquipmentCategory category)
+    public void OpenDetail(EquipmentSlotType slotType)
     {
         if (equipmentState == null)
         {
             return;
         }
 
-        EquipmentDefinitionData definition = equipmentState.GetEquippedDefinition(category);
+        EquipmentDefinition definition = equipmentState.GetEquippedDefinition(slotType);
         if (definition == null)
         {
             return;
@@ -134,10 +142,11 @@ public class ModularEquipmentDetailPanelController : MonoBehaviour
         int level = GetOwnedLevel(currentDefinition.equipmentId);
         currentLevel = Mathf.Max(1, level);
 
+        Sprite icon = iconResolver != null ? iconResolver.GetIcon(currentDefinition.iconKey) : null;
         if (detailIconImage != null)
         {
-            detailIconImage.sprite = currentDefinition.uiIcon;
-            detailIconImage.enabled = currentDefinition.uiIcon != null;
+            detailIconImage.sprite = icon;
+            detailIconImage.enabled = icon != null;
         }
 
         if (detailNameText != null)
@@ -147,7 +156,7 @@ public class ModularEquipmentDetailPanelController : MonoBehaviour
 
         if (detailRarityText != null)
         {
-            detailRarityText.text = GetRarityLabel(currentDefinition.rarity);
+            detailRarityText.text = GetGradeLabel(currentDefinition.grade);
         }
 
         if (detailLevelText != null)
@@ -161,7 +170,7 @@ public class ModularEquipmentDetailPanelController : MonoBehaviour
         }
 
         ApplyStats(currentDefinition);
-        ApplyRarityLabel(currentDefinition.rarity);
+        ApplyGradeLabel(currentDefinition.grade);
         ApplyDetailSlot(currentDefinition);
         RefreshButtons();
         RefreshUpgradeProgress();
@@ -169,6 +178,14 @@ public class ModularEquipmentDetailPanelController : MonoBehaviour
 
     private void ResolveReferences()
     {
+        if (equipmentState == null || runtimeData == null || iconResolver == null)
+        {
+            EquipmentModuleRoot moduleRoot = GetComponentInParent<EquipmentModuleRoot>();
+            equipmentState ??= moduleRoot?.EquipmentState;
+            runtimeData ??= moduleRoot?.RuntimeData;
+            iconResolver ??= moduleRoot?.IconResolver;
+        }
+
         Transform root = detailPanel != null ? detailPanel.transform : transform;
 
         detailNameText ??= FindTextByName(root, "Text_ItemName");
@@ -303,12 +320,11 @@ public class ModularEquipmentDetailPanelController : MonoBehaviour
 
         if (equipButtonText != null)
         {
-            equipButtonText.text = hasOwnedCurrent && equipmentState.IsEquippedInSlot(currentDefinition)
-                ? "Unequip"
-                : "Equip";
+            bool isEquipped = hasOwnedCurrent && equipmentState.IsEquippedInSlot(currentDefinition);
+            equipButtonText.text = isEquipped ? "Unequip" : "Equip";
         }
 
-        EquipmentUpgradeRequirement requirement = GetCurrentUpgradeRequirement();
+        RuntimeUpgradeRequirement requirement = GetCurrentUpgradeRequirement();
         bool canUpgrade = requirement != null && requirement.CanUpgrade;
 
         if (upgradeButton != null)
@@ -318,18 +334,18 @@ public class ModularEquipmentDetailPanelController : MonoBehaviour
 
         if (upgradeButtonGreenBackground != null)
         {
-            upgradeButtonGreenBackground.SetActive(true);
+            upgradeButtonGreenBackground.SetActive(canUpgrade);
         }
 
         if (upgradeButtonGrayBackground != null)
         {
-            upgradeButtonGrayBackground.SetActive(requirement != null && !requirement.CanUpgrade);
+            upgradeButtonGrayBackground.SetActive(requirement != null && !canUpgrade);
         }
     }
 
     private void RefreshUpgradeProgress()
     {
-        EquipmentUpgradeRequirement requirement = GetCurrentUpgradeRequirement();
+        RuntimeUpgradeRequirement requirement = GetCurrentUpgradeRequirement();
 
         if (upgradeSliderRoot != null)
         {
@@ -346,6 +362,31 @@ public class ModularEquipmentDetailPanelController : MonoBehaviour
             if (upgradeProgressSlider != null)
             {
                 upgradeProgressSlider.value = 0f;
+            }
+
+            return;
+        }
+
+        if (requirement.isAtMaxLevel)
+        {
+            if (upgradeProgressText != null)
+            {
+                upgradeProgressText.text = "MAX";
+            }
+
+            if (upgradeProgressSlider != null)
+            {
+                upgradeProgressSlider.value = 1f;
+            }
+
+            if (upgradeReadyObject != null)
+            {
+                upgradeReadyObject.SetActive(false);
+            }
+
+            if (upgradeLockObject != null)
+            {
+                upgradeLockObject.SetActive(false);
             }
 
             return;
@@ -382,7 +423,7 @@ public class ModularEquipmentDetailPanelController : MonoBehaviour
         }
     }
 
-    private EquipmentUpgradeRequirement GetCurrentUpgradeRequirement()
+    private RuntimeUpgradeRequirement GetCurrentUpgradeRequirement()
     {
         if (equipmentState == null || currentDefinition == null)
         {
@@ -406,7 +447,7 @@ public class ModularEquipmentDetailPanelController : MonoBehaviour
         return ownedLevel > 0 ? ownedLevel : Mathf.Max(1, currentLevel);
     }
 
-    private void ApplyStats(EquipmentDefinitionData definition)
+    private void ApplyStats(EquipmentDefinition definition)
     {
         List<string> lines = BuildStatLines(definition);
 
@@ -431,37 +472,38 @@ public class ModularEquipmentDetailPanelController : MonoBehaviour
         }
     }
 
-    private void ApplyRarityLabel(EquipmentRarity rarity)
+    private void ApplyGradeLabel(EquipmentGrade grade)
     {
         if (rarityLabelRoot == null)
         {
             return;
         }
 
-        SetActiveByName(rarityLabelRoot, "Rarity_Label_Common", rarity == EquipmentRarity.Common);
-        SetActiveByName(rarityLabelRoot, "Rarity_Label_Magic", rarity == EquipmentRarity.Magic);
-        SetActiveByName(rarityLabelRoot, "Rarity_Label_Rare", rarity == EquipmentRarity.Rare);
-        SetActiveByName(rarityLabelRoot, "Rarity_Label_Epic", rarity == EquipmentRarity.Epic);
-        SetActiveByName(rarityLabelRoot, "Rarity_Label_Legendary", rarity == EquipmentRarity.Legendary);
+        SetActiveByName(rarityLabelRoot, "Rarity_Label_Common", grade == EquipmentGrade.Common);
+        SetActiveByName(rarityLabelRoot, "Rarity_Label_Magic", grade == EquipmentGrade.Magic);
+        SetActiveByName(rarityLabelRoot, "Rarity_Label_Rare", grade == EquipmentGrade.Rare);
+        SetActiveByName(rarityLabelRoot, "Rarity_Label_Epic", grade == EquipmentGrade.Epic);
+        SetActiveByName(rarityLabelRoot, "Rarity_Label_Legendary", grade == EquipmentGrade.Legendary);
     }
 
-    private void ApplyDetailSlot(EquipmentDefinitionData definition)
+    private void ApplyDetailSlot(EquipmentDefinition definition)
     {
         if (detailSlotRoot == null || definition == null)
         {
             return;
         }
 
-        SetFrame(detailSlotRoot, definition.rarity);
+        SetFrame(detailSlotRoot, definition.grade);
 
         Image icon = FindImageByPath(detailSlotRoot, "ItemFrame_01/Item/Icon");
         icon ??= FindImageByPath(detailSlotRoot, "ItemFrame_01/Item");
         icon ??= FindImageByName(detailSlotRoot, "Icon");
 
+        Sprite sprite = iconResolver != null ? iconResolver.GetIcon(definition.iconKey) : null;
         if (icon != null)
         {
-            icon.sprite = definition.uiIcon;
-            icon.enabled = definition.uiIcon != null;
+            icon.sprite = sprite;
+            icon.enabled = sprite != null;
         }
     }
 
@@ -492,7 +534,7 @@ public class ModularEquipmentDetailPanelController : MonoBehaviour
         subscribedState = null;
     }
 
-    private static List<string> BuildStatLines(EquipmentDefinitionData definition)
+    private static List<string> BuildStatLines(EquipmentDefinition definition)
     {
         List<string> lines = new();
         if (definition == null)
@@ -500,39 +542,46 @@ public class ModularEquipmentDetailPanelController : MonoBehaviour
             return lines;
         }
 
-        if (definition.attack != 0) lines.Add($"ATK +{definition.attack}");
-        if (definition.hp != 0) lines.Add($"HP +{definition.hp}");
-        if (!Mathf.Approximately(definition.healPerSec, 0f)) lines.Add($"HPS +{definition.healPerSec}");
-        if (!Mathf.Approximately(definition.critChance, 0f)) lines.Add($"Crit +{definition.critChance}%");
-        if (!Mathf.Approximately(definition.critDamage, 0f)) lines.Add($"Crit DMG +{definition.critDamage}%");
+        EquipmentStatBlock stats = definition.stats ?? EquipmentStatBlock.Zero;
+        if (stats.attack != 0) lines.Add($"ATK +{stats.attack}");
+        if (stats.hp != 0) lines.Add($"HP +{stats.hp}");
+        if (!Mathf.Approximately(stats.hpRegen, 0f)) lines.Add($"HPS +{stats.hpRegen:0.##}");
+        if (!Mathf.Approximately(stats.critChance, 0f)) lines.Add($"Crit +{FormatPercent(stats.critChance)}");
+        if (!Mathf.Approximately(stats.critDamage, 0f)) lines.Add($"Crit DMG +{FormatPercent(stats.critDamage)}");
         return lines;
     }
 
-    private static string GetRarityLabel(EquipmentRarity rarity)
+    private static string FormatPercent(float value)
     {
-        return rarity switch
+        float percent = Mathf.Abs(value) <= 1f ? value * 100f : value;
+        return $"{percent:0.##}%";
+    }
+
+    private static string GetGradeLabel(EquipmentGrade grade)
+    {
+        return grade switch
         {
-            EquipmentRarity.Common => "Common",
-            EquipmentRarity.Magic => "Magic",
-            EquipmentRarity.Rare => "Rare",
-            EquipmentRarity.Epic => "Epic",
-            EquipmentRarity.Legendary => "Legendary",
-            _ => rarity.ToString()
+            EquipmentGrade.Common => "Common",
+            EquipmentGrade.Magic => "Magic",
+            EquipmentGrade.Rare => "Rare",
+            EquipmentGrade.Epic => "Epic",
+            EquipmentGrade.Legendary => "Legendary",
+            _ => grade.ToString()
         };
     }
 
-    private static void SetFrame(Transform root, EquipmentRarity rarity)
+    private static void SetFrame(Transform root, EquipmentGrade grade)
     {
-        SetActiveByNameContains(root, "Normal_Rare", rarity == EquipmentRarity.Rare);
-        SetActiveByNameContains(root, "Normal_Blue", rarity == EquipmentRarity.Rare);
-        SetActiveByNameContains(root, "Normal_Common", rarity == EquipmentRarity.Common);
-        SetActiveByNameContains(root, "Normal_Brown", rarity == EquipmentRarity.Common);
-        SetActiveByNameContains(root, "Normal_Magic", rarity == EquipmentRarity.Magic);
-        SetActiveByNameContains(root, "Normal_Green", rarity == EquipmentRarity.Magic);
-        SetActiveByNameContains(root, "Normal_Epic", rarity == EquipmentRarity.Epic);
-        SetActiveByNameContains(root, "Normal_Plum", rarity == EquipmentRarity.Epic);
-        SetActiveByNameContains(root, "Normal_Legendary", rarity == EquipmentRarity.Legendary);
-        SetActiveByNameContains(root, "Normal_Yellow", rarity == EquipmentRarity.Legendary);
+        SetActiveByNameContains(root, "Normal_Rare", grade == EquipmentGrade.Rare);
+        SetActiveByNameContains(root, "Normal_Blue", grade == EquipmentGrade.Rare);
+        SetActiveByNameContains(root, "Normal_Common", grade == EquipmentGrade.Common);
+        SetActiveByNameContains(root, "Normal_Brown", grade == EquipmentGrade.Common);
+        SetActiveByNameContains(root, "Normal_Magic", grade == EquipmentGrade.Magic);
+        SetActiveByNameContains(root, "Normal_Green", grade == EquipmentGrade.Magic);
+        SetActiveByNameContains(root, "Normal_Epic", grade == EquipmentGrade.Epic);
+        SetActiveByNameContains(root, "Normal_Plum", grade == EquipmentGrade.Epic);
+        SetActiveByNameContains(root, "Normal_Legendary", grade == EquipmentGrade.Legendary);
+        SetActiveByNameContains(root, "Normal_Yellow", grade == EquipmentGrade.Legendary);
     }
 
     private static Button[] FindCloseButtons(Transform root)

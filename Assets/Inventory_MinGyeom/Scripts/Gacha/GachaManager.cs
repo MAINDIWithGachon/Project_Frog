@@ -14,6 +14,10 @@ public class GachaManager : MonoBehaviour
     [SerializeField] private Button drawOneButton;
     [SerializeField] private Button drawTenButton;
 
+    [Header("Result Popup Draw Buttons")]
+    [SerializeField] private Button resultDrawOneButton;
+    [SerializeField] private Button resultDrawTenButton;
+
     [Header("Result Popup")]
     [SerializeField] private GameObject gachaResultRoot;
     [SerializeField] private Transform resultContentRoot;
@@ -104,8 +108,9 @@ public class GachaManager : MonoBehaviour
             return;
         }
 
-        ClearSpawnedResultItems();
         StopRevealRoutine();
+        ClearSpawnedResultItems();
+        SetPopupActive(gachaResultRoot, true);
 
         if (resultCountText != null)
         {
@@ -121,7 +126,6 @@ public class GachaManager : MonoBehaviour
             itemObject.SetActive(false);
         }
 
-        SetPopupActive(gachaResultRoot, true);
         revealRoutine = StartCoroutine(RevealResultItemsSequentially());
     }
 
@@ -210,7 +214,7 @@ public class GachaManager : MonoBehaviour
             itemObject.SetActive(true);
 
             GachaResultItemView itemView = itemObject.GetComponent<GachaResultItemView>();
-            if (itemView != null)
+            if (itemView != null && itemObject.activeInHierarchy)
             {
                 itemView.PlayRevealAnimation();
             }
@@ -248,6 +252,18 @@ public class GachaManager : MonoBehaviour
             drawTenButton.onClick.RemoveListener(OnClickDrawTen);
             drawTenButton.onClick.AddListener(OnClickDrawTen);
         }
+
+        if (resultDrawOneButton != null)
+        {
+            resultDrawOneButton.onClick.RemoveListener(OnClickDrawOne);
+            resultDrawOneButton.onClick.AddListener(OnClickDrawOne);
+        }
+
+        if (resultDrawTenButton != null)
+        {
+            resultDrawTenButton.onClick.RemoveListener(OnClickDrawTen);
+            resultDrawTenButton.onClick.AddListener(OnClickDrawTen);
+        }
     }
 
     private void UnregisterButtonListeners()
@@ -260,6 +276,16 @@ public class GachaManager : MonoBehaviour
         if (drawTenButton != null)
         {
             drawTenButton.onClick.RemoveListener(OnClickDrawTen);
+        }
+
+        if (resultDrawOneButton != null)
+        {
+            resultDrawOneButton.onClick.RemoveListener(OnClickDrawOne);
+        }
+
+        if (resultDrawTenButton != null)
+        {
+            resultDrawTenButton.onClick.RemoveListener(OnClickDrawTen);
         }
     }
 
@@ -281,6 +307,16 @@ public class GachaManager : MonoBehaviour
         if (drawTenButton != null)
         {
             drawTenButton.interactable = isInteractable;
+        }
+
+        if (resultDrawOneButton != null)
+        {
+            resultDrawOneButton.interactable = isInteractable;
+        }
+
+        if (resultDrawTenButton != null)
+        {
+            resultDrawTenButton.interactable = isInteractable;
         }
     }
 }

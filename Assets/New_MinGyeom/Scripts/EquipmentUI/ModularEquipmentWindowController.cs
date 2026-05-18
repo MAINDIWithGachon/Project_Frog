@@ -1,25 +1,26 @@
-using System;
 using System.Collections.Generic;
+using NewMinGyeom.Equipment;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class ModularEquipmentWindowController : MonoBehaviour
 {
-    private static readonly EquipmentCategory[] CategoryOrder =
+    private static readonly EquipmentSlotType[] SlotOrder =
     {
-        EquipmentCategory.Weapon,
-        EquipmentCategory.Hat,
-        EquipmentCategory.Ring,
-        EquipmentCategory.Armor,
-        EquipmentCategory.Necklace,
-        EquipmentCategory.Shoes
+        EquipmentSlotType.Weapon,
+        EquipmentSlotType.Hat,
+        EquipmentSlotType.Ring,
+        EquipmentSlotType.Armor,
+        EquipmentSlotType.Necklace,
+        EquipmentSlotType.Shoes
     };
 
     [Header("Injected References")]
     [SerializeField] private GameObject windowRoot;
-    [SerializeField] private EquipmentPrototypeState equipmentState;
+    [SerializeField] private EquipmentRuntimeState equipmentState;
     [SerializeField] private RuntimeData runtimeData;
     [SerializeField] private ModularEquipmentDetailPanelController detailPanelController;
+    [SerializeField] private EquipmentIconResolver iconResolver;
 
     [Header("Auto Bound UI")]
     [SerializeField] private Transform listContentRoot;
@@ -28,12 +29,12 @@ public class ModularEquipmentWindowController : MonoBehaviour
     [SerializeField] private Button[] closeButtons;
 
     [Header("State")]
-    [SerializeField] private EquipmentCategory currentCategory = EquipmentCategory.Weapon;
+    [SerializeField] private EquipmentSlotType currentSlotType = EquipmentSlotType.Weapon;
 
     private readonly List<ModularEquipmentListItemView> listItemViews = new();
     private readonly List<ModularEquippedSlotView> equippedSlotViews = new();
     private readonly List<GameObject> tabFocusObjects = new();
-    private EquipmentPrototypeState subscribedState;
+    private EquipmentRuntimeState subscribedState;
     private bool tabsBound;
     private bool closeButtonsBound;
 
@@ -59,14 +60,16 @@ public class ModularEquipmentWindowController : MonoBehaviour
 
     public void Configure(
         GameObject root,
-        EquipmentPrototypeState state,
+        EquipmentRuntimeState state,
         RuntimeData data,
-        ModularEquipmentDetailPanelController detailController)
+        ModularEquipmentDetailPanelController detailController,
+        EquipmentIconResolver resolver)
     {
         windowRoot = root;
         equipmentState = state;
         runtimeData = data;
         detailPanelController = detailController;
+        iconResolver = resolver;
 
         ResolveReferences();
         BindUi();
@@ -94,9 +97,9 @@ public class ModularEquipmentWindowController : MonoBehaviour
         }
     }
 
-    public void SelectCategory(EquipmentCategory category)
+    public void SelectSlotType(EquipmentSlotType slotType)
     {
-        currentCategory = category;
+        currentSlotType = slotType;
         RefreshList();
         RefreshTabFocus();
     }
@@ -122,19 +125,27 @@ public class ModularEquipmentWindowController : MonoBehaviour
         tabRoot ??= FindDescendantByName(root, "Tab_02_BoxMenu_Icon");
         equippedSlotsRoot ??= FindDescendantByNameContains(root, "Current_Equipment");
 
+        EquipmentModuleRoot moduleRoot = GetComponentInParent<EquipmentModuleRoot>();
         if (equipmentState == null)
         {
-            equipmentState = GetComponentInParent<EquipmentModuleRoot>()?.EquipmentState;
+            equipmentState = moduleRoot?.EquipmentState;
         }
 
         if (runtimeData == null)
         {
-            runtimeData = GetComponentInParent<EquipmentModuleRoot>()?.RuntimeData;
+            runtimeData = moduleRoot?.RuntimeData;
+        }
+
+        if (iconResolver == null)
+        {
+            iconResolver = moduleRoot?.IconResolver;
         }
 
         if (detailPanelController == null)
         {
-            detailPanelController = GetComponentInParent<EquipmentModuleRoot>()?.GetComponentInChildren<ModularEquipmentDetailPanelController>(true);
+            detailPanelController = moduleRoot != null
+                ? moduleRoot.GetComponentInChildren<ModularEquipmentDetailPanelController>(true)
+                : GetComponentInParent<ModularEquipmentDetailPanelController>();
         }
     }
 
@@ -191,11 +202,11 @@ public class ModularEquipmentWindowController : MonoBehaviour
                 slotView = child.gameObject.AddComponent<ModularEquippedSlotView>();
             }
 
-            EquipmentCategory category = equippedSlotViews.Count < CategoryOrder.Length
-                ? CategoryOrder[equippedSlotViews.Count]
-                : EquipmentCategory.Weapon;
+            EquipmentSlotType slotType = equippedSlotViews.Count < SlotOrder.Length
+                ? SlotOrder[equippedSlotViews.Count]
+                : EquipmentSlotType.Weapon;
 
-            slotView.Configure(category, HandleEquippedSlotClicked);
+            slotView.Configure(slotType, HandleEquippedSlotClicked);
             equippedSlotViews.Add(slotView);
         }
     }
@@ -208,17 +219,17 @@ public class ModularEquipmentWindowController : MonoBehaviour
         }
 
         Button[] buttons = tabRoot.GetComponentsInChildren<Button>(true);
-        int count = Mathf.Min(buttons.Length, CategoryOrder.Length);
+        int count = Mathf.Min(buttons.Length, SlotOrder.Length);
         tabFocusObjects.Clear();
 
         for (int i = 0; i < count; i++)
         {
             Button button = buttons[i];
-            EquipmentCategory category = CategoryOrder[i];
+            EquipmentSlotType slotType = SlotOrder[i];
             GameObject focus = FindDescendantByName(button.transform, "Focus")?.gameObject;
             tabFocusObjects.Add(focus);
 
-            button.onClick.AddListener(() => SelectCategory(category));
+            button.onClick.AddListener(() => SelectSlotType(slotType));
         }
 
         tabsBound = true;
@@ -253,32 +264,13 @@ public class ModularEquipmentWindowController : MonoBehaviour
 
     private void RefreshList()
     {
-        if (equipmentState == null || equipmentState.EquipmentDatabase == null)
+        if (equipmentState == null || equipmentState.LoadState != EquipmentDatabaseLoadState.Ready)
         {
             ClearList();
             return;
         }
 
-        IReadOnlyList<EquipmentDefinitionData> definitions = equipmentState.EquipmentDatabase.EquipmentDefinitions;
-        List<EquipmentDefinitionData> ownedDefinitions = new();
-
-        for (int i = 0; i < definitions.Count; i++)
-        {
-            EquipmentDefinitionData definition = definitions[i];
-            if (definition == null || definition.category != currentCategory)
-            {
-                continue;
-            }
-
-            EquipmentOwnedState ownedState = equipmentState.GetOwnedState(definition.equipmentId);
-            if (ownedState == null || ownedState.ownedCount <= 0)
-            {
-                continue;
-            }
-
-            ownedDefinitions.Add(definition);
-        }
-
+        List<EquipmentDefinition> ownedDefinitions = equipmentState.GetOwnedBySlotType(currentSlotType);
         for (int i = 0; i < listItemViews.Count; i++)
         {
             ModularEquipmentListItemView view = listItemViews[i];
@@ -289,19 +281,21 @@ public class ModularEquipmentWindowController : MonoBehaviour
 
             if (i < ownedDefinitions.Count)
             {
-                EquipmentDefinitionData definition = ownedDefinitions[i];
-                EquipmentOwnedState ownedState = equipmentState.GetOwnedState(definition.equipmentId);
+                EquipmentDefinition definition = ownedDefinitions[i];
+                EquipmentInstance ownedState = equipmentState.GetOwnedState(definition.equipmentId);
                 bool isEquipped = equipmentState.IsEquippedInSlot(definition);
+                bool canUpgrade = equipmentState.GetUpgradeRequirement(
+                    definition.equipmentId,
+                    runtimeData != null ? runtimeData.GetGold() : int.MaxValue,
+                    runtimeData != null ? runtimeData.GetUpgradeStone() : int.MaxValue).CanUpgrade;
 
                 view.SetItem(
                     definition,
-                    ownedState != null ? ownedState.currentLevel : 1,
+                    ownedState != null ? ownedState.level : 1,
                     ownedState != null ? ownedState.ownedCount : 1,
                     isEquipped,
-                    equipmentState.GetUpgradeRequirement(
-                        definition.equipmentId,
-                        runtimeData != null ? runtimeData.GetGold() : int.MaxValue,
-                        runtimeData != null ? runtimeData.GetUpgradeStone() : int.MaxValue).CanUpgrade);
+                    canUpgrade,
+                    iconResolver);
             }
             else if (i == ownedDefinitions.Count)
             {
@@ -324,17 +318,17 @@ public class ModularEquipmentWindowController : MonoBehaviour
                 continue;
             }
 
-            EquipmentCategory category = i < CategoryOrder.Length ? CategoryOrder[i] : EquipmentCategory.Weapon;
-            EquipmentDefinitionData definition = equipmentState != null ? equipmentState.GetEquippedDefinition(category) : null;
+            EquipmentSlotType slotType = i < SlotOrder.Length ? SlotOrder[i] : EquipmentSlotType.Weapon;
+            EquipmentDefinition definition = equipmentState != null ? equipmentState.GetEquippedDefinition(slotType) : null;
             int level = definition != null ? equipmentState.GetOwnedLevel(definition.equipmentId) : 0;
             bool showRedDot = definition == null
-                ? equipmentState != null && equipmentState.HasOwnedItemInCategory(category)
+                ? equipmentState != null && equipmentState.HasOwnedItemInSlotType(slotType)
                 : equipmentState.GetUpgradeRequirement(
                     definition.equipmentId,
                     runtimeData != null ? runtimeData.GetGold() : int.MaxValue,
                     runtimeData != null ? runtimeData.GetUpgradeStone() : int.MaxValue).CanUpgrade;
 
-            view.SetSlot(category, definition, level, showRedDot);
+            view.SetSlot(slotType, definition, level, showRedDot, iconResolver);
         }
     }
 
@@ -348,7 +342,7 @@ public class ModularEquipmentWindowController : MonoBehaviour
                 continue;
             }
 
-            focus.SetActive(i < CategoryOrder.Length && CategoryOrder[i] == currentCategory);
+            focus.SetActive(i < SlotOrder.Length && SlotOrder[i] == currentSlotType);
         }
     }
 
@@ -360,7 +354,7 @@ public class ModularEquipmentWindowController : MonoBehaviour
         }
     }
 
-    private void HandleItemClicked(EquipmentDefinitionData definition, int level)
+    private void HandleItemClicked(EquipmentDefinition definition, int level)
     {
         if (definition == null)
         {
@@ -370,7 +364,7 @@ public class ModularEquipmentWindowController : MonoBehaviour
         detailPanelController?.OpenDetail(definition, level);
     }
 
-    private void HandleEquippedSlotClicked(EquipmentCategory category, EquipmentDefinitionData definition, int level)
+    private void HandleEquippedSlotClicked(EquipmentSlotType slotType, EquipmentDefinition definition, int level)
     {
         if (definition != null)
         {
@@ -378,7 +372,7 @@ public class ModularEquipmentWindowController : MonoBehaviour
             return;
         }
 
-        SelectCategory(category);
+        SelectSlotType(slotType);
     }
 
     private void SubscribeToState()

@@ -1,5 +1,5 @@
-using System;
-using System.Reflection;
+using NewMinGyeom.Backend;
+using NewMinGyeom.Equipment;
 using UnityEngine;
 
 /// <summary>
@@ -11,27 +11,31 @@ public class EquipmentModuleRoot : MonoBehaviour
     [Header("External Input")]
     [SerializeField] private RuntimeData runtimeData;
 
-    [Header("Local Test Data")]
-    [SerializeField] private EquipmentDatabase defaultEquipmentDatabase;
-    [SerializeField] private EquipmentUpgradeRuleDatabase defaultUpgradeRuleDatabase;
+    [Header("Runtime Equipment")]
+    [SerializeField] private EquipmentRuntimeState equipmentState;
+    [SerializeField] private MockEquipmentDatabaseLoader mockLoader;
+    [SerializeField] private EquipmentIconResolver iconResolver;
+    [SerializeField] private EquipmentSaveDirtyTracker saveDirtyTracker;
 
     [Header("Internal Roots")]
     [SerializeField] private GameObject equipmentWindowRoot;
     [SerializeField] private GameObject detailPopupRoot;
 
     [Header("Internal Components")]
-    [SerializeField] private EquipmentPrototypeState equipmentState;
     [SerializeField] private ModularEquipmentWindowController equipmentWindowController;
     [SerializeField] private ModularEquipmentDetailPanelController detailPanelController;
 
     [Header("Startup")]
     [SerializeField] private bool bindOnAwake = true;
+    [SerializeField] private bool loadMockOnStart;
     [SerializeField] private bool refreshOnStart = true;
     [SerializeField] private bool hideEquipmentWindowOnStart = true;
     [SerializeField] private bool hideDetailPopupOnStart = true;
 
     public RuntimeData RuntimeData => runtimeData;
-    public EquipmentPrototypeState EquipmentState => equipmentState;
+    public EquipmentRuntimeState EquipmentState => equipmentState;
+    public EquipmentIconResolver IconResolver => iconResolver;
+    public EquipmentSaveDirtyTracker SaveDirtyTracker => saveDirtyTracker;
 
     private void Awake()
     {
@@ -43,6 +47,12 @@ public class EquipmentModuleRoot : MonoBehaviour
 
     private void Start()
     {
+        if (loadMockOnStart && mockLoader != null && equipmentState.LoadState != EquipmentDatabaseLoadState.Ready)
+        {
+            mockLoader.LoadMock();
+            saveDirtyTracker?.ClearDirty();
+        }
+
         if (refreshOnStart)
         {
             RefreshModule();
@@ -71,6 +81,15 @@ public class EquipmentModuleRoot : MonoBehaviour
         ResolveInternalReferences();
         EnsureInternalComponents();
         InjectReferences();
+    }
+
+    [ContextMenu("Load Mock Equipment")]
+    public void LoadMockEquipment()
+    {
+        BindModule();
+        mockLoader?.LoadMock();
+        saveDirtyTracker?.ClearDirty();
+        RefreshModule();
     }
 
     [ContextMenu("Refresh Module")]
@@ -127,7 +146,10 @@ public class EquipmentModuleRoot : MonoBehaviour
         equipmentWindowRoot ??= FindDirectChildGameObject(IsEquipmentWindowRootName);
         detailPopupRoot ??= FindDirectChildGameObject(name => name.Contains("Detail"));
 
-        equipmentState ??= GetComponentInChildren<EquipmentPrototypeState>(true);
+        equipmentState ??= GetComponentInChildren<EquipmentRuntimeState>(true);
+        mockLoader ??= GetComponentInChildren<MockEquipmentDatabaseLoader>(true);
+        iconResolver ??= GetComponentInChildren<EquipmentIconResolver>(true);
+        saveDirtyTracker ??= GetComponentInChildren<EquipmentSaveDirtyTracker>(true);
         equipmentWindowController ??= GetComponentInChildren<ModularEquipmentWindowController>(true);
         detailPanelController ??= GetComponentInChildren<ModularEquipmentDetailPanelController>(true);
     }
@@ -138,12 +160,40 @@ public class EquipmentModuleRoot : MonoBehaviour
         GameObject managerRoot = FindDirectChildGameObject(name => name == "EquipmentManager");
         GameObject detailControllerRoot = FindDirectChildGameObject(name => name == "EquipmentDetailPanelController");
 
-        if (equipmentState == null && stateRoot != null)
+        if (equipmentState == null)
         {
-            equipmentState = stateRoot.GetComponent<EquipmentPrototypeState>();
+            GameObject target = stateRoot != null ? stateRoot : gameObject;
+            equipmentState = target.GetComponent<EquipmentRuntimeState>();
             if (equipmentState == null)
             {
-                equipmentState = stateRoot.AddComponent<EquipmentPrototypeState>();
+                equipmentState = target.AddComponent<EquipmentRuntimeState>();
+            }
+        }
+
+        if (mockLoader == null && stateRoot != null)
+        {
+            mockLoader = stateRoot.GetComponent<MockEquipmentDatabaseLoader>();
+            if (mockLoader == null)
+            {
+                mockLoader = stateRoot.AddComponent<MockEquipmentDatabaseLoader>();
+            }
+        }
+
+        if (saveDirtyTracker == null && stateRoot != null)
+        {
+            saveDirtyTracker = stateRoot.GetComponent<EquipmentSaveDirtyTracker>();
+            if (saveDirtyTracker == null)
+            {
+                saveDirtyTracker = stateRoot.AddComponent<EquipmentSaveDirtyTracker>();
+            }
+        }
+
+        if (iconResolver == null)
+        {
+            iconResolver = GetComponent<EquipmentIconResolver>();
+            if (iconResolver == null)
+            {
+                iconResolver = gameObject.AddComponent<EquipmentIconResolver>();
             }
         }
 
@@ -176,15 +226,9 @@ public class EquipmentModuleRoot : MonoBehaviour
 
     private void InjectReferences()
     {
-        if (equipmentState != null)
-        {
-            SetPrivateField(equipmentState, "equipmentDatabase", defaultEquipmentDatabase);
-            SetPrivateField(equipmentState, "upgradeRuleDatabase", defaultUpgradeRuleDatabase);
-        }
-
         if (detailPanelController != null)
         {
-            detailPanelController.Configure(detailPopupRoot, equipmentState, runtimeData);
+            detailPanelController.Configure(detailPopupRoot, equipmentState, runtimeData, iconResolver);
         }
 
         if (equipmentWindowController != null)
@@ -193,7 +237,8 @@ public class EquipmentModuleRoot : MonoBehaviour
                 equipmentWindowRoot,
                 equipmentState,
                 runtimeData,
-                detailPanelController);
+                detailPanelController,
+                iconResolver);
         }
     }
 
@@ -210,7 +255,7 @@ public class EquipmentModuleRoot : MonoBehaviour
         }
     }
 
-    private GameObject FindDirectChildGameObject(Predicate<string> namePredicate)
+    private GameObject FindDirectChildGameObject(System.Predicate<string> namePredicate)
     {
         if (namePredicate == null)
         {
@@ -229,39 +274,18 @@ public class EquipmentModuleRoot : MonoBehaviour
         return null;
     }
 
-    private static bool IsEquipmentWindowRootName(string name)
+    private static bool IsEquipmentWindowRootName(string objectName)
     {
-        if (string.IsNullOrEmpty(name))
+        if (string.IsNullOrEmpty(objectName))
         {
             return false;
         }
 
-        return name.Contains("Equipment") &&
-               !name.Contains("Detail") &&
-               name != "EquipmentModule" &&
-               name != "EquipmentState" &&
-               name != "EquipmentManager" &&
-               name != "EquipmentDetailPanelController";
-    }
-
-    private static void SetPrivateField(object target, string fieldName, object value)
-    {
-        if (target == null || string.IsNullOrEmpty(fieldName))
-        {
-            return;
-        }
-
-        Type type = target.GetType();
-        while (type != null)
-        {
-            FieldInfo field = type.GetField(fieldName, BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
-            if (field != null)
-            {
-                field.SetValue(target, value);
-                return;
-            }
-
-            type = type.BaseType;
-        }
+        return objectName.Contains("Equipment") &&
+               !objectName.Contains("Detail") &&
+               objectName != "EquipmentModule" &&
+               objectName != "EquipmentState" &&
+               objectName != "EquipmentManager" &&
+               objectName != "EquipmentDetailPanelController";
     }
 }
