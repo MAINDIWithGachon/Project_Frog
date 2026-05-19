@@ -62,9 +62,9 @@ public class RuntimeData : MonoBehaviour
             ""growthLevel"": 1,
             ""nowExp"": 0,
             ""growthPoint"": 0,
-            ""attackLevel"": 0,
-            ""hpLevel"": 0,
-            ""critDamageLevel"": 0
+            ""attackLevel"": 1,
+            ""hpLevel"": 1,
+            ""critDamageLevel"": 1
         }
     }";
 
