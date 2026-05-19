@@ -104,18 +104,18 @@ public class StatUpgradeUIController : MonoBehaviour
             return;
 
         // 공격력 강화 레벨 표시
-        attackLevelText.text = "공격력 Lv." + BackndGameDataManager.Instance.CurrentStatUpgradeData.GetLevel(BackndGameDataManager.STAT_ATTACK);
+        attackLevelText.text = "Lv." + BackndGameDataManager.Instance.CurrentStatUpgradeData.GetLevel(BackndGameDataManager.STAT_ATTACK);
 
         // 체력 강화 레벨 표시
-        hpLevelText.text = "체력 Lv." + BackndGameDataManager.Instance.CurrentStatUpgradeData.GetLevel(BackndGameDataManager.STAT_HP);
+        hpLevelText.text = "Lv." + BackndGameDataManager.Instance.CurrentStatUpgradeData.GetLevel(BackndGameDataManager.STAT_HP);
 
         // 초당 회복 강화 레벨 표시
-        hpRegenLevelText.text = "회복 Lv." + BackndGameDataManager.Instance.CurrentStatUpgradeData.GetLevel(BackndGameDataManager.STAT_HP_REGEN);
+        hpRegenLevelText.text = "Lv." + BackndGameDataManager.Instance.CurrentStatUpgradeData.GetLevel(BackndGameDataManager.STAT_HP_REGEN);
 
         // 치명타 확률 강화 레벨 표시
-        critRateLevelText.text = "치확 Lv." + BackndGameDataManager.Instance.CurrentStatUpgradeData.GetLevel(BackndGameDataManager.STAT_CRIT_RATE);
+        critRateLevelText.text = "Lv." + BackndGameDataManager.Instance.CurrentStatUpgradeData.GetLevel(BackndGameDataManager.STAT_CRIT_RATE);
 
         // 치명타 공격력 강화 레벨 표시
-        critDamageLevelText.text = "치피 Lv." + BackndGameDataManager.Instance.CurrentStatUpgradeData.GetLevel(BackndGameDataManager.STAT_CRIT_DAMAGE);
+        critDamageLevelText.text = "Lv." + BackndGameDataManager.Instance.CurrentStatUpgradeData.GetLevel(BackndGameDataManager.STAT_CRIT_DAMAGE);
     }
 }
