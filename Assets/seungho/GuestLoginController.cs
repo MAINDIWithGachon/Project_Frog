@@ -166,6 +166,23 @@ public class GuestLoginController : MonoBehaviour
         // 상태 출력
         SetStatus("게스트 로그인 완료");
 
+                // 게임 데이터 매니저가 있는지 확인합니다.
+        if (BackndGameDataManager.Instance != null)
+        {
+            // USER_DATA와 USER_STAT_UPGRADE를 불러오거나 생성합니다.
+            bool gameDataSuccess = BackndGameDataManager.Instance.LoadOrCreateAllData();
+
+            // 게임 데이터 로드에 실패했다면
+            if (!gameDataSuccess)
+            {
+                // 상태 메시지를 출력합니다.
+                SetStatus("게임 데이터 불러오기 실패");
+
+                // 함수 종료
+                return;
+            }
+        }
+
         // 로그인 완료 후 상태 텍스트 숨기기
         if (statusText != null)
         {
