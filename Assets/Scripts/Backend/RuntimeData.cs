@@ -459,6 +459,20 @@ public class RuntimeData : MonoBehaviour
         return JsonUtility.ToJson(root, pretty);
     }
 
+    /// <summary>
+    /// 백엔드 저장 요청에 넘길 현재 RuntimeData JSON을 반환한다.
+    /// </summary>
+    /// <returns>뒤끝 저장/매핑 계층에서 그대로 사용할 수 있는 압축 JSON 문자열</returns>
+    ///
+    public void CallGetRuntimeDataJson_Button()
+    {
+       Debug.Log(GetRuntimeDataJson());
+    }
+    public string GetRuntimeDataJson()
+    {
+        return ExportJson(false);
+    }
+
     // =========================
     // 데이터 클래스
     // =========================
