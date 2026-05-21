@@ -20,6 +20,8 @@ using UnityEngine;
 /// </summary>
 public class RuntimeData : MonoBehaviour
 {
+    public static RuntimeData Instance { get; private set; }
+
     public event Action OnDataChanged;
 
     /// <summary>
@@ -92,6 +94,15 @@ public class RuntimeData : MonoBehaviour
     /// </summary>
     private void Awake()
     {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        Instance = this;
+        DontDestroyOnLoad(gameObject);
+
         LoadFromJsonIfNeeded();
     }
 
