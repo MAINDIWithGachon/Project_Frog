@@ -31,6 +31,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6644578971798763601}
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0}
@@ -108,17 +109,15 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_TextWrappingMode: 1
+  m_enableWordWrapping: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
-  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
-  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -169,6 +168,7 @@ RectTransform:
   - {fileID: 2555175486476904791}
   - {fileID: 6644578971968208430}
   m_Father: {fileID: 0}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -206,6 +206,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6644578971798763601}
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -280,6 +281,7 @@ RectTransform:
   m_Children:
   - {fileID: 8310788235602056006}
   m_Father: {fileID: 6644578971798763601}
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
@@ -291,13 +293,8 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
-    serializedVersion: 3
     m_TransformParent: {fileID: 6644578971798763601}
     m_Modifications:
-    - target: {fileID: 1668174621, guid: 913c61722506e4979bb7fe93676aa273, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 2456963044274423318, guid: 913c61722506e4979bb7fe93676aa273, type: 3}
       propertyPath: m_Sprite
       value: 
@@ -403,12 +400,6 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects:
-    - targetCorrespondingSourceObject: {fileID: 2461442501139657494, guid: 913c61722506e4979bb7fe93676aa273, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1842236504255251630}
-    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 913c61722506e4979bb7fe93676aa273, type: 3}
 --- !u!224 &670804869917539398 stripped
 RectTransform:
@@ -425,16 +416,11 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
-    serializedVersion: 3
     m_TransformParent: {fileID: 9087848119463079584}
     m_Modifications:
     - target: {fileID: 2235254707959506410, guid: 4197858b511ac4b3d95a1ebd384f5084, type: 3}
       propertyPath: m_Name
       value: ItemFrame_01_Normal_Plum
-      objectReference: {fileID: 0}
-    - target: {fileID: 2235254707959506410, guid: 4197858b511ac4b3d95a1ebd384f5084, type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5018902287088981536, guid: 4197858b511ac4b3d95a1ebd384f5084, type: 3}
       propertyPath: m_Pivot.x
@@ -521,21 +507,12 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4197858b511ac4b3d95a1ebd384f5084, type: 3}
---- !u!224 &1842236504255251630 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 5018902287088981536, guid: 4197858b511ac4b3d95a1ebd384f5084, type: 3}
-  m_PrefabInstance: {fileID: 6644578972538622606}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &6644578972579831490
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
-    serializedVersion: 3
     m_TransformParent: {fileID: 2555175486476904791}
     m_Modifications:
     - target: {fileID: 3414731825466625412, guid: add1e72fd94bd4992a01a480e2559c97, type: 3}
@@ -631,9 +608,6 @@ PrefabInstance:
       value: BasicFrame_Diamond_H48_NoBorder_Plum
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: add1e72fd94bd4992a01a480e2559c97, type: 3}
 --- !u!224 &8310788235602056006 stripped
 RectTransform:

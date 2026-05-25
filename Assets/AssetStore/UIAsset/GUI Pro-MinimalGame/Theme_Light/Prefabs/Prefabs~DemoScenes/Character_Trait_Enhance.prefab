@@ -628,6 +628,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1161631738944890158}
+  - component: {fileID: 1980175748}
   m_Layer: 5
   m_Name: Character_Trait_Enhance
   m_TagString: Untagged
@@ -642,7 +643,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1161631738944890159}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -657,6 +658,20 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1980175748
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1161631738944890159}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99cf42140c3104393ba145bec6abebb6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  otherPanels:
+  - {fileID: 0}
 --- !u!1 &6654102076220021478
 GameObject:
   m_ObjectHideFlags: 0
@@ -1620,6 +1635,14 @@ PrefabInstance:
     - target: {fileID: 4811974327718775163, guid: 0f2d6a1bdf26646deb800ee03702a373, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5099257302293254947, guid: 0f2d6a1bdf26646deb800ee03702a373, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 10.057007
+      objectReference: {fileID: 0}
+    - target: {fileID: 5099257302293254947, guid: 0f2d6a1bdf26646deb800ee03702a373, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -9.331902
       objectReference: {fileID: 0}
     - target: {fileID: 9150553914163084570, guid: 0f2d6a1bdf26646deb800ee03702a373, type: 3}
       propertyPath: m_Name

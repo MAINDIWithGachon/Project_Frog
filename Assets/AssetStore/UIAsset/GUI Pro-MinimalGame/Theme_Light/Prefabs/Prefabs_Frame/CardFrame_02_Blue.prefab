@@ -23,6 +23,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: CardFrame_02_Blue
       objectReference: {fileID: 0}
+    - target: {fileID: 1132977939736810786, guid: 09f0ed6e86b524f959144963a968ada1, type: 3}
+      propertyPath: m_Color.b
+      value: 0.14117648
+      objectReference: {fileID: 0}
+    - target: {fileID: 1132977939736810786, guid: 09f0ed6e86b524f959144963a968ada1, type: 3}
+      propertyPath: m_Color.g
+      value: 0.1882353
+      objectReference: {fileID: 0}
+    - target: {fileID: 1132977939736810786, guid: 09f0ed6e86b524f959144963a968ada1, type: 3}
+      propertyPath: m_Color.r
+      value: 0.30588236
+      objectReference: {fileID: 0}
     - target: {fileID: 3276988101734088594, guid: 09f0ed6e86b524f959144963a968ada1, type: 3}
       propertyPath: m_Color.b
       value: 0.83921576
