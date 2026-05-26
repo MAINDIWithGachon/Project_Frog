@@ -1,4 +1,6 @@
 using System;
+using NewMinGyeom.Equipment;
+using NewMinGyeom.Gacha;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -104,6 +106,22 @@ public class GachaResultItemEffectController : MonoBehaviour
         Apply(result.equipmentId, result.rarity);
     }
 
+    public void Apply(RuntimeEquipmentGachaResult result)
+    {
+        if (result == null)
+        {
+            Clear();
+            return;
+        }
+
+        Apply(result.equipmentId, ToLegacyRarity(result.grade));
+    }
+
+    public void Apply(string equipmentId, EquipmentGrade grade)
+    {
+        Apply(equipmentId, ToLegacyRarity(grade));
+    }
+
     public void Apply(string equipmentId, EquipmentRarity rarity)
     {
         RarityEffectSetting setting = GetSetting(rarity);
@@ -186,5 +204,18 @@ public class GachaResultItemEffectController : MonoBehaviour
         {
             target.SetActive(isActive);
         }
+    }
+
+    private static EquipmentRarity ToLegacyRarity(EquipmentGrade grade)
+    {
+        return grade switch
+        {
+            EquipmentGrade.Common => EquipmentRarity.Common,
+            EquipmentGrade.Magic => EquipmentRarity.Magic,
+            EquipmentGrade.Rare => EquipmentRarity.Rare,
+            EquipmentGrade.Epic => EquipmentRarity.Epic,
+            EquipmentGrade.Legendary => EquipmentRarity.Legendary,
+            _ => EquipmentRarity.Common
+        };
     }
 }
