@@ -1,8 +1,11 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class MonsterHealth : MonoBehaviour
 {
+    public static event Action OnNormalMonsterKilled;
+
     [Header("Stage")]
     [SerializeField] private bool registerAsNormalMonsterKill = true;
 
@@ -143,6 +146,7 @@ public class MonsterHealth : MonoBehaviour
 
         hasReportedDeathToStage = true;
         StageManager.Instance?.RegisterNormalMonsterKill();
+        OnNormalMonsterKilled?.Invoke();
     }
 
     private void StopDeathRelatedBehavior()

@@ -27,6 +27,7 @@ public class PlayerStatController : MonoBehaviour
     [SerializeField] private CombatPowerData combatPowerData;
     [SerializeField] private Health health;
     [SerializeField] private EquipmentPrototypeState equipmentState;
+    [SerializeField] private GrowthStatManager growthStatManager;
 
     [Header("# Base Stat")]
     [SerializeField] private PlayerBaseStatData baseStatData;
@@ -170,6 +171,12 @@ public class PlayerStatController : MonoBehaviour
 
         if (equipmentState == null)
             equipmentState = FindAnyObjectByType<EquipmentPrototypeState>();
+
+        if (growthStatManager == null)
+            growthStatManager = GetComponent<GrowthStatManager>();
+
+        if (growthStatManager == null)
+            growthStatManager = FindAnyObjectByType<GrowthStatManager>();
     }
 
     private void SubscribeEquipmentState()
@@ -199,55 +206,79 @@ public class PlayerStatController : MonoBehaviour
     {
         float baseValue = baseStatData.baseAttack;
         float statValue = attackLevel * attackPerLevel;
+        float growthValue = GetGrowthAttack();
         float equipmentValue = GetEquipmentAttack();
         float recipeValue = GetRecipeAttack();
         float buffValue = GetBuffAttack();
 
-        return new StatContribution(baseValue, statValue, equipmentValue, recipeValue, buffValue);
+        return new StatContribution(baseValue, statValue, growthValue, equipmentValue, recipeValue, buffValue);
     }
 
     private StatContribution CreateMaxHpContribution(int hpLevel)
     {
         float baseValue = baseStatData.baseMaxHp;
         float statValue = hpLevel * hpPerLevel;
+        float growthValue = GetGrowthHp();
         float equipmentValue = GetEquipmentHp();
         float recipeValue = GetRecipeHp();
         float buffValue = GetBuffHp();
 
-        return new StatContribution(baseValue, statValue, equipmentValue, recipeValue, buffValue);
+        return new StatContribution(baseValue, statValue, growthValue, equipmentValue, recipeValue, buffValue);
     }
 
     private StatContribution CreateHpRegenContribution(int hpRegenLevel)
     {
         float baseValue = baseStatData.baseHpRegenPerSecond;
         float statValue = hpRegenLevel * hpRegenPerLevel;
+        float growthValue = 0f;
         float equipmentValue = GetEquipmentHpRegen();
         float recipeValue = GetRecipeHpRegen();
         float buffValue = GetBuffHpRegen();
 
-        return new StatContribution(baseValue, statValue, equipmentValue, recipeValue, buffValue);
+        return new StatContribution(baseValue, statValue, growthValue, equipmentValue, recipeValue, buffValue);
     }
 
     private StatContribution CreateCritChanceContribution(int critChanceLevel)
     {
         float baseValue = baseStatData.baseCritChance;
         float statValue = critChanceLevel * critChancePerLevel;
+        float growthValue = 0f;
         float equipmentValue = GetEquipmentCritChance();
         float recipeValue = GetRecipeCritChance();
         float buffValue = GetBuffCritChance();
 
-        return new StatContribution(baseValue, statValue, equipmentValue, recipeValue, buffValue);
+        return new StatContribution(baseValue, statValue, growthValue, equipmentValue, recipeValue, buffValue);
     }
 
     private StatContribution CreateCritDamageContribution(int critDamageLevel)
     {
         float baseValue = baseStatData.baseCritDamage;
         float statValue = critDamageLevel * critDamagePerLevel;
+        float growthValue = GetGrowthCritDamage();
         float equipmentValue = GetEquipmentCritDamage();
         float recipeValue = GetRecipeCritDamage();
         float buffValue = GetBuffCritDamage();
 
-        return new StatContribution(baseValue, statValue, equipmentValue, recipeValue, buffValue);
+        return new StatContribution(baseValue, statValue, growthValue, equipmentValue, recipeValue, buffValue);
+    }
+
+    // =========================
+    // Growth Stat
+    // =========================
+
+    private float GetGrowthAttack()
+    {
+        return growthStatManager != null ? growthStatManager.AttackBonus : 0f;
+    }
+
+    private float GetGrowthHp()
+    {
+        return growthStatManager != null ? growthStatManager.HpBonus : 0f;
+    }
+
+    private float GetGrowthCritDamage()
+    {
+        return growthStatManager != null ? growthStatManager.CritDamageBonus : 0f;
     }
 
     private void UpdateCombatPowerData(
