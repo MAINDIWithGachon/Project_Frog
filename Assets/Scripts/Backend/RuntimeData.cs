@@ -20,6 +20,8 @@ using UnityEngine;
 /// </summary>
 public class RuntimeData : MonoBehaviour
 {
+    public static RuntimeData Instance { get; private set; }
+
     public event Action OnDataChanged;
 
     /// <summary>
@@ -57,6 +59,14 @@ public class RuntimeData : MonoBehaviour
             ""hpRegenLevel"": 3,
             ""critChanceLevel"": 6,
             ""critDamageLevel"": 4
+        },
+        ""growth"": {
+            ""growthLevel"": 1,
+            ""nowExp"": 0,
+            ""growthPoint"": 0,
+            ""attackLevel"": 1,
+            ""hpLevel"": 1,
+            ""critDamageLevel"": 1
         }
     }";
 
@@ -84,6 +94,15 @@ public class RuntimeData : MonoBehaviour
     /// </summary>
     private void Awake()
     {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        Instance = this;
+        DontDestroyOnLoad(gameObject);
+
         LoadFromJsonIfNeeded();
     }
 
@@ -151,6 +170,11 @@ public class RuntimeData : MonoBehaviour
 
         // statLevels가 없으면 기본 스탯 레벨 객체 생성
         if (root.statLevels == null) root.statLevels = new StatLevelData();
+
+        // growth가 없으면 기본 성장 데이터 객체 생성
+        if (root.growth == null) root.growth = new GrowthData();
+        if (root.growth.growthLevel <= 0) root.growth.growthLevel = 1;
+        if (root.growth.nowExp < 0f) root.growth.nowExp = 0f;
     }
 
     // =========================
@@ -446,6 +470,20 @@ public class RuntimeData : MonoBehaviour
         return JsonUtility.ToJson(root, pretty);
     }
 
+    /// <summary>
+    /// 백엔드 저장 요청에 넘길 현재 RuntimeData JSON을 반환한다.
+    /// </summary>
+    /// <returns>뒤끝 저장/매핑 계층에서 그대로 사용할 수 있는 압축 JSON 문자열</returns>
+    ///
+    public void CallGetRuntimeDataJson_Button()
+    {
+       Debug.Log(GetRuntimeDataJson());
+    }
+    public string GetRuntimeDataJson()
+    {
+        return ExportJson(false);
+    }
+
     // =========================
     // 데이터 클래스
     // =========================
@@ -497,6 +535,14 @@ public class RuntimeData : MonoBehaviour
         /// 별도 계산식(기본값 + 레벨 보정값)을 통해 런타임에서 계산하는 것이 바람직하다.
         /// </summary>
         public StatLevelData statLevels;
+
+        /// <summary>
+        /// 플레이어 성장 레벨과 성장 포인트, 성장 스탯 강화 레벨.
+        /// 
+        /// 여기에는 최종 공격력/체력 같은 계산 결과를 저장하지 않고,
+        /// 성장 시스템의 원본 진행도만 저장한다.
+        /// </summary>
+        public GrowthData growth;
     }
 
     /// <summary>
@@ -577,6 +623,29 @@ public class RuntimeData : MonoBehaviour
         /// <summary>
         /// 치명타 공격력 강화 레벨
         /// </summary>
+        public int critDamageLevel;
+    }
+
+    /// <summary>
+    /// 성장 시스템 저장 데이터.
+    /// 
+    /// growthLevel:
+    /// - 플레이어의 현재 성장 레벨
+    /// 
+    /// growthPoint:
+    /// - 성장 레벨업 등으로 획득하고 성장 스탯 강화에 사용하는 포인트
+    /// 
+    /// attackLevel / hpLevel / critDamageLevel:
+    /// - 성장 포인트로 올린 각 성장 스탯의 강화 레벨
+    /// </summary>
+    [Serializable]
+    public class GrowthData
+    {
+        public int growthLevel;
+        public float nowExp;
+        public int growthPoint;
+        public int attackLevel;
+        public int hpLevel;
         public int critDamageLevel;
     }
 }
