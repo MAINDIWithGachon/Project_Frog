@@ -4,6 +4,7 @@ using UnityEngine.SceneManagement;
 public class TestManager : MonoBehaviour
 {
     public GameObject TestHamburger;
+    public GameObject TestDataMenu;
 
     public void OnClickTestButton()
     {
@@ -14,6 +15,17 @@ public class TestManager : MonoBehaviour
         }
 
         TestHamburger.SetActive(true);
+    }
+
+    public void OnClickTestBackndMenuButton()
+    {
+        if (TestDataMenu == null)
+        {
+            Debug.LogWarning("[TestManager] TestDataMenu reference is missing.");
+            return;
+        }
+
+        TestDataMenu.SetActive(true);
     }
 
     public void OnClickSaveRuntimeDataTest()
