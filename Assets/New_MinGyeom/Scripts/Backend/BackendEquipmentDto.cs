@@ -10,6 +10,8 @@ namespace NewMinGyeom.Backend
         public string slotType;
         public string grade;
         public string iconKey;
+        public string iconGuid;
+        public string iconAssetPath;
         public string description;
         public int maxLevel;
         public int attack;

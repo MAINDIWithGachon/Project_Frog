@@ -199,7 +199,11 @@ namespace NewMinGyeom.Backend
                     displayName = GetString(row, nameof(BackendEquipmentDto.displayName)),
                     slotType = GetStringAny(row, nameof(BackendEquipmentDto.slotType), "category"),
                     grade = GetStringAny(row, nameof(BackendEquipmentDto.grade), "rarity"),
-                    iconKey = GetStringAny(row, nameof(BackendEquipmentDto.iconKey), nameof(BackendEquipmentDto.equipmentId)),
+                    iconKey = GetStringAny(
+                        row,
+                        nameof(BackendEquipmentDto.iconKey),
+                        nameof(BackendEquipmentDto.equipmentId),
+                        nameof(BackendEquipmentDto.iconAssetPath)),
                     description = GetString(row, nameof(BackendEquipmentDto.description)),
                     maxLevel = GetInt(row, nameof(BackendEquipmentDto.maxLevel), 1),
                     attack = GetInt(row, nameof(BackendEquipmentDto.attack)),
