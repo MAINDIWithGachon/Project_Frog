@@ -6,20 +6,16 @@ public class BackendLoginTest : MonoBehaviour
     private void Start()
     {
         //--------------------------------------------------
-        // 뒤끝 초기화
+        // 뒤끝 초기화 상태 확인
         //--------------------------------------------------
 
-        var bro = Backend.Initialize();
-
-        if (bro.IsSuccess())
+        if (BackendManager.EnsureInitialized())
         {
-            Debug.Log("뒤끝 초기화 성공");
-
             GuestLogin();
         }
         else
         {
-            Debug.LogError($"초기화 실패 : {bro}");
+            Debug.LogError("초기화 실패로 게스트 로그인을 중단합니다.");
         }
     }
 
