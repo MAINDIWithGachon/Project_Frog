@@ -15285,6 +15285,7 @@ GameObject:
   - component: {fileID: 2002410190565705862}
   - component: {fileID: 2199852332217079713}
   - component: {fileID: 2336081790679571505}
+  - component: {fileID: -1074888586974311578}
   m_Layer: 5
   m_Name: Current_Equipment_ (3)
   m_TagString: Untagged
@@ -15389,6 +15390,23 @@ MonoBehaviour:
   typeBgImage: {fileID: 6202754181465030664}
   typeIconImage: {fileID: 592093885842312430}
   levelText: {fileID: 7669551434426030750}
+--- !u!114 &-1074888586974311578
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 748273580307381997}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aba2890e569d7c840bdcef9eb85bdd91, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  category: 3
+  equipmentState: {fileID: 0}
+  categoryTabController: {fileID: 8343780882599674427}
+  detailPanelController: {fileID: 0}
+  targetButton: {fileID: 2199852332217079713}
 --- !u!1 &755991844257335848
 GameObject:
   m_ObjectHideFlags: 0
@@ -29686,6 +29704,7 @@ GameObject:
   - component: {fileID: 5607907436338009603}
   - component: {fileID: 3030918765297303030}
   - component: {fileID: 3154881482773244490}
+  - component: {fileID: 2906900837125997447}
   m_Layer: 5
   m_Name: Current_Equipment_ (4)
   m_TagString: Untagged
@@ -29790,6 +29809,23 @@ MonoBehaviour:
   typeBgImage: {fileID: 2931527289249771498}
   typeIconImage: {fileID: 2845536985424417877}
   levelText: {fileID: 5148035966158858918}
+--- !u!114 &2906900837125997447
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1430375963074367848}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aba2890e569d7c840bdcef9eb85bdd91, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  category: 4
+  equipmentState: {fileID: 0}
+  categoryTabController: {fileID: 8343780882599674427}
+  detailPanelController: {fileID: 0}
+  targetButton: {fileID: 3030918765297303030}
 --- !u!1 &1430714407959882656
 GameObject:
   m_ObjectHideFlags: 0
@@ -30366,6 +30402,7 @@ GameObject:
   - component: {fileID: 6170287137689481581}
   - component: {fileID: 7369647806935650631}
   - component: {fileID: 5159447746027932181}
+  - component: {fileID: -2993497193897446544}
   m_Layer: 5
   m_Name: Current_Equipment_
   m_TagString: Untagged
@@ -30470,6 +30507,23 @@ MonoBehaviour:
   typeBgImage: {fileID: 1103617787641294392}
   typeIconImage: {fileID: 6790774552832308118}
   levelText: {fileID: 1730255463677912533}
+--- !u!114 &-2993497193897446544
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1471109464883628745}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aba2890e569d7c840bdcef9eb85bdd91, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  category: 0
+  equipmentState: {fileID: 0}
+  categoryTabController: {fileID: 8343780882599674427}
+  detailPanelController: {fileID: 0}
+  targetButton: {fileID: 7369647806935650631}
 --- !u!1 &1479646535144480850
 GameObject:
   m_ObjectHideFlags: 0
@@ -64961,6 +65015,7 @@ GameObject:
   - component: {fileID: 5011974968178435038}
   - component: {fileID: 1213468926468805352}
   - component: {fileID: 106902997505649239}
+  - component: {fileID: 6160804870975161021}
   m_Layer: 5
   m_Name: Current_Equipment_ (5)
   m_TagString: Untagged
@@ -65065,6 +65120,23 @@ MonoBehaviour:
   typeBgImage: {fileID: 1863760086526427752}
   typeIconImage: {fileID: 6796113362992090574}
   levelText: {fileID: 1960272185758353607}
+--- !u!114 &6160804870975161021
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3223936201085754720}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aba2890e569d7c840bdcef9eb85bdd91, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  category: 5
+  equipmentState: {fileID: 0}
+  categoryTabController: {fileID: 8343780882599674427}
+  detailPanelController: {fileID: 0}
+  targetButton: {fileID: 1213468926468805352}
 --- !u!1 &3224097636935109240
 GameObject:
   m_ObjectHideFlags: 0
@@ -67361,6 +67433,7 @@ GameObject:
   - component: {fileID: 8649318337823342795}
   - component: {fileID: 5909500213178317246}
   - component: {fileID: 8235892169666805520}
+  - component: {fileID: 7842480579821136743}
   m_Layer: 5
   m_Name: Current_Equipment_ (2)
   m_TagString: Untagged
@@ -67465,6 +67538,23 @@ MonoBehaviour:
   typeBgImage: {fileID: 4316983027021579455}
   typeIconImage: {fileID: 347924170369260584}
   levelText: {fileID: 6117886649056135513}
+--- !u!114 &7842480579821136743
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3312287565948504244}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aba2890e569d7c840bdcef9eb85bdd91, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  category: 2
+  equipmentState: {fileID: 0}
+  categoryTabController: {fileID: 8343780882599674427}
+  detailPanelController: {fileID: 0}
+  targetButton: {fileID: 5909500213178317246}
 --- !u!1 &3320707227844578946
 GameObject:
   m_ObjectHideFlags: 0
@@ -158402,6 +158492,7 @@ GameObject:
   - component: {fileID: 6865237838530320314}
   - component: {fileID: 7356267583418843253}
   - component: {fileID: 4036912398735980685}
+  - component: {fileID: 2798424996721048237}
   m_Layer: 5
   m_Name: Current_Equipment_ (1)
   m_TagString: Untagged
@@ -158506,6 +158597,23 @@ MonoBehaviour:
   typeBgImage: {fileID: 5342215495103930538}
   typeIconImage: {fileID: 919814068290349464}
   levelText: {fileID: 2317334087261170080}
+--- !u!114 &2798424996721048237
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8054735695934616297}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aba2890e569d7c840bdcef9eb85bdd91, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  category: 1
+  equipmentState: {fileID: 0}
+  categoryTabController: {fileID: 8343780882599674427}
+  detailPanelController: {fileID: 0}
+  targetButton: {fileID: 7356267583418843253}
 --- !u!1 &8057758639556923770
 GameObject:
   m_ObjectHideFlags: 0

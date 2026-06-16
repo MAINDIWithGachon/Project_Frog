@@ -42,6 +42,10 @@ public class ModularEquipmentDetailPanelController : MonoBehaviour
     [SerializeField] private Transform detailStatListRoot;
     [SerializeField] private Transform rarityLabelRoot;
     [SerializeField] private Transform detailSlotRoot;
+    [SerializeField] private GameObject typeAreaRoot;
+    [SerializeField] private Image typeFrameImage;
+    [SerializeField] private Image typeBgImage;
+    [SerializeField] private Image typeIconImage;
 
     [Header("Style")]
     [SerializeField] private Color insufficientCurrencyColor = Color.red;
@@ -197,6 +201,10 @@ public class ModularEquipmentDetailPanelController : MonoBehaviour
         detailStatListRoot ??= FindDescendantByName(root, "Group_Buff");
         rarityLabelRoot ??= FindDescendantByName(root, "Rarity_Label");
         detailSlotRoot ??= FindDescendantByName(root, "Slot");
+        typeAreaRoot ??= FindDetailTypeArea(root)?.gameObject;
+        typeFrameImage ??= GetTypeAreaFrameImage();
+        typeBgImage ??= FindTypeAreaImageByName("Bg");
+        typeIconImage ??= FindTypeAreaImageByName("Icon");
 
         equipButton ??= FindButtonByName(root, "EquipButton");
         upgradeButton ??= FindButtonByName(root, "UpgradeButton");
@@ -449,7 +457,7 @@ public class ModularEquipmentDetailPanelController : MonoBehaviour
 
     private void ApplyStats(EquipmentDefinition definition)
     {
-        List<string> lines = BuildStatLines(definition);
+        List<string> lines = BuildStatLines(definition, currentLevel);
 
         if (detailStatText != null)
         {
@@ -461,14 +469,41 @@ public class ModularEquipmentDetailPanelController : MonoBehaviour
             return;
         }
 
+        if (detailStatListRoot.childCount > 0)
+        {
+            for (int i = 0; i < detailStatListRoot.childCount; i++)
+            {
+                Transform row = detailStatListRoot.GetChild(i);
+                if (row == null)
+                {
+                    continue;
+                }
+
+                bool hasLine = i < lines.Count;
+                TMP_Text rowText = row.GetComponentInChildren<TMP_Text>(true);
+                if (rowText != null)
+                {
+                    rowText.text = hasLine ? lines[i] : string.Empty;
+                }
+
+                row.gameObject.SetActive(hasLine);
+            }
+
+            return;
+        }
+
         TMP_Text[] texts = detailStatListRoot.GetComponentsInChildren<TMP_Text>(true);
         for (int i = 0; i < texts.Length; i++)
         {
             TMP_Text text = texts[i];
-            if (text != null)
+            if (text == null)
             {
-                text.text = i < lines.Count ? lines[i] : string.Empty;
+                continue;
             }
+
+            bool hasLine = i < lines.Count;
+            text.text = hasLine ? lines[i] : string.Empty;
+            text.gameObject.SetActive(hasLine);
         }
     }
 
@@ -494,6 +529,7 @@ public class ModularEquipmentDetailPanelController : MonoBehaviour
         }
 
         SetFrame(detailSlotRoot, definition.grade);
+        ApplyDetailTypeArea(definition);
 
         Image icon = FindImageByPath(detailSlotRoot, "ItemFrame_01/Item/Icon");
         icon ??= FindImageByPath(detailSlotRoot, "ItemFrame_01/Item");
@@ -504,6 +540,41 @@ public class ModularEquipmentDetailPanelController : MonoBehaviour
         {
             icon.sprite = sprite;
             icon.enabled = sprite != null;
+        }
+    }
+
+    private void ApplyDetailTypeArea(EquipmentDefinition definition)
+    {
+        if (typeAreaRoot != null)
+        {
+            typeAreaRoot.SetActive(definition != null);
+        }
+
+        if (definition == null)
+        {
+            if (typeIconImage != null)
+            {
+                typeIconImage.sprite = null;
+                typeIconImage.enabled = false;
+            }
+
+            return;
+        }
+
+        if (typeFrameImage != null)
+        {
+            typeFrameImage.color = EquipmentIconResolver.GetTypeFrameColor(definition.grade);
+        }
+
+        if (typeBgImage != null)
+        {
+            typeBgImage.color = EquipmentIconResolver.GetTypeFillColor(definition.grade);
+        }
+
+        if (typeIconImage != null)
+        {
+            typeIconImage.sprite = iconResolver != null ? iconResolver.GetTypeIcon(definition.slotType) : null;
+            typeIconImage.enabled = typeIconImage.sprite != null;
         }
     }
 
@@ -534,7 +605,7 @@ public class ModularEquipmentDetailPanelController : MonoBehaviour
         subscribedState = null;
     }
 
-    private static List<string> BuildStatLines(EquipmentDefinition definition)
+    private static List<string> BuildStatLines(EquipmentDefinition definition, int level)
     {
         List<string> lines = new();
         if (definition == null)
@@ -543,11 +614,12 @@ public class ModularEquipmentDetailPanelController : MonoBehaviour
         }
 
         EquipmentStatBlock stats = definition.stats ?? EquipmentStatBlock.Zero;
-        if (stats.attack != 0) lines.Add($"ATK +{stats.attack}");
-        if (stats.hp != 0) lines.Add($"HP +{stats.hp}");
-        if (!Mathf.Approximately(stats.hpRegen, 0f)) lines.Add($"HPS +{stats.hpRegen:0.##}");
-        if (!Mathf.Approximately(stats.critChance, 0f)) lines.Add($"Crit +{FormatPercent(stats.critChance)}");
-        if (!Mathf.Approximately(stats.critDamage, 0f)) lines.Add($"Crit DMG +{FormatPercent(stats.critDamage)}");
+        int normalizedLevel = Mathf.Max(1, level);
+        if (stats.attack != 0) lines.Add($"ATK +{stats.attack * normalizedLevel}");
+        if (stats.hp != 0) lines.Add($"HP +{stats.hp * normalizedLevel}");
+        if (!Mathf.Approximately(stats.hpRegen, 0f)) lines.Add($"HPS +{stats.hpRegen * normalizedLevel:0.##}");
+        if (!Mathf.Approximately(stats.critChance, 0f)) lines.Add($"Crit +{FormatPercent(stats.critChance * normalizedLevel)}");
+        if (!Mathf.Approximately(stats.critDamage, 0f)) lines.Add($"Crit DMG +{FormatPercent(stats.critDamage * normalizedLevel)}");
         return lines;
     }
 
@@ -673,6 +745,27 @@ public class ModularEquipmentDetailPanelController : MonoBehaviour
     {
         Transform target = root != null ? root.Find(relativePath) : null;
         return target != null ? target.GetComponent<Image>() : null;
+    }
+
+    private Transform FindDetailTypeArea(Transform root)
+    {
+        Transform typeArea = detailSlotRoot != null ? FindDescendantByName(detailSlotRoot, "TypeArea") : null;
+        return typeArea != null ? typeArea : FindDescendantByName(root, "TypeArea");
+    }
+
+    private Image GetTypeAreaFrameImage()
+    {
+        if (typeAreaRoot == null || typeAreaRoot.transform.childCount == 0)
+        {
+            return null;
+        }
+
+        return typeAreaRoot.transform.GetChild(0).GetComponent<Image>();
+    }
+
+    private Image FindTypeAreaImageByName(string targetName)
+    {
+        return typeAreaRoot != null ? FindImageByName(typeAreaRoot.transform, targetName) : null;
     }
 
     private static Transform FindDescendantByName(Transform root, string targetName)

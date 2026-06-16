@@ -4,13 +4,63 @@ using UnityEngine.SceneManagement;
 public class TestManager : MonoBehaviour
 {
     public GameObject TestHamburger;
+    public GameObject TestDataMenu;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     public void OnClickTestButton()
     {
-        //메인 씬 우측 상단 테스트 버튼 누를시
-        TestHamburger.gameObject.SetActive(true);//테스트 목록 활성화
+        if (TestHamburger == null)
+        {
+            Debug.LogWarning("[TestManager] TestHamburger reference is missing.");
+            return;
+        }
+
+        TestHamburger.SetActive(true);
     }
+
+    public void OnClickTestBackndMenuButton()
+    {
+        if (TestDataMenu == null)
+        {
+            Debug.LogWarning("[TestManager] TestDataMenu reference is missing.");
+            return;
+        }
+
+        TestDataMenu.SetActive(true);
+    }
+
+    public void OnClickSaveRuntimeDataTest()
+    {
+        if (!BackndRuntimeDataTestActions.SaveCurrentRuntimeDataJson(out string message))
+        {
+            Debug.LogError("[RuntimeData Save Test] " + message);
+            return;
+        }
+
+        Debug.Log("[RuntimeData Save Test] " + message);
+    }
+
+    public void OnClickLoadRuntimeDataTest()
+    {
+        if (!BackndRuntimeDataTestActions.LoadRuntimeDataJson(out string message))
+        {
+            Debug.LogError("[RuntimeData Load Test] " + message);
+            return;
+        }
+
+        Debug.Log("[RuntimeData Load Test] " + message);
+    }
+
+    public void OnClickAddRuntimeDataTestGold()
+    {
+        if (!BackndRuntimeDataTestActions.AddTestGold(out string message))
+        {
+            Debug.LogError("[RuntimeData Add Test Gold] " + message);
+            return;
+        }
+
+        Debug.Log("[RuntimeData Add Test Gold] " + message);
+    }
+
     public void OnClickDeathTestButton()
     {
         if (Health.PlayerInstance == null)
@@ -21,6 +71,7 @@ public class TestManager : MonoBehaviour
 
         Health.PlayerInstance.TakeDamage(999999f);
     }
+
     public void ReStart()
     {
         if (GameStateManager.Instance != null)

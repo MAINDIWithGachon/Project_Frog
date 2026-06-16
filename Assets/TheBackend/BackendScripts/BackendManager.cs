@@ -14,6 +14,18 @@ public class BackendManager : MonoBehaviour
     // Unity에서 씬 시작 후 자동 실행
     private void Start()
     {
+        EnsureInitialized();
+    }
+
+    public static bool EnsureInitialized()
+    {
+        if (Backend.IsInitialized)
+        {
+            IsInitialized = true;
+            Debug.Log("뒤끝은 이미 초기화되어 있습니다.");
+            return true;
+        }
+
         // 뒤끝 SDK 초기화 요청
         BackendReturnObject bro = Backend.Initialize();
 
@@ -34,5 +46,7 @@ public class BackendManager : MonoBehaviour
             // 콘솔에 실패 로그 출력
             Debug.LogError("뒤끝 초기화 실패 : " + bro);
         }
+
+        return IsInitialized;
     }
 }
