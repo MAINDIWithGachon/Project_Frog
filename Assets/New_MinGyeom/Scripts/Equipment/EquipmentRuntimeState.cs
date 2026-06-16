@@ -196,6 +196,7 @@ namespace NewMinGyeom.Equipment
                 }
             }
 
+            results.Sort(CompareEquipmentDefinitionIds);
             return results;
         }
 
@@ -613,6 +614,49 @@ namespace NewMinGyeom.Equipment
                 EquipmentGrade.Legendary => 8,
                 _ => 1
             };
+        }
+
+        private static int CompareEquipmentDefinitionIds(EquipmentDefinition left, EquipmentDefinition right)
+        {
+            if (ReferenceEquals(left, right))
+            {
+                return 0;
+            }
+
+            if (left == null)
+            {
+                return 1;
+            }
+
+            if (right == null)
+            {
+                return -1;
+            }
+
+            return CompareEquipmentIds(left.equipmentId, right.equipmentId);
+        }
+
+        private static int CompareEquipmentIds(string left, string right)
+        {
+            bool leftIsNumber = long.TryParse(left, out long leftNumber);
+            bool rightIsNumber = long.TryParse(right, out long rightNumber);
+
+            if (leftIsNumber && rightIsNumber)
+            {
+                return leftNumber.CompareTo(rightNumber);
+            }
+
+            if (leftIsNumber)
+            {
+                return -1;
+            }
+
+            if (rightIsNumber)
+            {
+                return 1;
+            }
+
+            return string.CompareOrdinal(left, right);
         }
 
         private void NotifyStateChanged()

@@ -17,6 +17,9 @@ public class ModularEquipmentListItemView : MonoBehaviour
     [SerializeField] private GameObject lockRoot;
     [SerializeField] private GameObject redDotRoot;
     [SerializeField] private GameObject typeAreaRoot;
+    [SerializeField] private Image typeFrameImage;
+    [SerializeField] private Image typeBgImage;
+    [SerializeField] private Image typeIconImage;
 
     private EquipmentDefinition currentDefinition;
     private int currentLevel;
@@ -60,6 +63,7 @@ public class ModularEquipmentListItemView : MonoBehaviour
 
         gameObject.SetActive(true);
         SetFrame(definition != null ? definition.grade : EquipmentGrade.Common);
+        ApplyTypeArea(definition, iconResolver);
 
         Sprite icon = definition != null ? iconResolver?.GetIcon(definition.iconKey) : null;
         if (iconImage != null)
@@ -195,6 +199,9 @@ public class ModularEquipmentListItemView : MonoBehaviour
         lockRoot ??= FindDescendantByName(transform, "Lock")?.gameObject;
         redDotRoot ??= FindDescendantByNameContains(transform, "Alert_Dot")?.gameObject;
         typeAreaRoot ??= FindDescendantByName(transform, "TypeArea")?.gameObject;
+        typeFrameImage ??= GetTypeAreaFrameImage();
+        typeBgImage ??= FindTypeAreaImageByName("Bg");
+        typeIconImage ??= FindTypeAreaImageByName("Icon");
     }
 
     private void SetFrame(EquipmentGrade grade)
@@ -209,6 +216,36 @@ public class ModularEquipmentListItemView : MonoBehaviour
         SetActiveByNameContains(transform, "Normal_Plum", grade == EquipmentGrade.Epic);
         SetActiveByNameContains(transform, "Normal_Legendary", grade == EquipmentGrade.Legendary);
         SetActiveByNameContains(transform, "Normal_Yellow", grade == EquipmentGrade.Legendary);
+    }
+
+    private void ApplyTypeArea(EquipmentDefinition definition, EquipmentIconResolver iconResolver)
+    {
+        if (definition == null)
+        {
+            if (typeIconImage != null)
+            {
+                typeIconImage.sprite = null;
+                typeIconImage.enabled = false;
+            }
+
+            return;
+        }
+
+        if (typeFrameImage != null)
+        {
+            typeFrameImage.color = EquipmentIconResolver.GetTypeFrameColor(definition.grade);
+        }
+
+        if (typeBgImage != null)
+        {
+            typeBgImage.color = EquipmentIconResolver.GetTypeFillColor(definition.grade);
+        }
+
+        if (typeIconImage != null)
+        {
+            typeIconImage.sprite = iconResolver != null ? iconResolver.GetTypeIcon(definition.slotType) : null;
+            typeIconImage.enabled = typeIconImage.sprite != null;
+        }
     }
 
     private static void SetActive(GameObject target, bool active)
@@ -229,6 +266,21 @@ public class ModularEquipmentListItemView : MonoBehaviour
     {
         Transform target = FindDescendantByName(root, targetName);
         return target != null ? target.GetComponent<Image>() : null;
+    }
+
+    private Image GetTypeAreaFrameImage()
+    {
+        if (typeAreaRoot == null || typeAreaRoot.transform.childCount == 0)
+        {
+            return null;
+        }
+
+        return typeAreaRoot.transform.GetChild(0).GetComponent<Image>();
+    }
+
+    private Image FindTypeAreaImageByName(string targetName)
+    {
+        return typeAreaRoot != null ? FindImageByName(typeAreaRoot.transform, targetName) : null;
     }
 
     private static Transform FindDescendantByName(Transform root, string targetName)

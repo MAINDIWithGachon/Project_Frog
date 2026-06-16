@@ -1,4 +1,5 @@
 using System;
+using NewMinGyeom.Equipment;
 using UnityEngine;
 
 /// <summary>
@@ -16,9 +17,6 @@ using UnityEngine;
 /// </summary>
 public class PlayerStatController : MonoBehaviour
 {
-    private static readonly EquipmentCategory[] EquipmentCategories =
-        (EquipmentCategory[])Enum.GetValues(typeof(EquipmentCategory));
-
     public event Action OnStatsRecalculated;
 
     [Header("# Reference")]
@@ -26,7 +24,7 @@ public class PlayerStatController : MonoBehaviour
     [SerializeField] private FinalStatData finalStatData;
     [SerializeField] private CombatPowerData combatPowerData;
     [SerializeField] private Health health;
-    [SerializeField] private EquipmentPrototypeState equipmentState;
+    [SerializeField] private EquipmentStatProvider equipmentStatProvider;
     [SerializeField] private GrowthStatManager growthStatManager;
 
     [Header("# Base Stat")]
@@ -43,7 +41,7 @@ public class PlayerStatController : MonoBehaviour
     [SerializeField] private float critChancePerLevel = 1f;
     [SerializeField] private float critDamagePerLevel = 5f;
 
-    private EquipmentPrototypeState subscribedEquipmentState;
+    private EquipmentStatProvider subscribedEquipmentStatProvider;
 
     private void Awake()
     {
@@ -57,7 +55,7 @@ public class PlayerStatController : MonoBehaviour
         if (runtimeData != null)
             runtimeData.OnDataChanged += RecalculateStats;
 
-        SubscribeEquipmentState();
+        SubscribeEquipmentStatProvider();
     }
 
     private void OnDisable()
@@ -65,7 +63,7 @@ public class PlayerStatController : MonoBehaviour
         if (runtimeData != null)
             runtimeData.OnDataChanged -= RecalculateStats;
 
-        UnsubscribeEquipmentState();
+        UnsubscribeEquipmentStatProvider();
     }
 
     private void Start()
@@ -85,6 +83,9 @@ public class PlayerStatController : MonoBehaviour
     /// </summary>
     public void RecalculateStats()
     {
+        ResolveReferences();
+        SubscribeEquipmentStatProvider();
+
         if (runtimeData == null)
         {
             Debug.LogError("[PlayerStatController] RuntimeData reference is missing.");
@@ -166,11 +167,20 @@ public class PlayerStatController : MonoBehaviour
         if (health == null)
             health = GetComponent<Health>();
 
-        if (equipmentState == null)
-            equipmentState = GetComponent<EquipmentPrototypeState>();
+        if (equipmentStatProvider == null)
+            equipmentStatProvider = GetComponent<EquipmentStatProvider>();
 
-        if (equipmentState == null)
-            equipmentState = FindAnyObjectByType<EquipmentPrototypeState>();
+        if (equipmentStatProvider == null)
+            equipmentStatProvider = GetComponentInChildren<EquipmentStatProvider>(true);
+
+        if (equipmentStatProvider == null)
+            equipmentStatProvider = FindAnyObjectByType<EquipmentStatProvider>();
+
+        if (equipmentStatProvider == null)
+        {
+            EquipmentModuleRoot equipmentModuleRoot = FindAnyObjectByType<EquipmentModuleRoot>();
+            equipmentStatProvider = equipmentModuleRoot != null ? equipmentModuleRoot.StatProvider : null;
+        }
 
         if (growthStatManager == null)
             growthStatManager = GetComponent<GrowthStatManager>();
@@ -179,27 +189,27 @@ public class PlayerStatController : MonoBehaviour
             growthStatManager = FindAnyObjectByType<GrowthStatManager>();
     }
 
-    private void SubscribeEquipmentState()
+    private void SubscribeEquipmentStatProvider()
     {
-        if (subscribedEquipmentState == equipmentState)
+        if (subscribedEquipmentStatProvider == equipmentStatProvider)
             return;
 
-        UnsubscribeEquipmentState();
+        UnsubscribeEquipmentStatProvider();
 
-        if (equipmentState == null)
+        if (equipmentStatProvider == null)
             return;
 
-        equipmentState.StateChanged += RecalculateStats;
-        subscribedEquipmentState = equipmentState;
+        equipmentStatProvider.OnEquipmentStatsChanged += RecalculateStats;
+        subscribedEquipmentStatProvider = equipmentStatProvider;
     }
 
-    private void UnsubscribeEquipmentState()
+    private void UnsubscribeEquipmentStatProvider()
     {
-        if (subscribedEquipmentState == null)
+        if (subscribedEquipmentStatProvider == null)
             return;
 
-        subscribedEquipmentState.StateChanged -= RecalculateStats;
-        subscribedEquipmentState = null;
+        subscribedEquipmentStatProvider.OnEquipmentStatsChanged -= RecalculateStats;
+        subscribedEquipmentStatProvider = null;
     }
 
     private StatContribution CreateAttackContribution(int attackLevel)
@@ -360,48 +370,34 @@ public class PlayerStatController : MonoBehaviour
 
     private float GetEquipmentAttack()
     {
-        return GetTotalEquippedStat(definition => definition.attack);
+        return GetEquipmentStats().attack;
     }
 
     private float GetEquipmentHp()
     {
-        return GetTotalEquippedStat(definition => definition.hp);
+        return GetEquipmentStats().hp;
     }
 
     private float GetEquipmentHpRegen()
     {
-        return GetTotalEquippedStat(definition => definition.healPerSec);
+        return GetEquipmentStats().hpRegenPerSecond;
     }
 
     private float GetEquipmentCritChance()
     {
-        return GetTotalEquippedStat(definition => definition.critChance);
+        return GetEquipmentStats().critChance;
     }
 
     private float GetEquipmentCritDamage()
     {
-        return GetTotalEquippedStat(definition => definition.critDamage);
+        return GetEquipmentStats().critDamage;
     }
 
-    private float GetTotalEquippedStat(Func<EquipmentDefinitionData, float> selector)
+    private EquipmentStatSnapshot GetEquipmentStats()
     {
-        if (selector == null || equipmentState == null)
-            return 0f;
-
-        float total = 0f;
-
-        for (int i = 0; i < EquipmentCategories.Length; i++)
-        {
-            EquipmentCategory category = EquipmentCategories[i];
-            EquipmentDefinitionData definition = equipmentState.GetEquippedDefinition(category);
-            if (definition == null)
-                continue;
-
-            int level = Mathf.Max(1, equipmentState.GetOwnedLevel(definition.equipmentId));
-            total += selector(definition) * level;
-        }
-
-        return total;
+        return equipmentStatProvider != null
+            ? equipmentStatProvider.CurrentStats
+            : EquipmentStatSnapshot.Zero;
     }
 
     // =========================
