@@ -182,6 +182,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 577547553208854973}
+  - component: {fileID: 926633893}
   m_Layer: 5
   m_Name: Rewards_Mailbox
   m_TagString: Untagged
@@ -196,7 +197,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 577547553208854970}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -211,6 +212,20 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &926633893
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 577547553208854970}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99cf42140c3104393ba145bec6abebb6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  otherPanels:
+  - {fileID: 0}
 --- !u!1 &577547553301484420
 GameObject:
   m_ObjectHideFlags: 0
@@ -1471,6 +1486,22 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -49.765
       objectReference: {fileID: 0}
+    - target: {fileID: 1422878937078994361, guid: 9c248fa0b97d04750aaa429c2048dab4, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -15.300003
+      objectReference: {fileID: 0}
+    - target: {fileID: 1422878937078994361, guid: 9c248fa0b97d04750aaa429c2048dab4, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -14.099998
+      objectReference: {fileID: 0}
+    - target: {fileID: 2269235920658431756, guid: 9c248fa0b97d04750aaa429c2048dab4, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -15.300003
+      objectReference: {fileID: 0}
+    - target: {fileID: 2269235920658431756, guid: 9c248fa0b97d04750aaa429c2048dab4, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -14.099998
+      objectReference: {fileID: 0}
     - target: {fileID: 2377037470259013952, guid: 9c248fa0b97d04750aaa429c2048dab4, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -1658,6 +1689,14 @@ PrefabInstance:
     - target: {fileID: 5467610790724736555, guid: 9c248fa0b97d04750aaa429c2048dab4, type: 3}
       propertyPath: m_text
       value: Guild
+      objectReference: {fileID: 0}
+    - target: {fileID: 6012012559258558070, guid: 9c248fa0b97d04750aaa429c2048dab4, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -15.300003
+      objectReference: {fileID: 0}
+    - target: {fileID: 6012012559258558070, guid: 9c248fa0b97d04750aaa429c2048dab4, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -14.099998
       objectReference: {fileID: 0}
     - target: {fileID: 6930212680810979983, guid: 9c248fa0b97d04750aaa429c2048dab4, type: 3}
       propertyPath: m_AnchorMax.y

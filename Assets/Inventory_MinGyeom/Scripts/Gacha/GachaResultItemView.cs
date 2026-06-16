@@ -1,5 +1,7 @@
 using System;
 using System.Collections;
+using NewMinGyeom.Equipment;
+using NewMinGyeom.Gacha;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -15,6 +17,7 @@ public class GachaResultItemView : MonoBehaviour
 
     [Header("Data")]
     [SerializeField] private EquipmentDatabase equipmentDatabase;
+    [SerializeField] private EquipmentIconResolver runtimeIconResolver;
 
     [Header("UI")]
     [SerializeField] private Image itemIconImage;
@@ -57,6 +60,17 @@ public class GachaResultItemView : MonoBehaviour
         effectController = GetComponent<GachaResultItemEffectController>();
     }
 
+    private void OnDisable()
+    {
+        if (revealRoutine != null)
+        {
+            StopCoroutine(revealRoutine);
+            revealRoutine = null;
+        }
+
+        SetRevealVisuals(1f, 1f);
+    }
+
     public void Bind(EquipmentGachaResult result)
     {
         EnsureInitialized();
@@ -75,6 +89,30 @@ public class GachaResultItemView : MonoBehaviour
         }
 
         Bind(result.equipmentId, sourceDatabase);
+    }
+
+    public void Bind(RuntimeEquipmentGachaResult result)
+    {
+        Bind(result, runtimeIconResolver);
+    }
+
+    public void Bind(RuntimeEquipmentGachaResult result, EquipmentIconResolver iconResolver)
+    {
+        EnsureInitialized();
+
+        if (result == null)
+        {
+            Clear();
+            return;
+        }
+
+        if (result.definition != null)
+        {
+            ApplyDefinition(result.equipmentId, result.definition, iconResolver);
+            return;
+        }
+
+        Clear();
     }
 
     public void Bind(string equipmentId, EquipmentDatabase sourceDatabase = null)
@@ -97,6 +135,31 @@ public class GachaResultItemView : MonoBehaviour
         }
 
         ApplyDefinition(equipmentId, definition);
+    }
+
+    public void Bind(
+        string equipmentId,
+        EquipmentRuntimeDatabase sourceDatabase,
+        EquipmentIconResolver iconResolver = null)
+    {
+        EnsureInitialized();
+
+        if (sourceDatabase == null)
+        {
+            Debug.LogWarning("[GachaResultItemView] EquipmentRuntimeDatabase is not assigned.", this);
+            Clear();
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(equipmentId) ||
+            !sourceDatabase.TryGetDefinition(equipmentId, out EquipmentDefinition definition))
+        {
+            Debug.LogWarning($"[GachaResultItemView] Could not find runtime equipment id '{equipmentId}'.", this);
+            Clear();
+            return;
+        }
+
+        ApplyDefinition(equipmentId, definition, iconResolver);
     }
 
     public void Clear()
@@ -135,6 +198,13 @@ public class GachaResultItemView : MonoBehaviour
     {
         EnsureInitialized();
         StopRevealAnimation();
+
+        if (!isActiveAndEnabled || !gameObject.activeInHierarchy)
+        {
+            SetRevealVisuals(1f, 1f);
+            return;
+        }
+
         revealRoutine = StartCoroutine(PlayRevealAnimationRoutine());
     }
 
@@ -170,6 +240,45 @@ public class GachaResultItemView : MonoBehaviour
         if (effectController != null)
         {
             effectController.Apply(equipmentId, definition.rarity);
+        }
+    }
+
+    private void ApplyDefinition(
+        string equipmentId,
+        EquipmentDefinition definition,
+        EquipmentIconResolver iconResolver)
+    {
+        if (definition == null)
+        {
+            Clear();
+            return;
+        }
+
+        currentEquipmentId = equipmentId;
+        currentRarity = ToLegacyRarity(definition.grade);
+
+        Sprite icon = iconResolver != null ? iconResolver.GetIcon(definition.iconKey) : null;
+        if (itemIconImage != null)
+        {
+            itemIconImage.sprite = icon;
+            itemIconImage.enabled = icon != null;
+        }
+
+        if (itemNameText != null)
+        {
+            itemNameText.text = definition.displayName;
+        }
+
+        if (rarityText != null)
+        {
+            rarityText.text = definition.grade.ToString();
+        }
+
+        ApplyRarityFrame(currentRarity);
+
+        if (effectController != null)
+        {
+            effectController.Apply(equipmentId, definition.grade);
         }
     }
 
@@ -275,5 +384,18 @@ public class GachaResultItemView : MonoBehaviour
         {
             effectController = GetComponent<GachaResultItemEffectController>();
         }
+    }
+
+    private static EquipmentRarity ToLegacyRarity(EquipmentGrade grade)
+    {
+        return grade switch
+        {
+            EquipmentGrade.Common => EquipmentRarity.Common,
+            EquipmentGrade.Magic => EquipmentRarity.Magic,
+            EquipmentGrade.Rare => EquipmentRarity.Rare,
+            EquipmentGrade.Epic => EquipmentRarity.Epic,
+            EquipmentGrade.Legendary => EquipmentRarity.Legendary,
+            _ => EquipmentRarity.Common
+        };
     }
 }

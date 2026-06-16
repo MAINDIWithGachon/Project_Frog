@@ -3303,7 +3303,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2550204177070044198}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -3418,7 +3418,7 @@ PrefabInstance:
       objectReference: {fileID: 21300000, guid: cfbbedfd213a2448fbbf6899b860fd38, type: 3}
     - target: {fileID: 5907355354433407823, guid: a8ff01900087b4ee79ebf8acbd9c1446, type: 3}
       propertyPath: m_Name
-      value: BasicFrame_Diamond_H48_NoBorder_Brown
+      value: BasicFrame_Diamond_01_NoBorder_Brown
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a8ff01900087b4ee79ebf8acbd9c1446, type: 3}
@@ -3616,7 +3616,7 @@ PrefabInstance:
       objectReference: {fileID: 21300000, guid: cfbbedfd213a2448fbbf6899b860fd38, type: 3}
     - target: {fileID: 5907355354433407823, guid: a8ff01900087b4ee79ebf8acbd9c1446, type: 3}
       propertyPath: m_Name
-      value: BasicFrame_Diamond_H48_NoBorder_Brown
+      value: BasicFrame_Diamond_01_NoBorder_Brown
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a8ff01900087b4ee79ebf8acbd9c1446, type: 3}
@@ -3717,7 +3717,7 @@ PrefabInstance:
       objectReference: {fileID: 21300000, guid: cfbbedfd213a2448fbbf6899b860fd38, type: 3}
     - target: {fileID: 5907355354433407823, guid: a8ff01900087b4ee79ebf8acbd9c1446, type: 3}
       propertyPath: m_Name
-      value: BasicFrame_Diamond_H48_NoBorder_Brown
+      value: BasicFrame_Diamond_01_NoBorder_Brown
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a8ff01900087b4ee79ebf8acbd9c1446, type: 3}
@@ -3731,6 +3731,10 @@ PrefabInstance:
     - target: {fileID: 2310630760026913197, guid: 45836c803114749df9e4a0f2c18da8b1, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2531788604785167646, guid: 45836c803114749df9e4a0f2c18da8b1, type: 3}
+      propertyPath: m_Name
+      value: BasicFrame_Diamond_01_NoBorder_Plum
       objectReference: {fileID: 0}
     - target: {fileID: 6644578970886455013, guid: 45836c803114749df9e4a0f2c18da8b1, type: 3}
       propertyPath: m_IsActive
@@ -3954,7 +3958,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5391292164350356718, guid: 799cfcd4c30dc45e7a2ab8a4ed9affcb, type: 3}
       propertyPath: m_Name
-      value: BasicFrame_Diamond_H48_NoBorder_Blue
+      value: BasicFrame_Diamond_01_NoBorder_Blue
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 799cfcd4c30dc45e7a2ab8a4ed9affcb, type: 3}
@@ -4249,7 +4253,7 @@ PrefabInstance:
       objectReference: {fileID: 21300000, guid: cfbbedfd213a2448fbbf6899b860fd38, type: 3}
     - target: {fileID: 5907355354433407823, guid: a8ff01900087b4ee79ebf8acbd9c1446, type: 3}
       propertyPath: m_Name
-      value: BasicFrame_Diamond_H48_NoBorder_Brown
+      value: BasicFrame_Diamond_01_NoBorder_Brown
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a8ff01900087b4ee79ebf8acbd9c1446, type: 3}
@@ -4360,6 +4364,10 @@ PrefabInstance:
     - target: {fileID: 2310630760026913197, guid: 45836c803114749df9e4a0f2c18da8b1, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2531788604785167646, guid: 45836c803114749df9e4a0f2c18da8b1, type: 3}
+      propertyPath: m_Name
+      value: BasicFrame_Diamond_01_NoBorder_Plum
       objectReference: {fileID: 0}
     - target: {fileID: 3914975096161894520, guid: 45836c803114749df9e4a0f2c18da8b1, type: 3}
       propertyPath: m_IsActive
@@ -4595,7 +4603,7 @@ PrefabInstance:
       objectReference: {fileID: 21300000, guid: cfbbedfd213a2448fbbf6899b860fd38, type: 3}
     - target: {fileID: 5907355354433407823, guid: a8ff01900087b4ee79ebf8acbd9c1446, type: 3}
       propertyPath: m_Name
-      value: BasicFrame_Diamond_H48_NoBorder_Brown
+      value: BasicFrame_Diamond_01_NoBorder_Brown
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a8ff01900087b4ee79ebf8acbd9c1446, type: 3}
@@ -4609,6 +4617,10 @@ PrefabInstance:
     - target: {fileID: 2310630760026913197, guid: 45836c803114749df9e4a0f2c18da8b1, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2531788604785167646, guid: 45836c803114749df9e4a0f2c18da8b1, type: 3}
+      propertyPath: m_Name
+      value: BasicFrame_Diamond_01_NoBorder_Plum
       objectReference: {fileID: 0}
     - target: {fileID: 3914975096161894520, guid: 45836c803114749df9e4a0f2c18da8b1, type: 3}
       propertyPath: m_IsActive
@@ -4758,6 +4770,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2531788604785167646, guid: 45836c803114749df9e4a0f2c18da8b1, type: 3}
+      propertyPath: m_Name
+      value: BasicFrame_Diamond_01_NoBorder_Plum
+      objectReference: {fileID: 0}
     - target: {fileID: 6644578970886455015, guid: 45836c803114749df9e4a0f2c18da8b1, type: 3}
       propertyPath: m_text
       value: Lv.3
@@ -4885,6 +4901,10 @@ PrefabInstance:
     - target: {fileID: 2310630760026913197, guid: 45836c803114749df9e4a0f2c18da8b1, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2531788604785167646, guid: 45836c803114749df9e4a0f2c18da8b1, type: 3}
+      propertyPath: m_Name
+      value: BasicFrame_Diamond_01_NoBorder_Plum
       objectReference: {fileID: 0}
     - target: {fileID: 6644578970886455013, guid: 45836c803114749df9e4a0f2c18da8b1, type: 3}
       propertyPath: m_IsActive
@@ -5225,7 +5245,7 @@ PrefabInstance:
       objectReference: {fileID: 21300000, guid: cfbbedfd213a2448fbbf6899b860fd38, type: 3}
     - target: {fileID: 9157208978545742812, guid: add1e72fd94bd4992a01a480e2559c97, type: 3}
       propertyPath: m_Name
-      value: BasicFrame_Diamond_H48_NoBorder_Plum
+      value: BasicFrame_Diamond_01_NoBorder_Plum
       objectReference: {fileID: 0}
     - target: {fileID: 9157208978545742812, guid: add1e72fd94bd4992a01a480e2559c97, type: 3}
       propertyPath: m_IsActive
@@ -5441,7 +5461,7 @@ PrefabInstance:
       objectReference: {fileID: 21300000, guid: cfbbedfd213a2448fbbf6899b860fd38, type: 3}
     - target: {fileID: 9157208978545742812, guid: add1e72fd94bd4992a01a480e2559c97, type: 3}
       propertyPath: m_Name
-      value: BasicFrame_Diamond_H48_NoBorder_Plum
+      value: BasicFrame_Diamond_01_NoBorder_Plum
       objectReference: {fileID: 0}
     - target: {fileID: 9157208978545742812, guid: add1e72fd94bd4992a01a480e2559c97, type: 3}
       propertyPath: m_IsActive
@@ -5755,7 +5775,7 @@ PrefabInstance:
       objectReference: {fileID: 21300000, guid: cfbbedfd213a2448fbbf6899b860fd38, type: 3}
     - target: {fileID: 9157208978545742812, guid: add1e72fd94bd4992a01a480e2559c97, type: 3}
       propertyPath: m_Name
-      value: BasicFrame_Diamond_H48_NoBorder_Plum
+      value: BasicFrame_Diamond_01_NoBorder_Plum
       objectReference: {fileID: 0}
     - target: {fileID: 9157208978545742812, guid: add1e72fd94bd4992a01a480e2559c97, type: 3}
       propertyPath: m_IsActive
@@ -5865,7 +5885,7 @@ PrefabInstance:
       objectReference: {fileID: 21300000, guid: cfbbedfd213a2448fbbf6899b860fd38, type: 3}
     - target: {fileID: 9157208978545742812, guid: add1e72fd94bd4992a01a480e2559c97, type: 3}
       propertyPath: m_Name
-      value: BasicFrame_Diamond_H48_NoBorder_Plum
+      value: BasicFrame_Diamond_01_NoBorder_Plum
       objectReference: {fileID: 0}
     - target: {fileID: 9157208978545742812, guid: add1e72fd94bd4992a01a480e2559c97, type: 3}
       propertyPath: m_IsActive
@@ -5975,7 +5995,7 @@ PrefabInstance:
       objectReference: {fileID: 21300000, guid: cfbbedfd213a2448fbbf6899b860fd38, type: 3}
     - target: {fileID: 9157208978545742812, guid: add1e72fd94bd4992a01a480e2559c97, type: 3}
       propertyPath: m_Name
-      value: BasicFrame_Diamond_H48_NoBorder_Plum
+      value: BasicFrame_Diamond_01_NoBorder_Plum
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: add1e72fd94bd4992a01a480e2559c97, type: 3}
@@ -7258,7 +7278,7 @@ PrefabInstance:
       objectReference: {fileID: 21300000, guid: cfbbedfd213a2448fbbf6899b860fd38, type: 3}
     - target: {fileID: 9157208978545742812, guid: add1e72fd94bd4992a01a480e2559c97, type: 3}
       propertyPath: m_Name
-      value: BasicFrame_Diamond_H48_NoBorder_Plum
+      value: BasicFrame_Diamond_01_NoBorder_Plum
       objectReference: {fileID: 0}
     - target: {fileID: 9157208978545742812, guid: add1e72fd94bd4992a01a480e2559c97, type: 3}
       propertyPath: m_IsActive
@@ -7695,6 +7715,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 808700968636839610, guid: bdf873cadb74c4837932a089e9733dd6, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -15.300003
+      objectReference: {fileID: 0}
     - target: {fileID: 1088658431971646291, guid: bdf873cadb74c4837932a089e9733dd6, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -7891,6 +7915,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -45.82425
       objectReference: {fileID: 0}
+    - target: {fileID: 3097697923059835404, guid: bdf873cadb74c4837932a089e9733dd6, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -15.300003
+      objectReference: {fileID: 0}
     - target: {fileID: 4042443711699505440, guid: bdf873cadb74c4837932a089e9733dd6, type: 3}
       propertyPath: m_Name
       value: Tab_02_BoxMenu_Icon
@@ -7919,6 +7947,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4348308133866186666, guid: bdf873cadb74c4837932a089e9733dd6, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -15.300003
+      objectReference: {fileID: 0}
     - target: {fileID: 4866243503075896896, guid: bdf873cadb74c4837932a089e9733dd6, type: 3}
       propertyPath: m_IsActive
       value: 1
@@ -7938,6 +7970,10 @@ PrefabInstance:
     - target: {fileID: 4970847528692855054, guid: bdf873cadb74c4837932a089e9733dd6, type: 3}
       propertyPath: m_fontColor32.rgba
       value: 4294967295
+      objectReference: {fileID: 0}
+    - target: {fileID: 5455528818516930099, guid: bdf873cadb74c4837932a089e9733dd6, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -15.300003
       objectReference: {fileID: 0}
     - target: {fileID: 5508693409981149461, guid: bdf873cadb74c4837932a089e9733dd6, type: 3}
       propertyPath: m_AnchorMax.y
@@ -7962,6 +7998,10 @@ PrefabInstance:
     - target: {fileID: 5508693409981149461, guid: bdf873cadb74c4837932a089e9733dd6, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: -45.82425
+      objectReference: {fileID: 0}
+    - target: {fileID: 5641366309265725407, guid: bdf873cadb74c4837932a089e9733dd6, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -15.300003
       objectReference: {fileID: 0}
     - target: {fileID: 6464022350507558960, guid: bdf873cadb74c4837932a089e9733dd6, type: 3}
       propertyPath: m_AnchorMax.y
@@ -8038,6 +8078,10 @@ PrefabInstance:
     - target: {fileID: 7625137143618815149, guid: bdf873cadb74c4837932a089e9733dd6, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: -45.82425
+      objectReference: {fileID: 0}
+    - target: {fileID: 7707673484702135497, guid: bdf873cadb74c4837932a089e9733dd6, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -15.300003
       objectReference: {fileID: 0}
     - target: {fileID: 7754341328867713427, guid: bdf873cadb74c4837932a089e9733dd6, type: 3}
       propertyPath: m_AnchorMax.y
@@ -8583,7 +8627,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5391292164350356718, guid: 799cfcd4c30dc45e7a2ab8a4ed9affcb, type: 3}
       propertyPath: m_Name
-      value: BasicFrame_Diamond_H48_NoBorder_Blue
+      value: BasicFrame_Diamond_01_NoBorder_Blue
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 799cfcd4c30dc45e7a2ab8a4ed9affcb, type: 3}
@@ -8791,6 +8835,10 @@ PrefabInstance:
     - target: {fileID: 2310630760026913197, guid: 45836c803114749df9e4a0f2c18da8b1, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2531788604785167646, guid: 45836c803114749df9e4a0f2c18da8b1, type: 3}
+      propertyPath: m_Name
+      value: BasicFrame_Diamond_01_NoBorder_Plum
       objectReference: {fileID: 0}
     - target: {fileID: 6644578970886455013, guid: 45836c803114749df9e4a0f2c18da8b1, type: 3}
       propertyPath: m_IsActive
@@ -9025,6 +9073,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2531788604785167646, guid: 45836c803114749df9e4a0f2c18da8b1, type: 3}
+      propertyPath: m_Name
+      value: BasicFrame_Diamond_01_NoBorder_Plum
+      objectReference: {fileID: 0}
     - target: {fileID: 6644578970886455015, guid: 45836c803114749df9e4a0f2c18da8b1, type: 3}
       propertyPath: m_text
       value: Lv.10
@@ -9249,6 +9301,10 @@ PrefabInstance:
     - target: {fileID: 2310630760026913197, guid: 45836c803114749df9e4a0f2c18da8b1, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2531788604785167646, guid: 45836c803114749df9e4a0f2c18da8b1, type: 3}
+      propertyPath: m_Name
+      value: BasicFrame_Diamond_01_NoBorder_Plum
       objectReference: {fileID: 0}
     - target: {fileID: 3914975096161894520, guid: 45836c803114749df9e4a0f2c18da8b1, type: 3}
       propertyPath: m_IsActive
@@ -9598,7 +9654,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5639029644244684184, guid: 3a227a47b370b4e0999ed47702105927, type: 3}
       propertyPath: m_Name
-      value: BasicFrame_Diamond_H48_NoBorder_Green
+      value: BasicFrame_Diamond_01_NoBorder_Green
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3a227a47b370b4e0999ed47702105927, type: 3}
@@ -9699,7 +9755,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5391292164350356718, guid: 799cfcd4c30dc45e7a2ab8a4ed9affcb, type: 3}
       propertyPath: m_Name
-      value: BasicFrame_Diamond_H48_NoBorder_Blue
+      value: BasicFrame_Diamond_01_NoBorder_Blue
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 799cfcd4c30dc45e7a2ab8a4ed9affcb, type: 3}
@@ -10005,6 +10061,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2531788604785167646, guid: 45836c803114749df9e4a0f2c18da8b1, type: 3}
+      propertyPath: m_Name
+      value: BasicFrame_Diamond_01_NoBorder_Plum
+      objectReference: {fileID: 0}
     - target: {fileID: 6644578970886455013, guid: 45836c803114749df9e4a0f2c18da8b1, type: 3}
       propertyPath: m_IsActive
       value: 0
@@ -10140,6 +10200,10 @@ PrefabInstance:
     - target: {fileID: 2310630760026913197, guid: 45836c803114749df9e4a0f2c18da8b1, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2531788604785167646, guid: 45836c803114749df9e4a0f2c18da8b1, type: 3}
+      propertyPath: m_Name
+      value: BasicFrame_Diamond_01_NoBorder_Plum
       objectReference: {fileID: 0}
     - target: {fileID: 3914975096161894520, guid: 45836c803114749df9e4a0f2c18da8b1, type: 3}
       propertyPath: m_IsActive
@@ -10375,7 +10439,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5391292164350356718, guid: 799cfcd4c30dc45e7a2ab8a4ed9affcb, type: 3}
       propertyPath: m_Name
-      value: BasicFrame_Diamond_H48_NoBorder_Blue
+      value: BasicFrame_Diamond_01_NoBorder_Blue
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 799cfcd4c30dc45e7a2ab8a4ed9affcb, type: 3}
@@ -10476,7 +10540,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5391292164350356718, guid: 799cfcd4c30dc45e7a2ab8a4ed9affcb, type: 3}
       propertyPath: m_Name
-      value: BasicFrame_Diamond_H48_NoBorder_Blue
+      value: BasicFrame_Diamond_01_NoBorder_Blue
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 799cfcd4c30dc45e7a2ab8a4ed9affcb, type: 3}
@@ -10490,6 +10554,10 @@ PrefabInstance:
     - target: {fileID: 2310630760026913197, guid: 45836c803114749df9e4a0f2c18da8b1, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2531788604785167646, guid: 45836c803114749df9e4a0f2c18da8b1, type: 3}
+      propertyPath: m_Name
+      value: BasicFrame_Diamond_01_NoBorder_Plum
       objectReference: {fileID: 0}
     - target: {fileID: 3914975096161894520, guid: 45836c803114749df9e4a0f2c18da8b1, type: 3}
       propertyPath: m_IsActive
@@ -10725,7 +10793,7 @@ PrefabInstance:
       objectReference: {fileID: 21300000, guid: cfbbedfd213a2448fbbf6899b860fd38, type: 3}
     - target: {fileID: 5907355354433407823, guid: a8ff01900087b4ee79ebf8acbd9c1446, type: 3}
       propertyPath: m_Name
-      value: BasicFrame_Diamond_H48_NoBorder_Brown
+      value: BasicFrame_Diamond_01_NoBorder_Brown
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a8ff01900087b4ee79ebf8acbd9c1446, type: 3}
@@ -10826,7 +10894,7 @@ PrefabInstance:
       objectReference: {fileID: 21300000, guid: cfbbedfd213a2448fbbf6899b860fd38, type: 3}
     - target: {fileID: 5907355354433407823, guid: a8ff01900087b4ee79ebf8acbd9c1446, type: 3}
       propertyPath: m_Name
-      value: BasicFrame_Diamond_H48_NoBorder_Brown
+      value: BasicFrame_Diamond_01_NoBorder_Brown
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a8ff01900087b4ee79ebf8acbd9c1446, type: 3}
@@ -10840,6 +10908,10 @@ PrefabInstance:
     - target: {fileID: 2310630760026913197, guid: 45836c803114749df9e4a0f2c18da8b1, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2531788604785167646, guid: 45836c803114749df9e4a0f2c18da8b1, type: 3}
+      propertyPath: m_Name
+      value: BasicFrame_Diamond_01_NoBorder_Plum
       objectReference: {fileID: 0}
     - target: {fileID: 6644578970886455015, guid: 45836c803114749df9e4a0f2c18da8b1, type: 3}
       propertyPath: m_text
@@ -11152,7 +11224,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5391292164350356718, guid: 799cfcd4c30dc45e7a2ab8a4ed9affcb, type: 3}
       propertyPath: m_Name
-      value: BasicFrame_Diamond_H48_NoBorder_Blue
+      value: BasicFrame_Diamond_01_NoBorder_Blue
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 799cfcd4c30dc45e7a2ab8a4ed9affcb, type: 3}
@@ -11166,6 +11238,10 @@ PrefabInstance:
     - target: {fileID: 2310630760026913197, guid: 45836c803114749df9e4a0f2c18da8b1, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2531788604785167646, guid: 45836c803114749df9e4a0f2c18da8b1, type: 3}
+      propertyPath: m_Name
+      value: BasicFrame_Diamond_01_NoBorder_Plum
       objectReference: {fileID: 0}
     - target: {fileID: 3914975096161894520, guid: 45836c803114749df9e4a0f2c18da8b1, type: 3}
       propertyPath: m_IsActive
@@ -11401,7 +11477,7 @@ PrefabInstance:
       objectReference: {fileID: 21300000, guid: 12bd83a315f8f49cfbf601d92f98e856, type: 3}
     - target: {fileID: 5907355354433407823, guid: a8ff01900087b4ee79ebf8acbd9c1446, type: 3}
       propertyPath: m_Name
-      value: BasicFrame_Diamond_H48_NoBorder_Brown
+      value: BasicFrame_Diamond_01_NoBorder_Brown
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a8ff01900087b4ee79ebf8acbd9c1446, type: 3}
@@ -11415,6 +11491,10 @@ PrefabInstance:
     - target: {fileID: 2310630760026913197, guid: 45836c803114749df9e4a0f2c18da8b1, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2531788604785167646, guid: 45836c803114749df9e4a0f2c18da8b1, type: 3}
+      propertyPath: m_Name
+      value: BasicFrame_Diamond_01_NoBorder_Plum
       objectReference: {fileID: 0}
     - target: {fileID: 3914975096161894520, guid: 45836c803114749df9e4a0f2c18da8b1, type: 3}
       propertyPath: m_IsActive
@@ -11563,6 +11643,10 @@ PrefabInstance:
     - target: {fileID: 2310630760026913197, guid: 45836c803114749df9e4a0f2c18da8b1, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2531788604785167646, guid: 45836c803114749df9e4a0f2c18da8b1, type: 3}
+      propertyPath: m_Name
+      value: BasicFrame_Diamond_01_NoBorder_Plum
       objectReference: {fileID: 0}
     - target: {fileID: 3914975096161894520, guid: 45836c803114749df9e4a0f2c18da8b1, type: 3}
       propertyPath: m_IsActive
@@ -11906,6 +11990,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2531788604785167646, guid: 45836c803114749df9e4a0f2c18da8b1, type: 3}
+      propertyPath: m_Name
+      value: BasicFrame_Diamond_01_NoBorder_Plum
+      objectReference: {fileID: 0}
     - target: {fileID: 6644578970886455013, guid: 45836c803114749df9e4a0f2c18da8b1, type: 3}
       propertyPath: m_IsActive
       value: 0
@@ -12225,7 +12313,7 @@ PrefabInstance:
       objectReference: {fileID: 21300000, guid: cfbbedfd213a2448fbbf6899b860fd38, type: 3}
     - target: {fileID: 5907355354433407823, guid: a8ff01900087b4ee79ebf8acbd9c1446, type: 3}
       propertyPath: m_Name
-      value: BasicFrame_Diamond_H48_NoBorder_Brown
+      value: BasicFrame_Diamond_01_NoBorder_Brown
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a8ff01900087b4ee79ebf8acbd9c1446, type: 3}
@@ -12326,7 +12414,7 @@ PrefabInstance:
       objectReference: {fileID: 21300000, guid: cfbbedfd213a2448fbbf6899b860fd38, type: 3}
     - target: {fileID: 5907355354433407823, guid: a8ff01900087b4ee79ebf8acbd9c1446, type: 3}
       propertyPath: m_Name
-      value: BasicFrame_Diamond_H48_NoBorder_Brown
+      value: BasicFrame_Diamond_01_NoBorder_Brown
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a8ff01900087b4ee79ebf8acbd9c1446, type: 3}
@@ -12340,6 +12428,10 @@ PrefabInstance:
     - target: {fileID: 2310630760026913197, guid: 45836c803114749df9e4a0f2c18da8b1, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2531788604785167646, guid: 45836c803114749df9e4a0f2c18da8b1, type: 3}
+      propertyPath: m_Name
+      value: BasicFrame_Diamond_01_NoBorder_Plum
       objectReference: {fileID: 0}
     - target: {fileID: 6644578970886455015, guid: 45836c803114749df9e4a0f2c18da8b1, type: 3}
       propertyPath: m_text
@@ -12468,6 +12560,10 @@ PrefabInstance:
     - target: {fileID: 2310630760026913197, guid: 45836c803114749df9e4a0f2c18da8b1, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2531788604785167646, guid: 45836c803114749df9e4a0f2c18da8b1, type: 3}
+      propertyPath: m_Name
+      value: BasicFrame_Diamond_01_NoBorder_Plum
       objectReference: {fileID: 0}
     - target: {fileID: 6644578970886455015, guid: 45836c803114749df9e4a0f2c18da8b1, type: 3}
       propertyPath: m_text
@@ -12780,7 +12876,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5391292164350356718, guid: 799cfcd4c30dc45e7a2ab8a4ed9affcb, type: 3}
       propertyPath: m_Name
-      value: BasicFrame_Diamond_H48_NoBorder_Blue
+      value: BasicFrame_Diamond_01_NoBorder_Blue
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 799cfcd4c30dc45e7a2ab8a4ed9affcb, type: 3}
@@ -12881,7 +12977,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5391292164350356718, guid: 799cfcd4c30dc45e7a2ab8a4ed9affcb, type: 3}
       propertyPath: m_Name
-      value: BasicFrame_Diamond_H48_NoBorder_Blue
+      value: BasicFrame_Diamond_01_NoBorder_Blue
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 799cfcd4c30dc45e7a2ab8a4ed9affcb, type: 3}
@@ -12895,6 +12991,10 @@ PrefabInstance:
     - target: {fileID: 2310630760026913197, guid: 45836c803114749df9e4a0f2c18da8b1, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2531788604785167646, guid: 45836c803114749df9e4a0f2c18da8b1, type: 3}
+      propertyPath: m_Name
+      value: BasicFrame_Diamond_01_NoBorder_Plum
       objectReference: {fileID: 0}
     - target: {fileID: 6644578970886455013, guid: 45836c803114749df9e4a0f2c18da8b1, type: 3}
       propertyPath: m_IsActive
@@ -13225,6 +13325,10 @@ PrefabInstance:
     - target: {fileID: 2310630760026913197, guid: 45836c803114749df9e4a0f2c18da8b1, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2531788604785167646, guid: 45836c803114749df9e4a0f2c18da8b1, type: 3}
+      propertyPath: m_Name
+      value: BasicFrame_Diamond_01_NoBorder_Plum
       objectReference: {fileID: 0}
     - target: {fileID: 6644578971798763600, guid: 45836c803114749df9e4a0f2c18da8b1, type: 3}
       propertyPath: m_Name

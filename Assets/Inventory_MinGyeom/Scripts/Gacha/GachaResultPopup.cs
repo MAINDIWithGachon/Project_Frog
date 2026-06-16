@@ -15,9 +15,14 @@ public class GachaResultPopup : MonoBehaviour
     [Header("Dependencies")]
     [SerializeField] private GachaManager gachaManager;
 
-    private void Awake()
+    private void OnEnable()
     {
         RegisterButtonListeners();
+    }
+
+    private void OnDisable()
+    {
+        UnregisterButtonListeners();
     }
 
     private void OnDestroy()
@@ -51,7 +56,6 @@ public class GachaResultPopup : MonoBehaviour
 
         if (gachaManager == null)
         {
-            Debug.LogWarning("[GachaResultPopup] GachaManager is not assigned.", this);
             return;
         }
 
@@ -69,13 +73,19 @@ public class GachaResultPopup : MonoBehaviour
         if (redrawOneButton != null)
         {
             redrawOneButton.onClick.RemoveListener(RedrawOne);
-            redrawOneButton.onClick.AddListener(RedrawOne);
+            if (gachaManager != null)
+            {
+                redrawOneButton.onClick.AddListener(RedrawOne);
+            }
         }
 
         if (redrawTenButton != null)
         {
             redrawTenButton.onClick.RemoveListener(RedrawTen);
-            redrawTenButton.onClick.AddListener(RedrawTen);
+            if (gachaManager != null)
+            {
+                redrawTenButton.onClick.AddListener(RedrawTen);
+            }
         }
 
         if (closeButton != null)
