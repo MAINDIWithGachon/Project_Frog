@@ -1,5 +1,6 @@
 using NewMinGyeom.Backend;
 using NewMinGyeom.Equipment;
+using TMPro;
 using UnityEngine;
 
 /// <summary>
@@ -13,17 +14,26 @@ public class EquipmentModuleRoot : MonoBehaviour
 
     [Header("Runtime Equipment")]
     [SerializeField] private EquipmentRuntimeState equipmentState;
+    [SerializeField] private EquipmentStatProvider statProvider;
     [SerializeField] private MockEquipmentDatabaseLoader mockLoader;
     [SerializeField] private EquipmentIconResolver iconResolver;
     [SerializeField] private EquipmentSaveDirtyTracker saveDirtyTracker;
 
     [Header("Internal Roots")]
     [SerializeField] private GameObject equipmentWindowRoot;
+    [SerializeField] private GameObject resourceBarRoot;
     [SerializeField] private GameObject detailPopupRoot;
 
     [Header("Internal Components")]
     [SerializeField] private ModularEquipmentWindowController equipmentWindowController;
     [SerializeField] private ModularEquipmentDetailPanelController detailPanelController;
+
+    [Header("Currency UI")]
+    [SerializeField] private TMP_Text goldText;
+    [SerializeField] private TMP_Text gemText;
+
+    [Header("Combat Power UI")]
+    [SerializeField] private TMP_Text combatPowerText;
 
     [Header("Startup")]
     [SerializeField] private bool bindOnAwake = true;
@@ -34,8 +44,12 @@ public class EquipmentModuleRoot : MonoBehaviour
 
     public RuntimeData RuntimeData => runtimeData;
     public EquipmentRuntimeState EquipmentState => equipmentState;
+    public EquipmentStatProvider StatProvider => statProvider;
     public EquipmentIconResolver IconResolver => iconResolver;
     public EquipmentSaveDirtyTracker SaveDirtyTracker => saveDirtyTracker;
+    private RuntimeData subscribedRuntimeData;
+    private CombatPowerData combatPowerData;
+    private PlayerStatController playerStatController;
 
     private void Awake()
     {
@@ -43,6 +57,20 @@ public class EquipmentModuleRoot : MonoBehaviour
         {
             BindModule();
         }
+    }
+
+    private void OnEnable()
+    {
+        SubscribeCurrency();
+        SubscribeCombatPower();
+        RefreshCurrencyUI();
+        RefreshCombatPowerUI();
+    }
+
+    private void OnDisable()
+    {
+        UnsubscribeCurrency();
+        UnsubscribeCombatPower();
     }
 
     private void Start()
@@ -70,9 +98,14 @@ public class EquipmentModuleRoot : MonoBehaviour
 
     public void Initialize(RuntimeData data)
     {
+        UnsubscribeCurrency();
         runtimeData = data;
         BindModule();
         RefreshModule();
+        SubscribeCurrency();
+        SubscribeCombatPower();
+        RefreshCurrencyUI();
+        RefreshCombatPowerUI();
     }
 
     [ContextMenu("Bind Module")]
@@ -104,6 +137,9 @@ public class EquipmentModuleRoot : MonoBehaviour
         {
             detailPanelController.RefreshCurrentDetail();
         }
+
+        RefreshCurrencyUI();
+        RefreshCombatPowerUI();
     }
 
     public void Open()
@@ -113,13 +149,11 @@ public class EquipmentModuleRoot : MonoBehaviour
         if (equipmentWindowController != null)
         {
             equipmentWindowController.Open();
+            SetEquipmentWindowVisible(true);
             return;
         }
 
-        if (equipmentWindowRoot != null)
-        {
-            equipmentWindowRoot.SetActive(true);
-        }
+        SetEquipmentWindowVisible(true);
     }
 
     public void Close()
@@ -132,26 +166,28 @@ public class EquipmentModuleRoot : MonoBehaviour
         if (equipmentWindowController != null)
         {
             equipmentWindowController.Close();
+            SetEquipmentWindowVisible(false);
             return;
         }
 
-        if (equipmentWindowRoot != null)
-        {
-            equipmentWindowRoot.SetActive(false);
-        }
+        SetEquipmentWindowVisible(false);
     }
 
     private void ResolveInternalReferences()
     {
         equipmentWindowRoot ??= FindDirectChildGameObject(IsEquipmentWindowRootName);
+        resourceBarRoot ??= FindDirectChildGameObject(name => name.Contains("ResourceBar"));
         detailPopupRoot ??= FindDirectChildGameObject(name => name.Contains("Detail"));
 
         equipmentState ??= GetComponentInChildren<EquipmentRuntimeState>(true);
+        statProvider ??= GetComponentInChildren<EquipmentStatProvider>(true);
         mockLoader ??= GetComponentInChildren<MockEquipmentDatabaseLoader>(true);
         iconResolver ??= GetComponentInChildren<EquipmentIconResolver>(true);
         saveDirtyTracker ??= GetComponentInChildren<EquipmentSaveDirtyTracker>(true);
         equipmentWindowController ??= GetComponentInChildren<ModularEquipmentWindowController>(true);
         detailPanelController ??= GetComponentInChildren<ModularEquipmentDetailPanelController>(true);
+        ResolveCombatPowerReferences();
+        ResolveCurrencyTexts();
     }
 
     private void EnsureInternalComponents()
@@ -176,6 +212,15 @@ public class EquipmentModuleRoot : MonoBehaviour
             if (mockLoader == null)
             {
                 mockLoader = stateRoot.AddComponent<MockEquipmentDatabaseLoader>();
+            }
+        }
+
+        if (statProvider == null)
+        {
+            statProvider = GetComponent<EquipmentStatProvider>();
+            if (statProvider == null)
+            {
+                statProvider = gameObject.AddComponent<EquipmentStatProvider>();
             }
         }
 
@@ -226,6 +271,8 @@ public class EquipmentModuleRoot : MonoBehaviour
 
     private void InjectReferences()
     {
+        statProvider?.Configure(equipmentState);
+
         if (detailPanelController != null)
         {
             detailPanelController.Configure(detailPopupRoot, equipmentState, runtimeData, iconResolver);
@@ -240,6 +287,11 @@ public class EquipmentModuleRoot : MonoBehaviour
                 detailPanelController,
                 iconResolver);
         }
+
+        SubscribeCurrency();
+        SubscribeCombatPower();
+        RefreshCurrencyUI();
+        RefreshCombatPowerUI();
     }
 
     private void ApplyStartupVisibility()
@@ -249,10 +301,166 @@ public class EquipmentModuleRoot : MonoBehaviour
             detailPopupRoot.SetActive(false);
         }
 
-        if (hideEquipmentWindowOnStart && equipmentWindowRoot != null)
+        if (hideEquipmentWindowOnStart)
         {
-            equipmentWindowRoot.SetActive(false);
+            SetEquipmentWindowVisible(false);
         }
+    }
+
+    private void SetEquipmentWindowVisible(bool visible)
+    {
+        if (equipmentWindowRoot != null)
+        {
+            equipmentWindowRoot.SetActive(visible);
+        }
+
+        if (resourceBarRoot != null)
+        {
+            resourceBarRoot.SetActive(visible);
+        }
+    }
+
+    private void RefreshCurrencyUI()
+    {
+        if (runtimeData == null)
+        {
+            return;
+        }
+
+        if (goldText != null)
+        {
+            goldText.text = runtimeData.GetGold().ToString();
+        }
+
+        if (gemText != null)
+        {
+            gemText.text = runtimeData.GetGem().ToString();
+        }
+    }
+
+    private void RefreshCombatPowerUI()
+    {
+        if (combatPowerText == null)
+        {
+            return;
+        }
+
+        ResolveCombatPowerReferences();
+
+        if (combatPowerData == null)
+        {
+            return;
+        }
+
+        combatPowerText.text = StatUI_CombatPower.FormatCombatPower(combatPowerData.currentCombatPower);
+    }
+
+    private void ResolveCombatPowerReferences()
+    {
+        if (combatPowerData == null)
+        {
+            combatPowerData = FindAnyObjectByType<CombatPowerData>();
+        }
+
+        if (playerStatController == null)
+        {
+            playerStatController = FindAnyObjectByType<PlayerStatController>();
+        }
+    }
+
+    private void SubscribeCombatPower()
+    {
+        ResolveCombatPowerReferences();
+
+        if (playerStatController != null)
+        {
+            playerStatController.OnStatsRecalculated -= RefreshCombatPowerUI;
+            playerStatController.OnStatsRecalculated += RefreshCombatPowerUI;
+        }
+    }
+
+    private void UnsubscribeCombatPower()
+    {
+        if (playerStatController != null)
+        {
+            playerStatController.OnStatsRecalculated -= RefreshCombatPowerUI;
+        }
+    }
+
+    private void SubscribeCurrency()
+    {
+        if (runtimeData == null || subscribedRuntimeData == runtimeData)
+        {
+            return;
+        }
+
+        UnsubscribeCurrency();
+        runtimeData.OnDataChanged += RefreshCurrencyUI;
+        subscribedRuntimeData = runtimeData;
+    }
+
+    private void UnsubscribeCurrency()
+    {
+        if (subscribedRuntimeData == null)
+        {
+            return;
+        }
+
+        subscribedRuntimeData.OnDataChanged -= RefreshCurrencyUI;
+        subscribedRuntimeData = null;
+    }
+
+    private void ResolveCurrencyTexts()
+    {
+        if (resourceBarRoot == null || goldText != null && gemText != null)
+        {
+            return;
+        }
+
+        TMP_Text[] texts = resourceBarRoot.GetComponentsInChildren<TMP_Text>(true);
+        for (int i = 0; i < texts.Length; i++)
+        {
+            TMP_Text text = texts[i];
+            if (text == null)
+            {
+                continue;
+            }
+
+            if (goldText == null && HasAncestorName(text.transform, "ResourceBar_Coin", "Gold"))
+            {
+                goldText = text;
+                continue;
+            }
+
+            if (gemText == null && HasAncestorName(text.transform, "ResourceBar_Gem", "Gem"))
+            {
+                gemText = text;
+            }
+        }
+    }
+
+    private static bool HasAncestorName(Transform target, string exactName, string fallbackName)
+    {
+        for (Transform current = target; current != null; current = current.parent)
+        {
+            string objectName = current.name;
+            if (objectName == exactName)
+            {
+                return true;
+            }
+
+            if (objectName.Contains("GemStone"))
+            {
+                return false;
+            }
+
+            if (objectName.Contains(fallbackName))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private GameObject FindDirectChildGameObject(System.Predicate<string> namePredicate)

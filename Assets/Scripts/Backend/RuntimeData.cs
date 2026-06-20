@@ -51,7 +51,8 @@ public class RuntimeData : MonoBehaviour
         ""skillLevels"": [
             { ""skillId"": 0, ""level"": 1 },
             { ""skillId"": 1, ""level"": 3 },
-            { ""skillId"": 2, ""level"": 5 }
+            { ""skillId"": 2, ""level"": 5 },
+            { ""skillId"": 6, ""level"": 1 }
         ],
         ""statLevels"": {
             ""attackLevel"": 10,

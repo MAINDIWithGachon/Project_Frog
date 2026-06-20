@@ -2,16 +2,22 @@ using System;
 using NewMinGyeom.Equipment;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class ModularEquippedSlotView : MonoBehaviour
+public class ModularEquippedSlotView : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPointerExitHandler
 {
     [SerializeField] private Button button;
     [SerializeField] private Image iconImage;
     [SerializeField] private TMP_Text levelText;
     [SerializeField] private GameObject redDotRoot;
     [SerializeField] private GameObject addRoot;
+    [SerializeField] private GameObject addNormalRoot;
+    [SerializeField] private GameObject addPressedRoot;
     [SerializeField] private GameObject typeAreaRoot;
+    [SerializeField] private Image typeFrameImage;
+    [SerializeField] private Image typeBgImage;
+    [SerializeField] private Image typeIconImage;
 
     private EquipmentSlotType slotType;
     private EquipmentDefinition currentDefinition;
@@ -55,6 +61,7 @@ public class ModularEquippedSlotView : MonoBehaviour
         currentLevel = Mathf.Max(0, level);
 
         SetFrame(definition != null ? definition.grade : EquipmentGrade.Common);
+        ApplyTypeArea(definition, iconResolver);
 
         Sprite icon = definition != null ? iconResolver?.GetIcon(definition.iconKey) : null;
         if (iconImage != null)
@@ -71,8 +78,27 @@ public class ModularEquippedSlotView : MonoBehaviour
         }
 
         SetActive(addRoot, definition == null);
+        SetEmptySlotAddPressed(false);
         SetActive(typeAreaRoot, definition != null);
         SetActive(redDotRoot, showRedDot);
+    }
+
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        if (currentDefinition == null)
+        {
+            SetEmptySlotAddPressed(true);
+        }
+    }
+
+    public void OnPointerUp(PointerEventData eventData)
+    {
+        SetEmptySlotAddPressed(false);
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        SetEmptySlotAddPressed(false);
     }
 
     private void HandleClick()
@@ -98,9 +124,31 @@ public class ModularEquippedSlotView : MonoBehaviour
         iconImage ??= FindImageByName(transform, "Icon");
         levelText ??= FindTextByName(transform, "Text_Level");
         redDotRoot ??= FindDescendantByNameContains(transform, "Alert_Dot")?.gameObject;
+        addNormalRoot ??= FindDescendantByName(transform, "Add_1")?.gameObject;
+        addPressedRoot ??= FindDescendantByName(transform, "Add_2")?.gameObject;
         addRoot ??= FindDescendantByName(transform, "Add_2")?.gameObject;
         addRoot ??= FindDescendantByName(transform, "Add_1")?.gameObject;
         typeAreaRoot ??= FindDescendantByName(transform, "TypeArea")?.gameObject;
+        typeFrameImage ??= GetTypeAreaFrameImage();
+        typeBgImage ??= FindTypeAreaImageByName("Bg");
+        typeIconImage ??= FindTypeAreaImageByName("Icon");
+    }
+
+    private void SetEmptySlotAddPressed(bool pressed)
+    {
+        bool isEmpty = currentDefinition == null;
+
+        SetActive(addNormalRoot, isEmpty && !pressed);
+        SetActive(addPressedRoot, isEmpty && pressed);
+
+        if (addNormalRoot == null && addPressedRoot == null)
+        {
+            SetActive(addRoot, isEmpty);
+        }
+        else if (addRoot != null && addRoot != addNormalRoot && addRoot != addPressedRoot)
+        {
+            SetActive(addRoot, isEmpty);
+        }
     }
 
     private void SetFrame(EquipmentGrade grade)
@@ -115,6 +163,36 @@ public class ModularEquippedSlotView : MonoBehaviour
         SetActiveByNameContains(transform, "Normal_Plum", grade == EquipmentGrade.Epic);
         SetActiveByNameContains(transform, "Normal_Legendary", grade == EquipmentGrade.Legendary);
         SetActiveByNameContains(transform, "Normal_Yellow", grade == EquipmentGrade.Legendary);
+    }
+
+    private void ApplyTypeArea(EquipmentDefinition definition, EquipmentIconResolver iconResolver)
+    {
+        if (definition == null)
+        {
+            if (typeIconImage != null)
+            {
+                typeIconImage.sprite = null;
+                typeIconImage.enabled = false;
+            }
+
+            return;
+        }
+
+        if (typeFrameImage != null)
+        {
+            typeFrameImage.color = EquipmentIconResolver.GetTypeFrameColor(definition.grade);
+        }
+
+        if (typeBgImage != null)
+        {
+            typeBgImage.color = EquipmentIconResolver.GetTypeFillColor(definition.grade);
+        }
+
+        if (typeIconImage != null)
+        {
+            typeIconImage.sprite = iconResolver != null ? iconResolver.GetTypeIcon(definition.slotType) : null;
+            typeIconImage.enabled = typeIconImage.sprite != null;
+        }
     }
 
     private static void SetActive(GameObject target, bool active)
@@ -135,6 +213,21 @@ public class ModularEquippedSlotView : MonoBehaviour
     {
         Transform target = FindDescendantByName(root, targetName);
         return target != null ? target.GetComponent<Image>() : null;
+    }
+
+    private Image GetTypeAreaFrameImage()
+    {
+        if (typeAreaRoot == null || typeAreaRoot.transform.childCount == 0)
+        {
+            return null;
+        }
+
+        return typeAreaRoot.transform.GetChild(0).GetComponent<Image>();
+    }
+
+    private Image FindTypeAreaImageByName(string targetName)
+    {
+        return typeAreaRoot != null ? FindImageByName(typeAreaRoot.transform, targetName) : null;
     }
 
     private static Transform FindDescendantByName(Transform root, string targetName)
