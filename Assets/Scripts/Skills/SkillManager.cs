@@ -33,7 +33,7 @@ public class SkillManager : MonoBehaviour
 
     [Header("# Skill Database")]
     [SerializeField] private SkillData[] skillDatabase;
-    [SerializeField] private List<int> equippedSkillIds = new() { 0, 1, -1, -1 };
+    [SerializeField] private List<int> equippedSkillIds = new() { 0, 1, 6, -1 };
 
     /// <summary>
     /// 각 스킬의 다음 사용 가능 시각(Time.time 기준)을 저장한다.
@@ -608,12 +608,12 @@ public class SkillManager : MonoBehaviour
     {
         if (equippedSkillIds == null)
         {
-            equippedSkillIds = new List<int> { 0, 1, -1, -1 };
+            equippedSkillIds = new List<int> { 0, 1, 6, -1 };
             return;
         }
 
         if (equippedSkillIds.Count == 0)
-            equippedSkillIds.AddRange(new[] { 0, 1, -1, -1 });
+            equippedSkillIds.AddRange(new[] { 0, 1, 6, -1 });
     }
 }
 
