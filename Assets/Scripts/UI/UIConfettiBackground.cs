@@ -45,6 +45,7 @@ public class UIConfettiBackground : MonoBehaviour
     private ParticleSystem particleSystemCache;
     private ParticleSystemRenderer particleRenderer;
     private Material runtimeMaterial;
+    private bool isRefreshingTransform;
 
     private void Reset()
     {
@@ -89,7 +90,7 @@ public class UIConfettiBackground : MonoBehaviour
 
     private void OnRectTransformDimensionsChange()
     {
-        if (!isActiveAndEnabled)
+        if (!isActiveAndEnabled || isRefreshingTransform)
             return;
 
         RefreshEmitterTransform(!Application.isPlaying);
@@ -240,7 +241,8 @@ public class UIConfettiBackground : MonoBehaviour
     private void ApplyRenderer()
     {
         particleRenderer.renderMode = ParticleSystemRenderMode.Billboard;
-        particleRenderer.alignment = ParticleSystemRenderSpace.View;
+        particleRenderer.alignment = ParticleSystemRenderSpace.Local;
+        particleRenderer.sortMode = ParticleSystemSortMode.None;
         particleRenderer.sortingLayerName = sortingLayerName;
         particleRenderer.sortingOrder = sortingOrder;
 
@@ -259,19 +261,43 @@ public class UIConfettiBackground : MonoBehaviour
         float emitterWidth = area.width + (horizontalPadding * 2f);
         float emitterY = (area.height * 0.5f) + topPadding;
 
-        rectTransform.anchorMin = new Vector2(0.5f, 0.5f);
-        rectTransform.anchorMax = new Vector2(0.5f, 0.5f);
-        rectTransform.pivot = new Vector2(0.5f, 0.5f);
-        rectTransform.anchoredPosition = new Vector2(0f, emitterY);
-        rectTransform.localRotation = Quaternion.identity;
-        rectTransform.localScale = Vector3.one;
-        rectTransform.sizeDelta = new Vector2(emitterWidth, emitterHeight);
+        isRefreshingTransform = true;
+        Vector2 centerAnchor = new Vector2(0.5f, 0.5f);
+        Vector2 nextPosition = new Vector2(0f, emitterY);
+        Vector2 nextSize = new Vector2(emitterWidth, emitterHeight);
+
+        if (!Approximately(rectTransform.anchorMin, centerAnchor))
+            rectTransform.anchorMin = centerAnchor;
+        if (!Approximately(rectTransform.anchorMax, centerAnchor))
+            rectTransform.anchorMax = centerAnchor;
+        if (!Approximately(rectTransform.pivot, centerAnchor))
+            rectTransform.pivot = centerAnchor;
+        if (!Approximately(rectTransform.anchoredPosition, nextPosition))
+            rectTransform.anchoredPosition = nextPosition;
+        if (Quaternion.Angle(rectTransform.localRotation, Quaternion.identity) > 0.01f)
+            rectTransform.localRotation = Quaternion.identity;
+        if (!Approximately(rectTransform.localScale, Vector3.one))
+            rectTransform.localScale = Vector3.one;
+        if (!Approximately(rectTransform.sizeDelta, nextSize))
+            rectTransform.sizeDelta = nextSize;
+
+        isRefreshingTransform = false;
 
         if (!updateShapeScale)
             return;
 
         ParticleSystem.ShapeModule shape = particleSystemCache.shape;
         shape.scale = new Vector3(emitterWidth, emitterHeight, 1f);
+    }
+
+    private static bool Approximately(Vector2 currentValue, Vector2 nextValue)
+    {
+        return (currentValue - nextValue).sqrMagnitude <= 0.01f;
+    }
+
+    private static bool Approximately(Vector3 currentValue, Vector3 nextValue)
+    {
+        return (currentValue - nextValue).sqrMagnitude <= 0.01f;
     }
 
     private ParticleSystem.MinMaxGradient CreateRandomColorGradient()

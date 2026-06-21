@@ -1,0 +1,72 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b11a58205ec3474ca216360e9fa74a8, type: 3}
+  m_Name: UI Shared Data
+  m_EditorClassIdentifier: 
+  m_TableCollectionName: UI
+  m_TableCollectionNameGuidString: 1c727fb1234c759478de399346bae517
+  m_Entries:
+  - m_Id: 290065666048
+    m_Key: ui.recipe.unknown
+    m_Metadata:
+      m_Items: []
+  - m_Id: 361062649856
+    m_Key: ui.recipe.not_owned
+    m_Metadata:
+      m_Items: []
+  - m_Id: 433187901440
+    m_Key: ui.recipe.locked_description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 513076809728
+    m_Key: ui.recipe.passive_format
+    m_Metadata:
+      m_Items: []
+  - m_Id: 563928551424
+    m_Key: ui.recipe.duplicate_progress_format
+    m_Metadata:
+      m_Items: []
+  - m_Id: 641695141888
+    m_Key: ui.recipe.duplicate_progress_max
+    m_Metadata:
+      m_Items: []
+  - m_Id: 686318342144
+    m_Key: ui.upgrade
+    m_Metadata:
+      m_Items: []
+  - m_Id: 742157111296
+    m_Key: ui.common.max
+    m_Metadata:
+      m_Items: []
+  - m_Id: 16033083740160
+    m_Key: ui.recipe.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 16165195927552
+    m_Key: ui.recipe.draw_one
+    m_Metadata:
+      m_Items: []
+  - m_Id: 16166919786496
+    m_Key: ui.recipe.draw_ten
+    m_Metadata:
+      m_Items: []
+  m_Metadata:
+    m_Items: []
+  m_KeyGenerator:
+    rid: 7359502349552320600
+  references:
+    version: 2
+    RefIds:
+    - rid: 7359502349552320600
+      type: {class: DistributedUIDGenerator, ns: UnityEngine.Localization.Tables, asm: Unity.Localization}
+      data:
+        m_CustomEpoch: 1781841450819

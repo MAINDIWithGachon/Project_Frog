@@ -1,0 +1,68 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b11a58205ec3474ca216360e9fa74a8, type: 3}
+  m_Name: Item Shared Data
+  m_EditorClassIdentifier: 
+  m_TableCollectionName: Item
+  m_TableCollectionNameGuidString: 054f8af539d3c78429051e017b16b2b0
+  m_Entries:
+  - m_Id: 10624356352
+    m_Key: item.recipe.1101.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14835437568
+    m_Key: item.recipe.1101.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 16584462336
+    m_Key: item.recipe.1201.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 18283155456
+    m_Key: item.recipe.1201.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 20145426432
+    m_Key: item.recipe.1301.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1340944338944
+    m_Key: item.recipe.1301.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1344765349888
+    m_Key: item.recipe.1401.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1346073972736
+    m_Key: item.recipe.1401.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1346782810112
+    m_Key: item.recipe.1501.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1347332263936
+    m_Key: item.recipe.1501.description
+    m_Metadata:
+      m_Items: []
+  m_Metadata:
+    m_Items: []
+  m_KeyGenerator:
+    rid: 7359502349552320603
+  references:
+    version: 2
+    RefIds:
+    - rid: 7359502349552320603
+      type: {class: DistributedUIDGenerator, ns: UnityEngine.Localization.Tables, asm: Unity.Localization}
+      data:
+        m_CustomEpoch: 1781841929576
