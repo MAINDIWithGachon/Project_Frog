@@ -104,6 +104,8 @@ public class BackndRuntimeDataRepository : MonoBehaviour
     /// </summary>
     public RuntimeDataBackendResult LoadRuntimeDataJson()
     {
+        // LOAD는 인게임 RuntimeData를 수정하지 않고, DB 테이블 -> 단일 JSON 변환만 담당합니다.
+        // 새 섹션을 추가하면 아래 순서대로 LoadOrCreate..., BuildRuntimeDataJson을 함께 확장하세요.
         RuntimeDataBackendResult result = LoadOrCreatePlayerCurrency(out CurrencySection currency);
         if (!result.isSuccess) return result;
 
@@ -116,6 +118,7 @@ public class BackndRuntimeDataRepository : MonoBehaviour
         result = LoadOrCreatePlayerGrowth(out GrowthSection growth);
         if (!result.isSuccess) return result;
 
+        // 클라이언트가 RuntimeData에 직접 적용할 수 있도록 mockJson과 같은 최상위 구조로 합칩니다.
         string runtimeDataJson = BuildRuntimeDataJson(currency, skillLevelsJson, statLevels, growth);
         return RuntimeDataBackendResult.Success("RuntimeData load succeeded.", runtimeDataJson);
     }
@@ -266,6 +269,8 @@ public class BackndRuntimeDataRepository : MonoBehaviour
 
     private RuntimeDataBackendResult LoadOrCreatePlayerSkillLevels(out string skillLevelsJson)
     {
+        // PlayerSkillLevels는 배열을 row 여러 개로 나누지 않고 skillLevelsJson 문자열 컬럼 하나에 보관합니다.
+        // row가 없거나 컬럼이 비어 있으면 클라이언트가 바로 파싱 가능한 빈 배열 JSON을 사용합니다.
         // skillLevelsJson이 비어 있거나 row가 없으면 기본 배열로 복구합니다.
         // 단, row는 있는데 JSON 파싱이 불가능하면 데이터 손상 가능성이 있으므로 실패를 반환합니다.
         skillLevelsJson = DefaultSkillLevelsJson;
@@ -292,6 +297,7 @@ public class BackndRuntimeDataRepository : MonoBehaviour
 
     private RuntimeDataBackendResult LoadOrCreatePlayerStatLevels(out StatLevelsSection statLevels)
     {
+        // PlayerStatLevels row가 없으면 모든 강화 레벨 0인 기본 statLevels를 만들어 반환 JSON에 포함합니다.
         // StatLevels row가 누락된 경우 기본값 0 레벨들로 row를 생성합니다.
         statLevels = CreateDefaultStatLevels();
 
@@ -314,6 +320,8 @@ public class BackndRuntimeDataRepository : MonoBehaviour
 
     private RuntimeDataBackendResult LoadOrCreatePlayerGrowth(out GrowthSection growth)
     {
+        // PlayerGrowth row가 없으면 성장 레벨/성장 스탯 기본값 1을 채워 완성 JSON을 만듭니다.
+        // 신규 유저 기본값을 바꿀 때는 CreateDefaultGrowth()를 먼저 수정하세요.
         // Growth 기본값은 growthLevel 1, 성장 스탯 레벨 1을 사용합니다.
         // 최종 기본값 정책이 바뀌면 CreateDefaultGrowth()만 우선 확인하면 됩니다.
         growth = CreateDefaultGrowth();
@@ -637,6 +645,20 @@ public class BackndRuntimeDataRepository : MonoBehaviour
         StatLevelsSection statLevels,
         GrowthSection growth)
     {
+        // 최종 LOAD 응답 JSON 구조입니다.
+        // RuntimeData.mockJson과 같은 최상위 키 이름을 유지해야 클라이언트 파싱 코드가 단순해집니다.
+        //
+        // 현재 매핑:
+        // - PlayerCurrency    -> Currency
+        // - PlayerSkillLevels -> skillLevels
+        // - PlayerStatLevels  -> statLevels
+        // - PlayerGrowth      -> growth
+        //
+        // 새 데이터가 추가되면 다음 4곳을 같이 수정하세요.
+        // 1. 저장 파싱(TryRead...)
+        // 2. 테이블 저장(Upsert...)
+        // 3. 테이블 로드(LoadOrCreate...)
+        // 4. 최종 조립(BuildRuntimeDataJson)
         // 로드한 테이블별 값을 클라이언트 계약 JSON 형태로 다시 조립합니다.
         // 반환 구조는 저장 요청 때 받은 RuntimeData JSON과 같은 이름/중첩 구조를 유지해야 합니다.
         // 새 섹션이 추가되면 여기에 최상위 JSON 필드를 추가하고, 저장 파싱/테이블 저장 함수도 함께 확장합니다.
@@ -666,6 +688,7 @@ public class BackndRuntimeDataRepository : MonoBehaviour
 
     private static CurrencySection CreateDefaultCurrency()
     {
+        // 신규 유저/누락 row 기본 Currency 값입니다. 기획 기본 재화가 바뀌면 여기서 조정합니다.
         // 신규 유저 또는 Currency row 누락 복구 시 사용하는 기본 재화값입니다.
         // 최종 기본값은 기획/클라이언트와 합의 후 여기에서 조정합니다.
         return new CurrencySection();
@@ -673,6 +696,7 @@ public class BackndRuntimeDataRepository : MonoBehaviour
 
     private static StatLevelsSection CreateDefaultStatLevels()
     {
+        // 신규 유저/누락 row 기본 statLevels 값입니다. 기본 강화 레벨은 현재 모두 0입니다.
         // 신규 유저 또는 StatLevels row 누락 복구 시 사용하는 기본 스탯 강화 레벨입니다.
         // 현재는 모든 강화 레벨 0으로 시작합니다.
         return new StatLevelsSection();
@@ -680,6 +704,8 @@ public class BackndRuntimeDataRepository : MonoBehaviour
 
     private static GrowthSection CreateDefaultGrowth()
     {
+        // 신규 유저/누락 row 기본 growth 값입니다.
+        // growthLevel, attackLevel, hpLevel, critDamageLevel은 1부터 시작합니다.
         // 신규 유저 또는 Growth row 누락 복구 시 사용하는 기본 성장 데이터입니다.
         // growthLevel과 성장 스탯 레벨은 1부터 시작하는 정책으로 둡니다.
         return new GrowthSection

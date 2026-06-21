@@ -347,32 +347,6 @@ public class NoticeManager : MonoBehaviour
         return readNoticeIds.Contains(noticeId);
     }
 
-    // 🌟 [새로 추가] 팝업창을 닫을 때 'NoticeUIManager'에서 호출하여 서버에 일괄 백업하는 함수입니다!
-    public void SaveNoticeAsReadToServer()
-    {
-        if (string.IsNullOrEmpty(tableRowInDate))
-        {
-            Debug.LogWarning("서버에 등록된 UserNoticeStatus Row가 없어 백업을 스킵합니다.");
-            return;
-        }
-
-        Param param = new Param();
-        param.Add("readIds", new List<string>(readNoticeIds));
-
-        // 뒤끝 서버의 해당 Row에 그동안 모인 읽음 목록을 한 번에 업데이트!
-        Backend.GameData.UpdateV2("UserNoticeStatus", tableRowInDate, Backend.UserInDate, param, callback => 
-        {
-            if (!callback.IsSuccess())
-            {
-                Debug.LogError("공지 읽음 목록 서버 일괄 백업 실패: " + callback.GetMessage());
-            }
-            else
-            {
-                Debug.Log("공지 읽음 목록이 서버에 안전하게 일괄 백업되었습니다!");
-            }
-        });
-    }
-
     //--------------------------------------------------
     // 공지 데이터 클래스
     //--------------------------------------------------

@@ -37,6 +37,12 @@ public class SkillPrefabPooling : MonoBehaviour
             return null;
         }
 
+        if (prefabs[index] == null)
+        {
+            Debug.LogError($"[SkillPrefabPooling] Prefab is missing at index: {index}");
+            return null;
+        }
+
         GameObject select = null;
 
         // 선택한 풀에서 비활성화된 오브젝트 재사용

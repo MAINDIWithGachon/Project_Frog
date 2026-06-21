@@ -42,6 +42,8 @@ public static class BackndRuntimeDataTestActions
         if (!EnsureReady(out message))
             return false;
 
+        // LOAD 버튼의 백엔드 책임은 여기까지입니다.
+        // Repository가 뒤끝 테이블들을 읽고 RuntimeData.mockJson과 같은 단일 JSON을 만들어 반환합니다.
         BackndRuntimeDataRepository.RuntimeDataBackendResult result =
             BackndRuntimeDataRepository.Instance.LoadRuntimeDataJson();
 
@@ -50,14 +52,9 @@ public static class BackndRuntimeDataTestActions
         if (!string.IsNullOrEmpty(result.runtimeDataJson))
             Debug.Log("[RuntimeData Load JSON] " + result.runtimeDataJson);
 
-        if (result.isSuccess && !TryApplyRuntimeDataJson(result.runtimeDataJson, out string applyError))
-        {
-            message = "Load OK, apply failed: " + applyError;
-            Debug.LogError("[RuntimeData Load Apply] " + message);
-            return false;
-        }
-
-        message = result.isSuccess ? "Load OK and applied to RuntimeData" : result.errorCode + " / " + result.message;
+        // 중요: 여기서 RuntimeData.root에 바로 적용하지 않습니다.
+        // result.runtimeDataJson을 받은 뒤 파싱/캐시 반영은 클라이언트 RuntimeData 담당 코드에서 처리합니다.
+        message = result.isSuccess ? "Load OK. RuntimeData JSON returned." : result.errorCode + " / " + result.message;
         return result.isSuccess;
     }
 
@@ -143,54 +140,4 @@ public static class BackndRuntimeDataTestActions
         return false;
     }
 
-    private static bool TryApplyRuntimeDataJson(string runtimeDataJson, out string errorMessage)
-    {
-        errorMessage = "";
-
-        if (string.IsNullOrEmpty(runtimeDataJson))
-        {
-            errorMessage = "Loaded RuntimeData JSON is empty.";
-            return false;
-        }
-
-        RuntimeData runtimeData = UnityEngine.Object.FindFirstObjectByType<RuntimeData>(FindObjectsInactive.Include);
-        if (runtimeData == null)
-        {
-            errorMessage = "RuntimeData object not found in scene.";
-            return false;
-        }
-
-        RuntimeData.RootData loadedRoot;
-        try
-        {
-            loadedRoot = JsonUtility.FromJson<RuntimeData.RootData>(runtimeDataJson);
-        }
-        catch (Exception e)
-        {
-            errorMessage = "Loaded RuntimeData JSON parse failed: " + e.Message;
-            return false;
-        }
-
-        if (loadedRoot == null)
-        {
-            errorMessage = "Loaded RuntimeData JSON root is null.";
-            return false;
-        }
-
-        System.Reflection.FieldInfo rootField = typeof(RuntimeData).GetField(
-            "root",
-            System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
-
-        if (rootField == null)
-        {
-            errorMessage = "RuntimeData private root field was not found.";
-            return false;
-        }
-
-        rootField.SetValue(runtimeData, loadedRoot);
-        runtimeData.NotifyDataChanged();
-
-        Debug.Log("[RuntimeData Load Apply] Loaded JSON was applied to RuntimeData.");
-        return true;
-    }
 }
