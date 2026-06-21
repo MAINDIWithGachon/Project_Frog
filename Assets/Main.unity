@@ -3784,6 +3784,10 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 829797304}
+    - target: {fileID: 9111322503203772586, guid: ae0dc5a72ff6847c0b71e66b0b5d0741, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OnClickLoadAndApplyRuntimeDataTest
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 6049053885611898418, guid: ae0dc5a72ff6847c0b71e66b0b5d0741, type: 3}
     - {fileID: 4068124760575206205, guid: ae0dc5a72ff6847c0b71e66b0b5d0741, type: 3}

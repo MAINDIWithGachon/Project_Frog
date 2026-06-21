@@ -50,6 +50,17 @@ public class TestManager : MonoBehaviour
         Debug.Log("[RuntimeData Load Test] " + message);
     }
 
+    public void OnClickLoadAndApplyRuntimeDataTest()
+    {
+        if (!BackndRuntimeDataTestActions.LoadAndApplyRuntimeDataJson(out string message))
+        {
+            Debug.LogError("[RuntimeData Load Test] " + message);
+            return;
+        }
+
+        Debug.Log("[RuntimeData Load Test] " + message);
+    }
+
     public void OnClickAddRuntimeDataTestGold()
     {
         if (!BackndRuntimeDataTestActions.AddTestGold(out string message))

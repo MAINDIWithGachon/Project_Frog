@@ -58,6 +58,44 @@ public static class BackndRuntimeDataTestActions
         return result.isSuccess;
     }
 
+    public static bool LoadAndApplyRuntimeDataJson(out string message)
+    {
+        message = "";
+
+        if (!EnsureReady(out message))
+            return false;
+
+        BackndRuntimeDataRepository.RuntimeDataBackendResult result =
+            BackndRuntimeDataRepository.Instance.LoadRuntimeDataJson();
+
+        Debug.Log("[RuntimeData Load Result] " + result.ToJson());
+
+        if (!string.IsNullOrEmpty(result.runtimeDataJson))
+            Debug.Log("[RuntimeData Load JSON] " + result.runtimeDataJson);
+
+        if (!result.isSuccess)
+        {
+            message = result.errorCode + " / " + result.message;
+            return false;
+        }
+
+        RuntimeData runtimeData = UnityEngine.Object.FindFirstObjectByType<RuntimeData>(FindObjectsInactive.Include);
+        if (runtimeData == null)
+        {
+            message = "RuntimeData object not found in scene.";
+            return false;
+        }
+
+        if (!runtimeData.ApplyRuntimeDataJson(result.runtimeDataJson, out string applyMessage))
+        {
+            message = applyMessage;
+            return false;
+        }
+
+        message = "Load OK. " + applyMessage;
+        return true;
+    }
+
     public static bool AddTestGold(out string message)
     {
         message = "";

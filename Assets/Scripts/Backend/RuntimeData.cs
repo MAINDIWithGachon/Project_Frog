@@ -245,6 +245,44 @@ public class RuntimeData : MonoBehaviour
         return root;
     }
 
+    /// <summary>
+    /// 서버에서 받은 RuntimeData JSON을 현재 세션 데이터로 강제 적용한다.
+    /// 기존 root가 이미 있어도 새 JSON으로 교체하고, 구독 중인 UI/스탯 시스템에 변경을 알린다.
+    /// </summary>
+    public bool ApplyRuntimeDataJson(string runtimeDataJson, out string message)
+    {
+        message = "";
+
+        if (string.IsNullOrWhiteSpace(runtimeDataJson))
+        {
+            message = "RuntimeData JSON is empty.";
+            return false;
+        }
+
+        try
+        {
+            RootData nextRoot = JsonUtility.FromJson<RootData>(runtimeDataJson);
+            if (nextRoot == null)
+            {
+                message = "RuntimeData JSON parse returned null.";
+                return false;
+            }
+
+            root = nextRoot;
+            mockJson = runtimeDataJson;
+            EnsureValid();
+            RaiseDataChanged();
+
+            message = "RuntimeData applied.";
+            return true;
+        }
+        catch (Exception e)
+        {
+            message = "RuntimeData JSON parse failed: " + e.Message;
+            return false;
+        }
+    }
+
     // =========================
     // 수정
     // =========================
