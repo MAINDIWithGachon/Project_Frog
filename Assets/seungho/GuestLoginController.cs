@@ -167,7 +167,7 @@ public class GuestLoginController : MonoBehaviour
         SetStatus("게스트 로그인 완료");
 
         // 새 RuntimeData 4테이블(PlayerCurrency, PlayerSkillLevels, PlayerStatLevels, PlayerGrowth)을 불러오거나 생성합니다.
-        if (!BackndRuntimeDataTestActions.LoadRuntimeDataJson(out string runtimeDataMessage))
+        if (!BackndRuntimeDataTestActions.LoadAndApplyRuntimeDataJson(out string runtimeDataMessage))
         {
             SetStatus("게임 데이터 불러오기 실패\n" + runtimeDataMessage);
             return;
