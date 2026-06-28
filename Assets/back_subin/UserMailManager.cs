@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using BackEnd;
+using System;
 
 public class UserMailManager
 {
@@ -22,6 +23,33 @@ public class UserMailManager
         }
     }
 
+    public void CreateNoItemMail(string title, string content)
+    {
+        Param param = new Param();
+
+        param.Add("title", title);
+        param.Add("content", content);
+        param.Add("mailType", "Notice");
+        param.Add("isReceived", false);
+
+        // 테스트용
+        param.Add("expireDate", DateTime.UtcNow.AddMinutes(1).ToString("o"));
+
+        // 보상이 없는 우편
+        param.Add("rewardJson", "");
+
+        var bro = Backend.GameData.Insert("UserMail",param);
+
+        if (bro.IsSuccess())
+        {
+            Debug.Log("우편 생성 성공");
+        }
+        else
+        {
+            Debug.LogError("우편 생성 실패 : " + bro);
+        }
+    }
+
 
     public void CreateMail(
         string title,
@@ -35,8 +63,10 @@ public class UserMailManager
         param.Add("content", content);
         param.Add("mailType", mailType);
         param.Add("isReceived", false);
+        
+        // 테스트용
+        param.Add("expireDate", DateTime.UtcNow.AddMinutes(1).ToString("o"));
 
-         // 임시
         string rewardJson =
             JsonUtility.ToJson(
                 new RewardListWrapper(rewards));
@@ -53,6 +83,7 @@ public class UserMailManager
         if(bro.IsSuccess())
         {
             Debug.Log("우편 생성 성공");
+            
         }
         else
         {
@@ -99,21 +130,48 @@ public class UserMailManager
             mail.isReceived =
                 bool.Parse(row["isReceived"].ToString());
 
+            if (row.ContainsKey("expireDate") && row["expireDate"] != null)
+            {
+                Debug.Log("원본 expireDate : " + row["expireDate"].ToString());
+                mail.expireDate = DateTime.Parse(row["expireDate"].ToString(),null,
+                System.Globalization.DateTimeStyles.RoundtripKind);
+            }
+            else
+            {
+                mail.expireDate = DateTime.UtcNow.AddDays(30);
+            }
             if (mail.isReceived)
             {
                 continue;
             }
+            if (mail.expireDate <= DateTime.UtcNow)
+            {
+                continue;
+            }
 
-            string rewardJson =
-                row["rewardJson"].ToString();
+            string rewardJson = "";
 
-            RewardListWrapper wrapper =
+            if (row.ContainsKey("rewardJson") && row["rewardJson"] != null)
+            {
+                    rewardJson = row["rewardJson"].ToString();
+            }
+
+            if (!string.IsNullOrEmpty(rewardJson))
+            {
+                RewardListWrapper wrapper =
                 JsonUtility.FromJson<RewardListWrapper>(rewardJson);
 
-            if(wrapper != null && wrapper.rewards != null)
-            {
-                mail.rewards = wrapper.rewards;
+                if (wrapper != null && wrapper.rewards != null)
+                {
+                    mail.rewards = wrapper.rewards;
+                }
             }
+            else
+            {
+                mail.rewards = new List<RewardData>();
+            }
+
+            
 
             mailList.Add(mail);
         }
@@ -124,7 +182,10 @@ public class UserMailManager
             Debug.Log(
                 $"제목 : {mail.title}\n" +
                 $"종류 : {mail.mailType}\n" +
-                $"수령 : {mail.isReceived}");
+                $"수령 : {mail.isReceived}"+
+                $"expireDate : {mail.expireDate:O}\n" +
+                $"현재 UTC : {DateTime.UtcNow:O}\n" +
+                $"남은 시간 : {mail.expireDate - DateTime.UtcNow}");
         }
     }
 

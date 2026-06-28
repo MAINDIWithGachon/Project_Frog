@@ -1,6 +1,7 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using BackEnd;
 
 public class MailItemUI : MonoBehaviour
 {
@@ -12,17 +13,15 @@ public class MailItemUI : MonoBehaviour
 
     public Button receiveButton;
 
-    public GameObject stamp;
-
     private UserMailData currentMail;
 
-    public Sprite goldIcon;
+    private UPostMailData currentUPostMail;
 
-    public Sprite gemIcon;
+    public MailUIManager mailUIManager;
 
-    public Sprite equipmentIcon;
+    public MailDetailUI mailDetailUI;
 
-    public Sprite recipeIcon;
+    public Button openDetailButton;
 
     public void SetData(UserMailData mail, string reward,string expire)
     {
@@ -33,17 +32,44 @@ public class MailItemUI : MonoBehaviour
         timerText.text = expire;
         if(mail.rewards != null &&mail.rewards.Count > 0)
         {
-            SetRewardIcon(
-            mail.rewards[0].type);
+            iconImage.sprite = mailUIManager.GetRewardIcon(mail.rewards[0].type);
         }
-
-        stamp.SetActive(mail.isReceived);
 
         receiveButton.gameObject.SetActive(!mail.isReceived);
 
         receiveButton.onClick.RemoveAllListeners();
         receiveButton.onClick.AddListener(OnClickReceive);
+
+        openDetailButton.onClick.RemoveAllListeners();
+        openDetailButton.onClick.AddListener(OnClickMail);
+        Debug.Log("버튼 연결 완료");
     } 
+
+    public void SetData( UPostMailData mail,string reward,string expire)
+    {
+        currentUPostMail = mail;
+
+        titleText.text = mail.title;
+        rewardText.text = reward;
+        timerText.text = expire;
+
+        if (mail.items != null && mail.items.Count > 0)
+        {
+            iconImage.sprite = mailUIManager.GetRewardIcon(mail.items[0].itemName);
+        }
+        else
+        {
+            iconImage.gameObject.SetActive(false);
+        }
+
+        receiveButton.gameObject.SetActive(true);
+
+        receiveButton.onClick.RemoveAllListeners();
+        receiveButton.onClick.AddListener(OnClickReceiveUPost);
+
+        openDetailButton.onClick.RemoveAllListeners();
+        openDetailButton.onClick.AddListener(OnClickUPostMail);
+    }
 
     private void OnClickReceive()
     {
@@ -56,27 +82,45 @@ public class MailItemUI : MonoBehaviour
             return;
         }
 
-        stamp.SetActive(true);
+        FindFirstObjectByType<MailUIManager>().RemoveMail(gameObject);
     }
-    private void SetRewardIcon(string rewardType)
+
+    private void OnClickReceiveUPost()
     {
-        switch (rewardType)
+        BackendReturnObject bro =
+            Backend.UPost.ReceivePostItem(
+                currentUPostMail.postType,
+                currentUPostMail.inDate);
+
+        if (!bro.IsSuccess())
         {
-            case "Gold":
-                iconImage.sprite = goldIcon;
-                break;
+            Debug.LogError(
+                "우편 수령 실패 : " + bro);
 
-            case "Gem":
-                iconImage.sprite = gemIcon;
-                break;
-
-            case "Equipment":
-                iconImage.sprite = equipmentIcon;
-                break;
-
-            case "Recipe":
-                iconImage.sprite = recipeIcon;
-                break;
+            return;
         }
+    
+        Debug.Log(
+            "우편 수령 성공\n" +
+            "제목 : " + currentUPostMail.title);
+
+        FindFirstObjectByType<MailUIManager>()
+            .RefreshMail();
+    }
+
+    public void OnClickMail()
+    {
+       Debug.Log("메일 클릭");
+
+        mailDetailUI.gameObject.SetActive(true);
+
+        mailDetailUI.SetData(currentMail);
+    }
+
+    public void OnClickUPostMail()
+    {
+        Debug.Log("UPost 메일 클릭");
+        mailDetailUI.gameObject.SetActive(true);
+        mailDetailUI.SetData(currentUPostMail);
     }
 }
