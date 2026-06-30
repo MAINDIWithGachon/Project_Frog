@@ -63,9 +63,8 @@ public class UserMailManager
         param.Add("content", content);
         param.Add("mailType", mailType);
         param.Add("isReceived", false);
-        
-        // 테스트용
-        param.Add("expireDate", DateTime.UtcNow.AddMinutes(1).ToString("o"));
+      
+        param.Add("expireDate", DateTime.UtcNow.AddDays(10).ToString("o"));
 
         string rewardJson =
             JsonUtility.ToJson(

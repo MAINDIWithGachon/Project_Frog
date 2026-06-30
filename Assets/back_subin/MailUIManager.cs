@@ -177,4 +177,9 @@ public class MailUIManager : MonoBehaviour
 
         return null;
     }
+
+    public void CloseDetail()
+    {
+        mailDetailUI.gameObject.SetActive(false);
+    }
 }
